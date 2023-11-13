@@ -1,5 +1,6 @@
 import { defineStore } from "pinia";
 import axiosInstance from "../services/axios.service.ts";
+import Swal from "sweetalert2";
 
 export const authStore = defineStore("auth", {
   state: () => ({
@@ -15,7 +16,11 @@ export const authStore = defineStore("auth", {
         this.token = data.token;
         localStorage.setItem("token-inventas", this.token);
       } catch (error) {
-        console.error("Error en login:", error);
+        await Swal.fire({
+          title: error.response.data.message,
+          timer: 2000,
+          icon: "error",
+        });
         throw error;
       }
     },
