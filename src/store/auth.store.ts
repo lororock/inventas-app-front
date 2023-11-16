@@ -1,30 +1,39 @@
+import { ref } from "vue";
 import { defineStore } from "pinia";
+import router from "../router/index.js";
 import axiosInstance from "../services/axios.service.ts";
 import Swal from "sweetalert2";
 
-export const authStore = defineStore("auth", {
-  state: () => ({
-    token: "",
-  }),
-  actions: {
-    async login(email: string, password: string) {
-      try {
-        const { data } = await axiosInstance.post("auth/login", {
-          email,
-          password,
-        });
-        this.token = data.token;
-        localStorage.setItem("token-inventas", this.token);
-      } catch (error) {
-        await Swal.fire({
-          title: error.response.data.message,
-          timer: 2000,
-          icon: "error",
-        });
-        throw error;
-      }
-    },
-  },
-});
+export const useAuthStore = defineStore("auth", () => {
+  const token = ref("");
 
-export default authStore;
+  const login = async (email: string, password: string) => {
+    try {
+      const { data } = await axiosInstance.post("auth/login", {
+        email,
+        password,
+      });
+      token.value = data.token;
+      router.push("/form");
+      localStorage.setItem("token-inventas", token.value);
+    } catch (error) {
+      await Swal.fire({
+        title: error.response.data.message,
+        timer: 2000,
+        icon: "error",
+      });
+      throw error;
+    }
+  };
+
+  const logout = () => {
+    token.value == "";
+    localStorage.removeItem("token-inventas");
+    router.push("/");
+  };
+  return {
+    login,
+    logout,
+    token,
+  };
+});
