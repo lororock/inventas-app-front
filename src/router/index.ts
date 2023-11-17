@@ -1,10 +1,10 @@
 import { createWebHistory, createRouter } from "vue-router";
+import { jwtDecode, JwtPayload } from "jwt-decode";
 
 import Home from "../views/Home.vue";
 import Form from "../views/FormView.vue";
 import NotFound from "../views/NotFoundView.vue";
 import { useAuthStore } from "../store/auth.store.ts";
-import Swal from "sweetalert2";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -30,20 +30,20 @@ const router = createRouter({
 
 router.beforeEach(async (to, _, next) => {
   const authStore = useAuthStore();
-  const token = !!authStore.token;
 
-  if (to.matched.some((record) => record.meta.requiresAuth) && !token) {
+  if (to.matched.some((record) => record.meta.requiresAuth)) {
+    const token = authStore.token
+      ? authStore.token
+      : (localStorage.getItem("token-inventas") as string);
+    if (!token) next({ path: "/" });
+
+    const decoded: JwtPayload | any = jwtDecode(token);
+    if (!decoded) next({ path: "/" });
+
+    if (!(decoded.exp < Date.now() / 1000)) return next();
+
     const valid = await authStore.validTokenRefresh();
-    if (!valid) {
-      await Swal.fire({
-        icon: "warning",
-        title: "Es necesario que inicies sesión primero",
-        timer: 2000,
-        showConfirmButton: false,
-        showCloseButton: false,
-      });
-      next({ path: "/" });
-    }
+    if (!valid) next({ path: "/" });
   }
   next();
 });

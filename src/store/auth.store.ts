@@ -38,6 +38,7 @@ export const useAuthStore = defineStore("auth", () => {
 
   const validTokenRefresh = async () => {
     const refreshTokenTemp = localStorage.getItem("refresh-token-inventas");
+    if (!refreshTokenTemp) return false;
     try {
       const { data } = await axiosInstance.post(
         `auth/valid/${refreshTokenTemp}`,
