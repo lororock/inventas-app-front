@@ -17,7 +17,7 @@ export const useAuthStore = defineStore("auth", () => {
       token.value = data.token;
       refreshToken.value = data.refreshToken;
       localStorage.setItem("token-inventas", token.value);
-      localStorage.setItem("refresh-token", refreshToken.value);
+      localStorage.setItem("refresh-token-inventas", refreshToken.value);
       await router.push("/form");
     } catch (error: any) {
       await Swal.fire({
@@ -34,9 +34,26 @@ export const useAuthStore = defineStore("auth", () => {
     localStorage.removeItem("token-inventas");
     await router.push("/");
   };
+
+  const validTokenRefresh = async () => {
+    const refreshTokenTemp = localStorage.getItem("refresh-token-inventas");
+    try {
+      const { data } = await axiosInstance.post(
+        `auth/valid/${refreshTokenTemp}`,
+      );
+      token.value = data.token;
+      refreshToken.value = data.refreshToken;
+      localStorage.setItem("token-inventas", token.value);
+      localStorage.setItem("refresh-token-inventas", refreshToken.value);
+      return true;
+    } catch (error) {
+      return false;
+    }
+  };
   return {
     login,
     logout,
+    validTokenRefresh,
     token,
   };
 });
