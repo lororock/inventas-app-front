@@ -6,6 +6,7 @@ import Swal from "sweetalert2";
 
 export const useAuthStore = defineStore("auth", () => {
   const token = ref("");
+  const refreshToken = ref("");
 
   const login = async (email: string, password: string) => {
     try {
@@ -14,9 +15,11 @@ export const useAuthStore = defineStore("auth", () => {
         password,
       });
       token.value = data.token;
-      router.push("/form");
+      refreshToken.value = data.refreshToken;
       localStorage.setItem("token-inventas", token.value);
-    } catch (error) {
+      localStorage.setItem("refresh-token", refreshToken.value);
+      await router.push("/form");
+    } catch (error: any) {
       await Swal.fire({
         title: error.response.data.message,
         timer: 2000,
@@ -26,10 +29,10 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
-  const logout = () => {
-    token.value == "";
+  const logout = async () => {
+    token.value = "";
     localStorage.removeItem("token-inventas");
-    router.push("/");
+    await router.push("/");
   };
   return {
     login,
