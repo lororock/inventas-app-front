@@ -3,34 +3,8 @@ import { createWebHistory, createRouter } from "vue-router";
 import Home from "../views/Home.vue";
 import Form from "../views/FormView.vue";
 import NotFound from "../views/NotFoundView.vue";
-
-const requireAuth = (to: any, from: any, next: any) => {
-  try {
-    var datos = localStorage.getItem("token-inventas");
-    if (datos !== null) {
-      next();
-    } else {
-      next("/");
-    }
-  } catch (error) {
-    console.error("Error al acceder a localStorage:", error);
-    next();
-  }
-};
-
-const noRequireAuth = (to: any, from: any, next: any) => {
-  try {
-    var token = localStorage.getItem("token-inventas");
-    if (token === null || token === "") {
-      next();
-    } else {
-      next("/form");
-    }
-  } catch (error) {
-    console.error("Error al acceder a localStorage:", error);
-    next();
-  }
-};
+import { useAuthStore } from "../store/auth.store.ts";
+import Swal from "sweetalert2";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -39,13 +13,12 @@ const router = createRouter({
       path: "/",
       name: "Home",
       component: Home,
-      beforeEnter: noRequireAuth,
     },
     {
       path: "/form",
       name: "Form",
       component: Form,
-      beforeEnter: requireAuth,
+      meta: { requiresAuth: true },
     },
     {
       path: "/:pathMatch(.*)*",
@@ -53,6 +26,26 @@ const router = createRouter({
       component: NotFound,
     },
   ],
+});
+
+router.beforeEach(async (to, _, next) => {
+  const authStore = useAuthStore();
+  const token = !!authStore.token;
+
+  if (to.matched.some((record) => record.meta.requiresAuth) && !token) {
+    const valid = await authStore.validTokenRefresh();
+    if (!valid) {
+      await Swal.fire({
+        icon: "warning",
+        title: "Es necesario que inicies sesión primero",
+        timer: 2000,
+        showConfirmButton: false,
+        showCloseButton: false,
+      });
+      next({ path: "/" });
+    }
+  }
+  next();
 });
 
 export default router;
