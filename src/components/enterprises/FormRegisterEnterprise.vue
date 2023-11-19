@@ -65,7 +65,7 @@ const submitForm = () => {
 
     <form @submit.prevent="submitForm" class="space-y-4">
       <div v-show="currentStep === 1">
-        <EnterpriseForm />
+        <EnterpriseForm :formData="formData" />
       </div>
 
       <div v-show="currentStep === 2">
