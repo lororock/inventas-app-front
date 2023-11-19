@@ -2,6 +2,9 @@
 import { ref } from "vue";
 import EnterpriseForm from "./EnterpriseForm.vue";
 import EnterpriseOwnerForm from "./EnterpriseOwnerForm.vue";
+import useEnterpriseStore from "../../store/useEnterpriseStore.ts";
+import Swal from "sweetalert2";
+const enterpriseStore = useEnterpriseStore();
 
 const currentStep = ref(1);
 const totalSteps = 2;
@@ -35,8 +38,18 @@ const goToPreviousStep = () => {
   }
 };
 
-const submitForm = () => {
-  console.log("Form Data:", formData.value);
+const submitForm = async () => {
+  try {
+    await enterpriseStore.createEnterprise(formData.value);
+  } catch (error: any) {
+    console.log(error);
+    await Swal.fire({
+      title: "Error al crear empresa",
+      html: `<h1>Verifique los datos</h1>
+            <hr/>
+            ${error.response.data.message}`,
+    });
+  }
 };
 </script>
 
@@ -81,7 +94,3 @@ const submitForm = () => {
     </form>
   </div>
 </template>
-
-<style>
-/* Aquí puedes agregar estilos adicionales si es necesario */
-</style>
