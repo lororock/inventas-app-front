@@ -43,7 +43,7 @@ const submitForm = () => {
 </script>
 
 <template>
-  <div class="bg-gray-700 p-4">
+  <div class="bg-gray-900 p-4">
     <div class="mx-auto max-w-2xl flex justify-between">
       <button
         type="button"
