@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import EnterpriseForm from "./EnterpriseForm.vue";
+import EnterpriseOwnerForm from "./EnterpriseOwnerForm.vue";
 
 const currentStep = ref(1);
 const totalSteps = 2;
@@ -12,15 +13,13 @@ const formData = ref({
   documentNumber: "",
   user: {
     email: "",
-    password: "",
-    first_name: "",
-    last_name: "",
+    firstName: "",
+    lastName: "",
     documentType: null,
     documentNumber: "",
     phone: "",
     gender: null,
     birthdate: "",
-    roles: [],
   },
 });
 
@@ -28,7 +27,6 @@ const goToNextStep = () => {
   if (currentStep.value < totalSteps) {
     currentStep.value++;
   }
-  // Aquí puedes agregar validación para cada paso si es necesario
 };
 
 const goToPreviousStep = () => {
@@ -69,7 +67,7 @@ const submitForm = () => {
       </div>
 
       <div v-show="currentStep === 2">
-        <!-- Campos para el Paso 2 -->
+        <EnterpriseOwnerForm :formData="formData" />
       </div>
 
       <div v-if="currentStep === totalSteps">
