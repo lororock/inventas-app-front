@@ -21,7 +21,8 @@ export const useAuthStore = defineStore("auth", () => {
       await router.push("/form");
     } catch (error: any) {
       await Swal.fire({
-        title: error.response.data.message,
+        title: "Error en login",
+        text: error.response.data.message,
         timer: 2000,
         icon: "error",
       });
