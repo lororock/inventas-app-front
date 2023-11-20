@@ -6,8 +6,7 @@ import useEnterpriseStore from "../../store/useEnterpriseStore.ts";
 import Swal from "sweetalert2";
 const enterpriseStore = useEnterpriseStore();
 
-const currentStep = ref(1);
-const totalSteps = 2;
+const currentStep = ref(1); // Iniciar en el primer pas
 
 const formData = ref({
   name: "",
@@ -27,13 +26,14 @@ const formData = ref({
 });
 
 const goToNextStep = () => {
-  if (currentStep.value < totalSteps) {
+  if (currentStep.value < 2) {
     currentStep.value++;
   }
 };
 
 const goToPreviousStep = () => {
   if (currentStep.value > 1) {
+    // Asegúrate de no ir por debajo del primer paso
     currentStep.value--;
   }
 };
@@ -54,43 +54,23 @@ const submitForm = async () => {
 </script>
 
 <template>
-  <div class="bg-gray-900 p-4">
-    <div class="mx-auto max-w-2xl flex justify-between">
-      <button
-        type="button"
-        @click="goToPreviousStep"
-        class="bg-gray-700 text-white rounded py-2 px-4"
-        :disabled="currentStep === 1"
-      >
-        Anterior
-      </button>
-      <button
-        type="button"
-        @click="goToNextStep"
-        class="bg-gray-700 text-white rounded py-2 px-4"
-        :disabled="currentStep === totalSteps"
-      >
-        Siguiente
-      </button>
-    </div>
+  <div class="mx-auto max-w-2xl">
+    <v-stepper
+      v-model="currentStep"
+      :items="['Datos de la empresa', 'Datos del responsable']"
+    >
+      <template v-slot:item.1>
+        <EnterpriseForm />
+      </template>
 
-    <form @submit.prevent="submitForm" class="space-y-4">
-      <div v-show="currentStep === 1">
-        <EnterpriseForm :formData="formData" />
-      </div>
-
-      <div v-show="currentStep === 2">
+      <template v-slot:item.2>
         <EnterpriseOwnerForm :formData="formData" />
-      </div>
+      </template>
 
-      <div v-if="currentStep === totalSteps">
-        <button
-          type="submit"
-          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-        >
-          Submit
-        </button>
-      </div>
-    </form>
+      <template v-slot:actions>
+        <v-btn @click="goToPreviousStep" class="ma-2"> Anterior </v-btn>
+        <v-btn @click="goToNextStep">Siguiente</v-btn>
+      </template>
+    </v-stepper>
   </div>
 </template>

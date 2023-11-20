@@ -65,7 +65,7 @@ const submitLogin = async () => {
             />
           </v-col>
         </v-row>
-        <v-btn :disabled="!meta.valid" block="" type="submit" class="bg-green">
+        <v-btn :disabled="!meta.valid" block type="submit" class="bg-green">
           Iniciar Sesión
         </v-btn>
       </v-container>
