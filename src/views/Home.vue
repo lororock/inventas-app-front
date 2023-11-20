@@ -1,105 +1,48 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useAuthStore } from "../store/auth.store.ts";
+import router from "../router";
 
-const email = ref("admin.inventas@yopmail.com");
-const password = ref("7423102Ca");
+const valid = ref<boolean>(true);
+const email = ref<string>("admin.inventas@yopmail.com");
+const password = ref<string>("7423102Ca");
 const authStore = useAuthStore();
 
-const submitLogin = async () => {
+const submitLogin = async () =>
   await authStore.login(email.value, password.value);
-  console.log(authStore.token);
-};
+
+(async () => {
+  const isAuth = await authStore.validTokenRefresh();
+  if (isAuth) return await router.push("/form");
+})();
 </script>
 
 <template>
-  <div class="flex items-center justify-center h-screen bg-gray-100">
-    <div class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-lg text-center"></div>
-
-      <form
-        @submit.prevent="submitLogin"
-        class="mx-auto mb-0 mt-8 max-w-md space-y-4"
-      >
-        <div>
-          <label for="email" class="sr-only">Email</label>
-
-          <div class="relative">
-            <input
+  <v-card class="max-w-2xl mx-auto mt-20">
+    <v-form v-model="valid" @submit.prevent="submitLogin">
+      <v-container>
+        <v-row>
+          <v-col cols="12">
+            <v-text-field
+              density="compact"
               v-model="email"
-              placeholder="Email"
-              type="email"
-              class="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+              label="Correo"
+              required
+              hide-details
             />
+          </v-col>
 
-            <span
-              class="absolute inset-y-0 end-0 grid place-content-center px-4"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 text-gray-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M16 12a4 4 0 10-8 0 4 4 0 008 0zm0 0v1.5a2.5 2.5 0 005 0V12a9 9 0 10-9 9m4.5-1.206a8.959 8.959 0 01-4.5 1.207"
-                />
-              </svg>
-            </span>
-          </div>
-        </div>
-
-        <div>
-          <label for="password" class="sr-only">Password</label>
-
-          <div class="relative">
-            <input
+          <v-col cols="12">
+            <v-text-field
+              density="compact"
               v-model="password"
-              placeholder="Password"
-              type="password"
-              class="w-full rounded-lg border-gray-200 p-4 pe-12 text-sm shadow-sm"
+              label="Contraseña"
+              required
             />
-
-            <span
-              class="absolute inset-y-0 end-0 grid place-content-center px-4"
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                class="h-4 w-4 text-gray-400"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
-                />
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
-                />
-              </svg>
-            </span>
-          </div>
-        </div>
-
-        <div class="flex items-center justify-between">
-          <button
-            type="submit"
-            class="inline-block rounded-lg bg-blue-500 px-5 py-3 text-sm font-medium text-white"
-          >
-            Iniciar sesión
-          </button>
-        </div>
-      </form>
-    </div>
-  </div>
+          </v-col>
+        </v-row>
+        <v-btn type="submit" class="bg-green"> Iniciar Sesión </v-btn>
+      </v-container>
+    </v-form>
+  </v-card>
 </template>
