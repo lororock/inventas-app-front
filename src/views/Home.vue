@@ -20,7 +20,7 @@ const schema = yup.object({
     ),
 });
 
-useForm({
+const { meta } = useForm({
   validationSchema: schema,
 });
 const { value: email, errorMessage: emailError } = useField("email");
@@ -65,7 +65,9 @@ const submitLogin = async () => {
             />
           </v-col>
         </v-row>
-        <v-btn type="submit" class="bg-green">Iniciar Sesión</v-btn>
+        <v-btn :disabled="!meta.valid" block="" type="submit" class="bg-green">
+          Iniciar Sesión
+        </v-btn>
       </v-container>
     </v-form>
   </v-card>
