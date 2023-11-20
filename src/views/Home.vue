@@ -10,19 +10,12 @@ const submitLogin = async () => {
   await authStore.login(email.value, password.value);
   console.log(authStore.token);
 };
-
 </script>
 
 <template>
   <div class="flex items-center justify-center h-screen bg-gray-100">
     <div class="mx-auto max-w-screen-xl px-4 sm:px-6 lg:px-8">
-      <div class="mx-auto max-w-lg text-center">
-        <h1 class="text-2xl font-bold sm:text-3xl">El que ingrese es gay</h1>
-
-        <p class="mt-4 text-gray-500">
-          que paso amiguito?
-        </p>
-      </div>
+      <div class="mx-auto max-w-lg text-center"></div>
 
       <form
         @submit.prevent="submitLogin"
@@ -99,16 +92,11 @@ const submitLogin = async () => {
         </div>
 
         <div class="flex items-center justify-between">
-          <p class="text-sm text-gray-500">
-            No account?
-            <a class="underline" href="">Sign up</a>
-          </p>
-
           <button
             type="submit"
             class="inline-block rounded-lg bg-blue-500 px-5 py-3 text-sm font-medium text-white"
           >
-            Sign in
+            Iniciar sesión
           </button>
         </div>
       </form>
