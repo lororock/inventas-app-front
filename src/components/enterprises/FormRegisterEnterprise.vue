@@ -6,7 +6,8 @@ import useEnterpriseStore from "../../store/useEnterpriseStore.ts";
 import Swal from "sweetalert2";
 const enterpriseStore = useEnterpriseStore();
 
-const currentStep = ref(1); // Iniciar en el primer pas
+const currentStep = ref(1);
+const steps = ref(2);
 
 const formData = ref({
   name: "",
@@ -26,14 +27,13 @@ const formData = ref({
 });
 
 const goToNextStep = () => {
-  if (currentStep.value < 2) {
+  if (currentStep.value < steps.value) {
     currentStep.value++;
   }
 };
 
 const goToPreviousStep = () => {
-  if (currentStep.value > 1) {
-    // Asegúrate de no ir por debajo del primer paso
+  if (currentStep.value >= steps.value) {
     currentStep.value--;
   }
 };
@@ -59,17 +59,29 @@ const submitForm = async () => {
       v-model="currentStep"
       :items="['Datos de la empresa', 'Datos del responsable']"
     >
+      <template v-slot:actions>
+        <v-row class="ma-2">
+          <v-col cols="auto">
+            <v-btn :disabled="currentStep === 1" @click="goToPreviousStep">
+              <v-icon icon="mdi-arrow-left" />
+            </v-btn>
+          </v-col>
+
+          <v-spacer></v-spacer>
+
+          <v-col cols="auto">
+            <v-btn :disabled="currentStep === steps" @click="goToNextStep">
+              <v-icon icon="mdi-arrow-right" />
+            </v-btn>
+          </v-col>
+        </v-row>
+      </template>
       <template v-slot:item.1>
         <EnterpriseForm />
       </template>
 
       <template v-slot:item.2>
         <EnterpriseOwnerForm :formData="formData" />
-      </template>
-
-      <template v-slot:actions>
-        <v-btn @click="goToPreviousStep" class="ma-2"> Anterior </v-btn>
-        <v-btn @click="goToNextStep">Siguiente</v-btn>
       </template>
     </v-stepper>
   </div>
