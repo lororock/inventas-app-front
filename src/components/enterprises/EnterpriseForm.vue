@@ -2,6 +2,7 @@
 import { useForm, useField } from "vee-validate";
 import * as yup from "yup";
 import { watch } from "vue";
+import { documentTypes } from "../../assets/list.items.ts";
 
 const schema = yup.object({
   name: yup.string().required("El nombre es obligatorio"),
@@ -18,28 +19,7 @@ const props = defineProps({
   formData: { type: Object, required: true },
 });
 
-const items = [
-  {
-    value: 0,
-    label: "C.C.",
-    description: "Cédula de ciudadanía",
-  },
-  {
-    value: 1,
-    label: "C.E.",
-    description: "Cédula de extranjería",
-  },
-  {
-    value: 2,
-    label: "Nit",
-    description: "Nit persona jurídica",
-  },
-  {
-    value: 3,
-    label: "Otro",
-    description: "Otro tipo de documento",
-  },
-];
+const items = documentTypes;
 useForm({
   validationSchema: schema,
 });
