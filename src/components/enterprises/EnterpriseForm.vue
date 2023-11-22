@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useForm, useField } from "vee-validate";
 import * as yup from "yup";
+import { watch } from "vue";
 
 const schema = yup.object({
   name: yup.string().required("El nombre es obligatorio"),
@@ -13,8 +14,8 @@ const schema = yup.object({
     .string()
     .required("El número de documento es obligatorio"),
 });
-defineProps({
-  formData: Object,
+const props = defineProps({
+  formData: { type: Object, required: true },
 });
 
 const items = [
@@ -39,7 +40,6 @@ const items = [
     description: "Otro tipo de documento",
   },
 ];
-// Configura el formulario y los campos
 useForm({
   validationSchema: schema,
 });
@@ -49,6 +49,18 @@ const { value: documentType, errorMessage: documentTypeError } =
   useField("documentType");
 const { value: documentNumber, errorMessage: documentNumberError } =
   useField("documentNumber");
+
+watch(
+  [name, email, documentType, documentNumber],
+  () =>
+    Object.assign(props.formData, {
+      name: name.value,
+      email: email.value,
+      documentType: documentType.value,
+      documentNumber: documentNumber.value,
+    }),
+  { deep: true },
+);
 </script>
 
 <template>

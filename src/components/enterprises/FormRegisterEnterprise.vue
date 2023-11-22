@@ -77,7 +77,7 @@ const submitForm = async () => {
         </v-row>
       </template>
       <template v-slot:item.1>
-        <EnterpriseForm />
+        <EnterpriseForm :formData="formData" />
       </template>
 
       <template v-slot:item.2>
