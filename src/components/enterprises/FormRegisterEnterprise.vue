@@ -11,7 +11,6 @@ const steps = ref(2);
 
 const formData = ref({
   name: "",
-  email: "",
   documentType: null,
   documentNumber: "",
   user: {
@@ -41,13 +40,17 @@ const goToPreviousStep = () => {
 const submitForm = async () => {
   try {
     await enterpriseStore.createEnterprise(formData.value);
+    await Swal.fire({
+      title: "Empresa creada con exito",
+      text: `Registro exitoso, al cliente ${formData.value.user.email} le llegarán la credenciales`,
+      icon: "success",
+      timer: 10000,
+    });
   } catch (error: any) {
-    console.log(error);
     await Swal.fire({
       title: "Error al crear empresa",
-      html: `<h1>Verifique los datos</h1>
-            <hr/>
-            ${error.response.data.message}`,
+      text: `${error.response.data.message}`,
+      icon: "error",
     });
   }
 };
@@ -60,6 +63,9 @@ const submitForm = async () => {
       :items="['Datos de la empresa', 'Datos del responsable']"
     >
       <template v-slot:actions>
+        <v-col v-if="currentStep === steps" cols="12">
+          <v-btn @click="submitForm" color="success" block>Registrar</v-btn>
+        </v-col>
         <v-row class="ma-2">
           <v-col cols="auto">
             <v-btn :disabled="currentStep === 1" @click="goToPreviousStep">

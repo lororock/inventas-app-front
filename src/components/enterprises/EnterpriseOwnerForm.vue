@@ -15,10 +15,7 @@ const schema = yup.object({
   documentNumber: yup
     .string()
     .required("El número de documento es obligatorio"),
-  phone: yup
-    .number()
-    .required("El número de celular es requerido")
-    .positive("Solo números positivos"),
+  phone: yup.string().required("El número de celular es requerido"),
   gender: yup.boolean(),
   birthdate: yup.date().required(),
   roles: yup.array(),
@@ -113,7 +110,7 @@ watch(
             v-model="documentNumber"
             :error-messages="documentNumberError"
             label="Numero de documento"
-            type="number"
+            hint="Sin puntos ni guiones"
           />
         </v-col>
 

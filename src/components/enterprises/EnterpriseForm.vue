@@ -6,10 +6,6 @@ import { documentTypes } from "../../assets/list.items.ts";
 
 const schema = yup.object({
   name: yup.string().required("El nombre es obligatorio"),
-  email: yup
-    .string()
-    .required("El correo electrónico es obligatorio")
-    .email("Debe ser un correo válido"),
   documentType: yup.string().required("El tipo de documento es obligatorio"),
   documentNumber: yup
     .string()
@@ -24,18 +20,16 @@ useForm({
   validationSchema: schema,
 });
 const { value: name, errorMessage: nameError } = useField("name");
-const { value: email, errorMessage: emailError } = useField("email");
 const { value: documentType, errorMessage: documentTypeError } =
   useField("documentType");
 const { value: documentNumber, errorMessage: documentNumberError } =
   useField("documentNumber");
 
 watch(
-  [name, email, documentType, documentNumber],
+  [name, documentType, documentNumber],
   () =>
     Object.assign(props.formData, {
       name: name.value,
-      email: email.value,
       documentType: documentType.value,
       documentNumber: documentNumber.value,
     }),
@@ -47,24 +41,12 @@ watch(
   <v-form>
     <v-container>
       <v-row>
-        <v-col cols="6">
+        <v-col cols="12">
           <v-text-field
             density="compact"
             v-model="name"
             :error-messages="nameError"
             label="Nombre"
-            required
-          />
-        </v-col>
-
-        <v-col cols="6">
-          <v-text-field
-            density="compact"
-            v-model="email"
-            :error-messages="emailError"
-            label="Correo electrónico"
-            required
-            type="email"
           />
         </v-col>
 
@@ -74,7 +56,6 @@ watch(
             v-model="documentType"
             :error-messages="documentTypeError"
             label="Tipo de documento"
-            required
             :items="items"
             item-title="label"
           >
@@ -90,8 +71,7 @@ watch(
             v-model="documentNumber"
             :error-messages="documentNumberError"
             label="Numero de documento"
-            required
-            type="number"
+            hint="Sin puntos ni guiones"
           />
         </v-col>
       </v-row>
