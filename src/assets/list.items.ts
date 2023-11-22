@@ -20,3 +20,14 @@ export const documentTypes = [
     description: "Otro tipo de documento",
   },
 ];
+
+export const genders = [
+  {
+    value: true,
+    label: "Masculino",
+  },
+  {
+    value: false,
+    label: "Femenino",
+  },
+];
