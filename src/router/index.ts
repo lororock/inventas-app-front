@@ -1,18 +1,18 @@
 import { createWebHistory, createRouter } from "vue-router";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
-import Home from "../views/Home.vue";
 import Form from "../views/FormView.vue";
 import NotFound from "../views/NotFoundView.vue";
 import { useAuthStore } from "../store/auth.store.ts";
+import Login from "../views/Login.vue";
 
 const router = createRouter({
   history: createWebHistory(),
   routes: [
     {
       path: "/",
-      name: "Home",
-      component: Home,
+      name: "Login",
+      component: Login,
     },
     {
       path: "/form",

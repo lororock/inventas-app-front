@@ -7,11 +7,10 @@ import Swal from "sweetalert2";
 const enterpriseStore = useEnterpriseStore();
 
 const currentStep = ref(1);
-const totalSteps = 2;
+const steps = ref(2);
 
 const formData = ref({
   name: "",
-  email: "",
   documentType: null,
   documentNumber: "",
   user: {
@@ -27,13 +26,13 @@ const formData = ref({
 });
 
 const goToNextStep = () => {
-  if (currentStep.value < totalSteps) {
+  if (currentStep.value < steps.value) {
     currentStep.value++;
   }
 };
 
 const goToPreviousStep = () => {
-  if (currentStep.value > 1) {
+  if (currentStep.value >= steps.value) {
     currentStep.value--;
   }
 };
@@ -41,56 +40,55 @@ const goToPreviousStep = () => {
 const submitForm = async () => {
   try {
     await enterpriseStore.createEnterprise(formData.value);
+    await Swal.fire({
+      title: "Empresa creada con exito",
+      text: `Registro exitoso, al cliente ${formData.value.user.email} le llegarán la credenciales`,
+      icon: "success",
+      timer: 10000,
+    });
   } catch (error: any) {
-    console.log(error);
     await Swal.fire({
       title: "Error al crear empresa",
-      html: `<h1>Verifique los datos</h1>
-            <hr/>
-            ${error.response.data.message}`,
+      text: `${error.response.data.message}`,
+      icon: "error",
     });
   }
 };
 </script>
 
 <template>
-  <div class="bg-gray-900 p-4">
-    <div class="mx-auto max-w-2xl flex justify-between">
-      <button
-        type="button"
-        @click="goToPreviousStep"
-        class="bg-gray-700 text-white rounded py-2 px-4"
-        :disabled="currentStep === 1"
-      >
-        Anterior
-      </button>
-      <button
-        type="button"
-        @click="goToNextStep"
-        class="bg-gray-700 text-white rounded py-2 px-4"
-        :disabled="currentStep === totalSteps"
-      >
-        Siguiente
-      </button>
-    </div>
+  <div class="mx-auto max-w-2xl">
+    <v-stepper
+      v-model="currentStep"
+      :items="['Datos de la empresa', 'Datos del responsable']"
+    >
+      <template v-slot:actions>
+        <v-col v-if="currentStep === steps" cols="12">
+          <v-btn @click="submitForm" color="success" block>Registrar</v-btn>
+        </v-col>
+        <v-row class="ma-2">
+          <v-col cols="auto">
+            <v-btn :disabled="currentStep === 1" @click="goToPreviousStep">
+              <v-icon icon="mdi-arrow-left" />
+            </v-btn>
+          </v-col>
 
-    <form @submit.prevent="submitForm" class="space-y-4">
-      <div v-show="currentStep === 1">
+          <v-spacer></v-spacer>
+
+          <v-col cols="auto">
+            <v-btn :disabled="currentStep === steps" @click="goToNextStep">
+              <v-icon icon="mdi-arrow-right" />
+            </v-btn>
+          </v-col>
+        </v-row>
+      </template>
+      <template v-slot:item.1>
         <EnterpriseForm :formData="formData" />
-      </div>
+      </template>
 
-      <div v-show="currentStep === 2">
+      <template v-slot:item.2>
         <EnterpriseOwnerForm :formData="formData" />
-      </div>
-
-      <div v-if="currentStep === totalSteps">
-        <button
-          type="submit"
-          class="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:ring-blue-300 font-medium rounded-lg text-sm px-5 py-2.5 me-2 mb-2 dark:bg-blue-600 dark:hover:bg-blue-700 focus:outline-none dark:focus:ring-blue-800"
-        >
-          Submit
-        </button>
-      </div>
-    </form>
+      </template>
+    </v-stepper>
   </div>
 </template>
