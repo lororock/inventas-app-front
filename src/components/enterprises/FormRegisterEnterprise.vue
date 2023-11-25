@@ -4,7 +4,9 @@ import EnterpriseForm from "./EnterpriseForm.vue";
 import EnterpriseOwnerForm from "./EnterpriseOwnerForm.vue";
 import useEnterpriseStore from "../../store/useEnterpriseStore.ts";
 import Swal from "sweetalert2";
+import {useAuthStore} from "../../store/auth.store.ts";
 const enterpriseStore = useEnterpriseStore();
+const authStore = useAuthStore()
 
 const currentStep = ref(1);
 const steps = ref(2);
@@ -57,6 +59,7 @@ const submitForm = async () => {
 </script>
 
 <template>
+  <v-btn @click="authStore.logout()">Cerrar Sesión</v-btn>
   <div class="mx-auto max-w-2xl">
     <v-stepper
       v-model="currentStep"
