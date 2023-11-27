@@ -5,6 +5,7 @@ import Form from "../views/FormView.vue";
 import NotFound from "../views/NotFoundView.vue";
 import { useAuthStore } from "../store/auth.store.ts";
 import Login from "../views/Login.vue";
+import HomeDashboard from "../views/Dashboard/HomeDashboard.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -13,6 +14,12 @@ const router = createRouter({
       path: "/",
       name: "Login",
       component: Login,
+    },
+    {
+      path: "/home",
+      name: "Home",
+      component: HomeDashboard,
+      meta: { requiresAuth: true },
     },
     {
       path: "/form",
