@@ -18,7 +18,7 @@ export const useAuthStore = defineStore("auth", () => {
       refreshToken.value = data.refreshToken;
       localStorage.setItem("token-inventas", token.value);
       localStorage.setItem("refresh-token-inventas", refreshToken.value);
-      await router.push("/form");
+      await router.push("/home");
     } catch (error: any) {
       await Swal.fire({
         title: "Error en login",
