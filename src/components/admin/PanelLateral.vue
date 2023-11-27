@@ -1,6 +1,6 @@
 <template>
       <v-app-bar
-          color="primary"
+          color="teal-darken-2"
           prominent
       >
         <v-app-bar-nav-icon variant="text" @click.stop="nav = !nav"></v-app-bar-nav-icon>
@@ -15,17 +15,19 @@
         <v-btn variant="text" icon="mdi-logout" @click="authStore.logout()" />
       </v-app-bar>
       <v-navigation-drawer
+          color="teal-lighten-5"
           v-model="nav"
           relative
           app
       >
-        <v-alert :title="item.title" density="compact" v-for="(item, index) of listItems" :key="index" :color="item.color">
+        <v-alert
+            variant="plain" :color="'teal-darken-5'" :title="item.title" density="compact" v-for="(item, index) of listItems" :key="index">
           <v-list
               v-for="(subItem, subIndex) of item.items"
               :key="subIndex"
               link
           >
-            <v-btn variant="text" size="small" :prepend-icon="subItem.icon">{{subItem.title}}</v-btn>
+            <v-btn variant="text" size="small" :prepend-icon="subItem.icon" @click="router.push(subItem.path)"><strong>{{subItem.title}}</strong></v-btn>
           </v-list>
         </v-alert>
       </v-navigation-drawer>
@@ -35,6 +37,7 @@
 import {ref} from "vue"
 import {functionsDashboard} from "../../assets/list.items.ts";
 import {useAuthStore} from "../../store/auth.store.ts";
+import router from "../../router";
 const authStore = useAuthStore()
 
 

@@ -1,3 +1,5 @@
+import DashboardItem from "./interfaces/dashboard.items.interface.ts";
+
 export const documentTypes = [
   {
     value: 0,
@@ -32,63 +34,59 @@ export const genders = [
   },
 ];
 
-export const functionsDashboard = [
+export const functionsDashboard: DashboardItem[] = [
+  {
+    roles: [0,1],
+    title: "Módulo de usuarios",
+    items: [
+      { id: 1, rol: 0, icon: "mdi-account-multiple", title: "Adm. usuarios", path: "employees"},
+    ]
+  },
+    /**
   {
     rol: 1,
-    title: "Modulo de compras",
-    color: "primary",
+    title: "Módulo de ventas",
     items: [
-      { id: 1, type: 2, icon: "mdi-cart-plus", title: "Registro Compras" },
-      { id: 2, type: 2, icon: "mdi-account-group", title: "Proveedores" },
-      { id: 3, type: 2, icon: "mdi-cash-minus", title: "Cuentas por pagar" },
+      { id: 4, rol: 2, icon: "mdi-cash-plus", title: "Registro Ventas" },
+      { id: 5, rol: 2, icon: "mdi-account-group", title: "Clientes" },
+      { id: 6, rol: 2, icon: "mdi-cash-plus", title: "Cuentas por cobrar" },
+      { id: 7, rol: 2, icon: "mdi-currency-eth", title: "Movimientos" },
     ]
   },
   {
     rol: 1,
-    title: "Modulo de ventas",
-    color: "success",
-    items: [
-      { id: 4, type: 2, icon: "mdi-cash-plus", title: "Registro Ventas" },
-      { id: 5, type: 2, icon: "mdi-account-group", title: "Clientes" },
-      { id: 6, type: 2, icon: "mdi-cash-plus", title: "Cuentas por cobrar" },
-      { id: 7, type: 2, icon: "mdi-currency-eth", title: "Movimientos" },
-    ]
+    title: "Módulo de inventario",
+    items: [{ id: 8, rol: 2, icon: "mdi-barcode", title: "Registro Productos" },
+      { id: 9, rol: 2, icon: "mdi-shape", title: "Categorias" },
+      { id: 10, rol: 2, icon: "mdi-text-short", title: "Marcas" },
+      { id: 11, rol: 2, icon: "mdi-warehouse", title: "Bodegas" },
+      { id: 12, rol: 2, icon: "mdi-share-all-outline", title: "Movimientos" },]
   },
   {
     rol: 1,
-    title: "Modulo de inventario",
-    color: "orange",
-    items: [{ id: 8, type: 2, icon: "mdi-barcode", title: "Registro Productos" },
-      { id: 9, type: 2, icon: "mdi-shape", title: "Categorias" },
-      { id: 10, type: 2, icon: "mdi-text-short", title: "Marcas" },
-      { id: 11, type: 2, icon: "mdi-warehouse", title: "Bodegas" },
-      { id: 12, type: 2, icon: "mdi-share-all-outline", title: "Movimientos" },]
-  },
-  {
-    rol: 1,
-    title: "Modulo de usuarios",
-    color: "purple",
+    title: "Módulo de usuarios",
     items: [
       {
         id: 13,
-        type: 2,
+        rol: 2,
         icon: "mdi-account-multiple",
         title: "Registro empleados",
       },
       {
         id: 14,
-        type: 2,
+        rol: 2,
         icon: "mdi-account-cog",
         title: "Actualizar empleados",
       },
       {
         id: 15,
-        type: 2,
+        rol: 2,
         icon: "mdi-cash-register",
         title: "Cajas",
       },
     ]
   },
+      */
 ];
 
 export const recommendationsFormDashboard = [
