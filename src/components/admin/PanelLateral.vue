@@ -1,7 +1,4 @@
 <template>
-  <v-card>
-      <v-system-bar color="deep-purple darken-3"></v-system-bar>
-
       <v-app-bar
           color="primary"
           prominent
@@ -32,7 +29,6 @@
           </v-list>
         </v-alert>
       </v-navigation-drawer>
-  </v-card>
 </template>
 
 <script setup lang="ts">
