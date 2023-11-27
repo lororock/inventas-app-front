@@ -40,10 +40,14 @@ router.beforeEach(async (to, _, next) => {
     const decoded: JwtPayload | any = jwtDecode(token);
     if (!decoded) next({ path: "/" });
 
-    if (!(decoded.exp < Date.now() / 1000)) return next();
+    if (!(decoded.exp < Date.now() / 1000)) {
+      authStore.setToken(localStorage.getItem("token-inventas") as string)
+      return next();
+    }
 
     const valid = await authStore.validTokenRefresh();
-    if (!valid) next({ path: "/" });
+    if (!valid) return next({ path: "/" });
+    authStore.setToken(localStorage.getItem("token-inventas") as string)
   }
   next();
 });

@@ -30,6 +30,8 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
+  const setToken = (tokenValue: string) => token.value = tokenValue
+
   const logout = async () => {
     token.value = "";
     localStorage.removeItem("token-inventas");
@@ -57,6 +59,7 @@ export const useAuthStore = defineStore("auth", () => {
     login,
     logout,
     validTokenRefresh,
+    setToken,
     token,
   };
 });
