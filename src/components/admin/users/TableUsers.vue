@@ -2,6 +2,7 @@
 import { ref } from 'vue';
 import useUserStore from '../../../store/useUserStore';
 import { employeeColumnsName } from '../../../assets/tables.columns.name.ts';
+import LoadInProgress from "../../general/LoadInProgress.vue";
 
 const userStore = useUserStore();
 const items = ref([]);
@@ -27,7 +28,7 @@ fetchEmployees();
 
 <template>
   <v-container>
-    <div v-if="loading">Cargando...</div>
+    <LoadInProgress v-if="loading" />
     <div v-else-if="error">Error: {{ error.message }}</div>
     <v-data-table-virtual
         v-else
