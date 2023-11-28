@@ -3,6 +3,7 @@ import { ref } from 'vue';
 import useUserStore from '../../../store/useUserStore';
 import { employeeColumnsName } from '../../../assets/tables.columns.name.ts';
 import LoadInProgress from "../../general/LoadInProgress.vue";
+import UserDetails from "./UserDetails.vue";
 
 const userStore = useUserStore();
 const items = ref([]);
@@ -57,7 +58,7 @@ fetchEmployees();
           :items="items"
       >
         <template v-slot:item.id="{ item }">
-          <v-btn variant="text" size="small" color="indigo" icon="mdi-eye" />
+          <UserDetails :id="item.id" />
         </template>
         <template v-slot:item.actions="{ item }">
           <v-btn variant="text" size="small" color="orange-lighten-2" icon="mdi-pencil" />
