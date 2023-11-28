@@ -35,7 +35,7 @@ fetchEmployees();
       {{ error }}
     </v-alert>
     <v-card v-else title="Usuarios">
-      <v-card-subtitle>
+      <v-card-item>
         <v-row>
           <v-col cols="9">
             <v-text-field
@@ -46,10 +46,10 @@ fetchEmployees();
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="1">
-            <UserDetails :mode="2" />
+            <UserDetails class="mt-0 mr-0" :mode="2" />
           </v-col>
         </v-row>
-      </v-card-subtitle>
+      </v-card-item>
       <v-data-table :headers="employeeColumnsName" :items="items">
         <template v-slot:item.id="{ item }">
           <UserDetails :id="item.id" :mode="0" />
