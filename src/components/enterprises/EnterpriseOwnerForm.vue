@@ -37,7 +37,7 @@ const { value: phone, errorMessage: phoneError } = useField("phone");
 const { value: gender, errorMessage: genderError } = useField("gender");
 const { value: birthdate, errorMessage: birthdateError } =
   useField("birthdate");
-const props = defineProps({
+const props: any = defineProps({
   formData: Object,
 });
 

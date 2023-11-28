@@ -1,14 +1,15 @@
-<script setup>
+<script setup lang="ts">
 import { ref } from "vue";
 import useUserStore from "../../../store/useUserStore";
 import { employeeColumnsName } from "../../../assets/tables.columns.name.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
 import UserDetails from "./UserForm.vue";
+import UserInterface from "../../../assets/interfaces/user.interface.ts";
 
 const userStore = useUserStore();
-const items = ref([]);
+const items = ref<UserInterface[]>([]);
 const loading = ref(false);
-const error = ref(null);
+const error = ref<any>(null);
 
 async function fetchEmployees() {
   loading.value = true;

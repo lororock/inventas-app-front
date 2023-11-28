@@ -1,11 +1,11 @@
 export const employeeColumnsName = [
-    { title: 'Detalles', align: 'start', key: 'id' },
-    { title: 'Correo electrónico', align: 'start', key: 'email' },
-    { title: 'Nombres', align: 'end', key: 'userDetails.firstName' },
-    { title: 'Apellidos', align: 'end', key: 'userDetails.lastName' },
-    { title: 'Documento', align: 'end', key: 'userDetails.documentNumber' },
-    { title: 'Acciones', align: 'end', key: 'actions' },
-]
+  { title: "Detalles", key: "id" },
+  { title: "Correo electrónico", key: "email" },
+  { title: "Nombres", key: "userDetails.firstName" },
+  { title: "Apellidos", key: "userDetails.lastName" },
+  { title: "Documento", key: "userDetails.documentNumber" },
+  { title: "Acciones", key: "actions" },
+];
 /*
 {
             "id": "7310008d-0011-4aac-a556-ebd09ec830de",
