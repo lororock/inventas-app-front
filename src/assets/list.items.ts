@@ -34,15 +34,36 @@ export const genders = [
   },
 ];
 
+export const roles = [
+  {
+    value: 1,
+    label: "Dueño y/o responsable del negocio",
+  },
+  {
+    value: 2,
+    label: "Cajero",
+  },
+  {
+    value: 3,
+    label: "Contador",
+  },
+];
+
 export const functionsDashboard: DashboardItem[] = [
   {
     roles: [0, 1],
     title: "Módulo de usuarios",
     items: [
-      { id: 1, roles: [0, 1], icon: "mdi-account-multiple", title: "Adm. usuarios", path: "employees"},
-    ]
+      {
+        id: 1,
+        roles: [0, 1],
+        icon: "mdi-account-multiple",
+        title: "Adm. usuarios",
+        path: "employees",
+      },
+    ],
   },
-    /**
+  /**
   {
     rol: 1,
     title: "Módulo de ventas",
@@ -102,5 +123,5 @@ export const recommendationsFormDashboard = [
   "Realizar copias de seguridad de los datos importantes de manera regular.",
   "Evitar operar sobre productos o servicios que estén inactivos.",
   "Desactivar entidades inactivas para mantener la integridad de la plataforma.",
-  "Registrar cada movimiento realizado en la plataforma, con acceso restringido al administrador o responsable del sistema."
-]
+  "Registrar cada movimiento realizado en la plataforma, con acceso restringido al administrador o responsable del sistema.",
+];

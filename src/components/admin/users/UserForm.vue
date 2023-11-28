@@ -2,7 +2,7 @@
 import { computed, ref } from "vue";
 import useEnterpriseStore from "../../../store/useUserStore.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
-import { documentTypes, genders } from "../../../assets/list.items.ts";
+import { documentTypes, genders, roles } from "../../../assets/list.items.ts";
 const enterpriseStore = useEnterpriseStore();
 
 const dialog = ref<boolean>(false);
@@ -126,6 +126,18 @@ const findUserById = async (id: string) => {
               variant="outlined"
               density="compact"
               v-model="user.birthdate"
+              :readonly="isReadOnly"
+            />
+            <v-combobox
+              density="compact"
+              label="Roles"
+              variant="outlined"
+              :items="roles"
+              item-title="label"
+              item-value="value"
+              :chips="true"
+              :multiple="true"
+              v-model="user.roles"
               :readonly="isReadOnly"
             />
           </v-form>
