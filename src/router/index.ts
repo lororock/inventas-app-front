@@ -6,6 +6,7 @@ import NotFound from "../views/NotFoundView.vue";
 import { useAuthStore } from "../store/auth.store.ts";
 import Login from "../views/Login.vue";
 import HomeDashboard from "../views/Dashboard/HomeDashboard.vue";
+import Employee from "../views/Dashboard/Employee.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -19,6 +20,12 @@ const router = createRouter({
       path: "/home",
       name: "Home",
       component: HomeDashboard,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/employees",
+      name: "Employee",
+      component: Employee,
       meta: { requiresAuth: true },
     },
     {

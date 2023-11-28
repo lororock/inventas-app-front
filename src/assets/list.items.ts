@@ -36,10 +36,10 @@ export const genders = [
 
 export const functionsDashboard: DashboardItem[] = [
   {
-    roles: [0,1],
+    roles: [0, 1],
     title: "Módulo de usuarios",
     items: [
-      { id: 1, rol: 0, icon: "mdi-account-multiple", title: "Adm. usuarios", path: "employees"},
+      { id: 1, roles: [0, 1], icon: "mdi-account-multiple", title: "Adm. usuarios", path: "employees"},
     ]
   },
     /**

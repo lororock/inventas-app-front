@@ -1,6 +1,6 @@
 interface Item {
     id: number;
-    rol: number;
+    roles: number[];
     icon: string;
     title: string;
     path: string;
