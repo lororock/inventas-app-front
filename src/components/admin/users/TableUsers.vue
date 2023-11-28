@@ -8,7 +8,6 @@ const userStore = useUserStore();
 const items = ref([]);
 const loading = ref(false);
 const error = ref(null);
-const search = ref("");
 
 async function fetchEmployees() {
   loading.value = true;
@@ -33,27 +32,34 @@ fetchEmployees();
     <v-alert v-else-if="error" color="red" type="error" v-if="error">{{error}}</v-alert>
     <v-card
         v-else
-        flat=""
-        title="Nutrition"
+        title="Usuarios"
     >
-      <template v-slot:text>
-        <v-text-field
-            v-model="search"
-            label="Search"
-            prepend-inner-icon="mdi-magnify"
-            single-line
-            density="compact"
-            variant="outlined"
-            hide-details
-        />
-      </template>
+      <v-card-subtitle>
+        <v-row>
+          <v-col cols="9">
+            <v-text-field
+                placeholder="Buscar"
+                density="compact"
+                variant="outlined"
+            />
+          </v-col>
+          <v-spacer></v-spacer>
+          <v-col cols="1">
+            <v-btn type="icon" size="small" variant="outlined" color="primary" icon="mdi-plus">
+              <v-icon icon="mdi-plus"/>
+              <v-tooltip activator="parent">Crear usuario</v-tooltip>
+            </v-btn>
+          </v-col>
+        </v-row>
+      </v-card-subtitle>
       <v-data-table
           :headers="employeeColumnsName"
           :items="items"
-          :search="search"
       >
-        <template v-slot:item.actions="{ item }">
+        <template v-slot:item.id="{ item }">
           <v-btn variant="text" size="small" color="indigo" icon="mdi-eye" />
+        </template>
+        <template v-slot:item.actions="{ item }">
           <v-btn variant="text" size="small" color="orange-lighten-2" icon="mdi-pencil" />
           <v-btn variant="text" size="small" color="red" icon="mdi-trash-can" />
         </template>

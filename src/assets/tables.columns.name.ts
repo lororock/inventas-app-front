@@ -1,4 +1,5 @@
 export const employeeColumnsName = [
+    { title: 'Detalles', align: 'start', key: 'id' },
     { title: 'Correo electrónico', align: 'start', key: 'email' },
     { title: 'Nombres', align: 'end', key: 'userDetails.firstName' },
     { title: 'Apellidos', align: 'end', key: 'userDetails.lastName' },
