@@ -30,9 +30,9 @@ fetchEmployees();
 <template>
   <v-container>
     <LoadInProgress v-if="loading" />
-    <v-alert v-else-if="error" color="red" type="error" v-if="error">{{
-      error
-    }}</v-alert>
+    <v-alert v-else-if="error" color="red" type="error" v-if="error">
+      {{ error }}
+    </v-alert>
     <v-card v-else title="Usuarios">
       <v-card-subtitle>
         <v-row>
@@ -45,31 +45,16 @@ fetchEmployees();
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="1">
-            <v-btn
-              type="icon"
-              size="small"
-              variant="outlined"
-              color="primary"
-              icon="mdi-plus"
-            >
-              <v-icon icon="mdi-plus" />
-              <v-tooltip activator="parent">Crear usuario</v-tooltip>
-            </v-btn>
+            <UserDetails :mode="2" />
           </v-col>
         </v-row>
       </v-card-subtitle>
       <v-data-table :headers="employeeColumnsName" :items="items">
         <template v-slot:item.id="{ item }">
-          <UserDetails :id="item.id" />
+          <UserDetails :id="item.id" :mode="0" />
         </template>
         <template v-slot:item.actions="{ item }">
-          <v-btn
-            variant="text"
-            size="small"
-            color="orange-lighten-2"
-            icon="mdi-pencil"
-          />
-          <v-btn variant="text" size="small" color="red" icon="mdi-trash-can" />
+          <UserDetails :id="item.id" :mode="1" />
         </template>
       </v-data-table>
     </v-card>

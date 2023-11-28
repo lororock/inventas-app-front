@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import useEnterpriseStore from "../../../store/useUserStore.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
 import { documentTypes, genders } from "../../../assets/list.items.ts";
@@ -9,9 +9,12 @@ const dialog = ref<boolean>(false);
 const loading = ref(false);
 const user = ref<any>({});
 
-defineProps({
-  id: { type: String, required: true },
+const props = defineProps({
+  id: { type: String, default: "" },
+  mode: { type: Number, required: true }, //0 - view, 1 - edit, 2 - create
 });
+
+const isReadOnly = computed(() => props.mode === 0);
 
 const findUserById = async (id: string) => {
   loading.value = true;
@@ -33,12 +36,32 @@ const findUserById = async (id: string) => {
       <template v-slot:activator="{ props }">
         <v-btn
           type="icon"
-          size="small"
+          size="x-small"
           variant="outlined"
           color="primary"
           icon="mdi-eye"
           v-bind="props"
           @click="findUserById(id)"
+          v-if="mode === 0"
+        />
+        <v-btn
+          type="icon"
+          size="x-small"
+          color="orange-lighten-2"
+          icon="mdi-pencil"
+          variant="outlined"
+          v-bind="props"
+          @click="findUserById(id)"
+          v-else-if="mode === 1"
+        />
+        <v-btn
+          type="icon"
+          size="x-small"
+          color="success"
+          icon="mdi-plus"
+          variant="outlined"
+          v-bind="props"
+          v-else
         />
       </template>
       <v-card>
@@ -49,19 +72,19 @@ const findUserById = async (id: string) => {
               variant="outlined"
               density="compact"
               v-model="user.email"
-              :readonly="true"
+              :readonly="isReadOnly"
             />
             <v-text-field
               variant="outlined"
               density="compact"
               v-model="user.firstName"
-              :readonly="true"
+              :readonly="isReadOnly"
             />
             <v-text-field
               variant="outlined"
               density="compact"
               v-model="user.lastName"
-              :readonly="true"
+              :readonly="isReadOnly"
             />
             <v-select
               density="compact"
@@ -70,7 +93,7 @@ const findUserById = async (id: string) => {
               label="Tipo de documento"
               :items="documentTypes"
               item-title="label"
-              :readonly="true"
+              :readonly="isReadOnly"
             >
               <template v-slot:item="{ props, item }">
                 <v-list-item v-bind="props" :subtitle="item.raw.description" />
@@ -80,13 +103,13 @@ const findUserById = async (id: string) => {
               variant="outlined"
               density="compact"
               v-model="user.documentNumber"
-              :readonly="true"
+              :readonly="isReadOnly"
             />
             <v-text-field
               variant="outlined"
               density="compact"
               v-model="user.phone"
-              :readonly="true"
+              :readonly="isReadOnly"
             />
             <v-select
               density="compact"
@@ -96,24 +119,37 @@ const findUserById = async (id: string) => {
               item-title="label"
               item-value="value"
               v-model="user.gender"
-              :readonly="true"
+              :readonly="isReadOnly"
             />
             <v-text-field
+              type="date"
               variant="outlined"
               density="compact"
               v-model="user.birthdate"
-              :readonly="true"
+              :readonly="isReadOnly"
             />
           </v-form>
         </v-card-item>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
-            color="red-darken-1"
-            variant="outlined"
+            v-if="mode === 1"
+            color="indigo"
+            variant="tonal"
             @click="dialog = !dialog"
           >
-            Cerrar
+            Guardar cambios
+          </v-btn>
+          <v-btn
+            v-if="mode === 2"
+            color="success"
+            variant="tonal"
+            @click="dialog = !dialog"
+          >
+            Registrar
+          </v-btn>
+          <v-btn color="red-darken-1" variant="tonal" @click="dialog = !dialog">
+            Cancelar
           </v-btn>
         </v-card-actions>
       </v-card>
