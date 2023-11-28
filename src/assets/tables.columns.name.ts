@@ -1,8 +1,9 @@
 export const employeeColumnsName = [
-    { title: 'Nombres', align: 'end', key: 'firstName' },
-    { title: 'Apellidos', align: 'end', key: 'length' },
-    { title: 'Documento', align: 'end', key: 'documentNumber' },
-    { title: 'Correo electrónico', align: 'end', key: 'email' },
+    { title: 'Correo electrónico', align: 'start', key: 'email' },
+    { title: 'Nombres', align: 'end', key: 'userDetails.firstName' },
+    { title: 'Apellidos', align: 'end', key: 'userDetails.lastName' },
+    { title: 'Documento', align: 'end', key: 'userDetails.documentNumber' },
+    { title: 'Acciones', align: 'end', key: 'actions' },
 ]
 /*
 {
