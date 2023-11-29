@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { computed, ref } from "vue";
-import useEnterpriseStore from "../../../store/useUserStore.ts";
+import useUserStore from "../../../store/useUserStore.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
 import { documentTypes, genders, roles } from "../../../assets/list.items.ts";
-const enterpriseStore = useEnterpriseStore();
+const userStore = useUserStore();
 
 const dialog = ref<boolean>(false);
 const loading = ref(false);
@@ -19,12 +19,24 @@ const isReadOnly = computed(() => props.mode === 0);
 const findUserById = async (id: string) => {
   loading.value = true;
   try {
-    user.value = await enterpriseStore.findUserById(id);
+    user.value = await userStore.findUserById(id);
   } catch (error: any) {
     console.log(error);
     throw new Error(`Error: ${error.message}`);
   } finally {
     loading.value = false;
+  }
+};
+
+const createUser = async () => {
+  const data = user.value;
+  try {
+    await userStore.createUser({
+      ...data,
+      roles: data.roles.map((rol: any) => rol.value),
+    });
+  } catch (error) {
+    throw error;
   }
 };
 </script>
@@ -69,18 +81,21 @@ const findUserById = async (id: string) => {
         <v-card-item>
           <v-form>
             <v-text-field
+              label="Correo electrónico"
               variant="outlined"
               density="compact"
               v-model="user.email"
               :readonly="isReadOnly"
             />
             <v-text-field
+              label="Nombres"
               variant="outlined"
               density="compact"
               v-model="user.firstName"
               :readonly="isReadOnly"
             />
             <v-text-field
+              label="Apellidos"
               variant="outlined"
               density="compact"
               v-model="user.lastName"
@@ -100,12 +115,14 @@ const findUserById = async (id: string) => {
               </template>
             </v-select>
             <v-text-field
+              label="Numero de documento"
               variant="outlined"
               density="compact"
               v-model="user.documentNumber"
               :readonly="isReadOnly"
             />
             <v-text-field
+              label="Numero de celular"
               variant="outlined"
               density="compact"
               v-model="user.phone"
@@ -122,6 +139,7 @@ const findUserById = async (id: string) => {
               :readonly="isReadOnly"
             />
             <v-text-field
+              label="Fecha de nacimiento"
               type="date"
               variant="outlined"
               density="compact"
@@ -156,7 +174,7 @@ const findUserById = async (id: string) => {
             v-if="mode === 2"
             color="success"
             variant="tonal"
-            @click="dialog = !dialog"
+            @click="createUser()"
           >
             Registrar
           </v-btn>
