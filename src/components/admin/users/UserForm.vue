@@ -31,6 +31,10 @@ const findUserById = async (id: string) => {
 const createUser = async () => {
   const data = user.value;
   try {
+    console.log({
+      ...data,
+      roles: data.roles.map((rol: any) => rol.value),
+    });
     await userStore.createUser({
       ...data,
       roles: data.roles.map((rol: any) => rol.value),
