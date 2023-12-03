@@ -46,7 +46,11 @@ fetchEmployees();
           </v-col>
           <v-spacer></v-spacer>
           <v-col cols="1">
-            <UserDetails class="mt-0 mr-0" :mode="2" />
+            <UserDetails
+              @user-created="fetchEmployees"
+              class="mt-0 mr-0"
+              :mode="2"
+            />
           </v-col>
         </v-row>
       </v-card-item>

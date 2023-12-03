@@ -14,6 +14,8 @@ const props = defineProps({
   mode: { type: Number, required: true }, //0 - view, 1 - edit, 2 - create
 });
 
+const emit = defineEmits(["user-created"]);
+
 const isReadOnly = computed(() => props.mode === 0);
 
 const findUserById = async (id: string) => {
@@ -39,6 +41,8 @@ const createUser = async () => {
       ...data,
       roles: data.roles.map((rol: any) => rol.value),
     });
+    emit("user-created");
+    dialog.value = !dialog.value;
   } catch (error) {
     throw error;
   }
