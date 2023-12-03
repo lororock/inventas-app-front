@@ -32,6 +32,7 @@ const findUserById = async (id: string) => {
 
 const submit = async () => {
   const data = user.value;
+  console.log(data.roles);
   try {
     if (props.mode === 2)
       await userStore.createUser({
@@ -41,7 +42,11 @@ const submit = async () => {
     else
       await userStore.updateUserById(
         {
-          roles: data.roles.map((rol: any) => rol.value),
+          roles: data.roles.map((rol: any) => {
+            if (typeof rol === "number") return rol;
+            else return rol.value;
+          }),
+          status: data.status === 2 ? 2 : 3,
         },
         props.id,
       );
@@ -169,6 +174,14 @@ const submit = async () => {
               :multiple="true"
               v-model="user.roles"
               :readonly="isReadOnly"
+            />
+            <v-switch
+              v-if="mode === 1"
+              v-model="user.status"
+              :value="2"
+              :label="`Usuario ${user.status === 2 ? 'activo' : 'inactivo'}`"
+              :color="user.status === 2 ? 'success' : 'red'"
+              hide-details
             />
           </v-form>
         </v-card-item>
