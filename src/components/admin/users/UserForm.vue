@@ -16,7 +16,7 @@ const props = defineProps({
 
 const emit = defineEmits(["user-created"]);
 
-const isReadOnly = computed(() => props.mode === 0);
+const isReadOnly = computed(() => props.mode === 0 || props.mode === 1);
 
 const findUserById = async (id: string) => {
   loading.value = true;
@@ -32,7 +32,6 @@ const findUserById = async (id: string) => {
 
 const submit = async () => {
   const data = user.value;
-  console.log(data.roles);
   try {
     if (props.mode === 2)
       await userStore.createUser({
@@ -102,21 +101,21 @@ const submit = async () => {
               variant="outlined"
               density="compact"
               v-model="user.email"
-              :readonly="isReadOnly"
+              :disabled="isReadOnly"
             />
             <v-text-field
               label="Nombres"
               variant="outlined"
               density="compact"
               v-model="user.firstName"
-              :readonly="isReadOnly"
+              :disabled="isReadOnly"
             />
             <v-text-field
               label="Apellidos"
               variant="outlined"
               density="compact"
               v-model="user.lastName"
-              :readonly="isReadOnly"
+              :disabled="isReadOnly"
             />
             <v-select
               density="compact"
@@ -125,7 +124,7 @@ const submit = async () => {
               label="Tipo de documento"
               :items="documentTypes"
               item-title="label"
-              :readonly="isReadOnly"
+              :disabled="isReadOnly"
             >
               <template v-slot:item="{ props, item }">
                 <v-list-item v-bind="props" :subtitle="item.raw.description" />
@@ -136,14 +135,14 @@ const submit = async () => {
               variant="outlined"
               density="compact"
               v-model="user.documentNumber"
-              :readonly="isReadOnly"
+              :disabled="isReadOnly"
             />
             <v-text-field
               label="Numero de celular"
               variant="outlined"
               density="compact"
               v-model="user.phone"
-              :readonly="isReadOnly"
+              :disabled="isReadOnly"
             />
             <v-select
               density="compact"
@@ -153,7 +152,7 @@ const submit = async () => {
               item-title="label"
               item-value="value"
               v-model="user.gender"
-              :readonly="isReadOnly"
+              :disabled="isReadOnly"
             />
             <v-text-field
               label="Fecha de nacimiento"
@@ -161,7 +160,7 @@ const submit = async () => {
               variant="outlined"
               density="compact"
               v-model="user.birthdate"
-              :readonly="isReadOnly"
+              :disabled="isReadOnly"
             />
             <v-combobox
               density="compact"
@@ -173,7 +172,7 @@ const submit = async () => {
               :chips="true"
               :multiple="true"
               v-model="user.roles"
-              :readonly="isReadOnly"
+              :disabled="mode === 0"
             />
             <v-switch
               v-if="mode === 1"
