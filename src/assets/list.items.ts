@@ -51,15 +51,41 @@ export const roles = [
 
 export const functionsDashboard: DashboardItem[] = [
   {
-    roles: [0, 1],
-    title: "Módulo de usuarios",
+    roles: [0],
+    title: "Módulo de empresas",
     items: [
       {
         id: 1,
-        roles: [0, 1],
+        roles: [0],
+        icon: "mdi-domain",
+        title: "Adm. empresas",
+        path: "form",
+      },
+    ],
+  },
+  {
+    roles: [1],
+    title: "Módulo de usuarios",
+    items: [
+      {
+        id: 2,
+        roles: [1],
         icon: "mdi-account-multiple",
         title: "Adm. usuarios",
         path: "employees",
+      },
+    ],
+  },
+  {
+    roles: [1, 2],
+    title: "Módulo de recursos",
+    items: [
+      {
+        id: 1,
+        roles: [1, 2],
+        icon: "mdi-shape",
+        title: "Categorias productos",
+        path: "categories",
       },
     ],
   },
