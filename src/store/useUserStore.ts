@@ -15,10 +15,14 @@ const useUserStore = defineStore("user", () => {
   const createUser = async (data: any) =>
     await axiosInstance.post("users", data);
 
+  const updateUserById = async (data: any, id: string) =>
+    await axiosInstance.patch(`users/${id}`, data);
+
   return {
     listEmployees,
     findUserById,
     createUser,
+    updateUserById,
   };
 });
 

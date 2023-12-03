@@ -30,17 +30,21 @@ const findUserById = async (id: string) => {
   }
 };
 
-const createUser = async () => {
+const submit = async () => {
   const data = user.value;
   try {
-    console.log({
-      ...data,
-      roles: data.roles.map((rol: any) => rol.value),
-    });
-    await userStore.createUser({
-      ...data,
-      roles: data.roles.map((rol: any) => rol.value),
-    });
+    if (props.mode === 2)
+      await userStore.createUser({
+        ...data,
+        roles: data.roles.map((rol: any) => rol.value),
+      });
+    else
+      await userStore.updateUserById(
+        {
+          roles: data.roles.map((rol: any) => rol.value),
+        },
+        props.id,
+      );
     emit("user-created");
     dialog.value = !dialog.value;
   } catch (error) {
@@ -174,7 +178,7 @@ const createUser = async () => {
             v-if="mode === 1"
             color="indigo"
             variant="tonal"
-            @click="dialog = !dialog"
+            @click="submit()"
           >
             Guardar cambios
           </v-btn>
@@ -182,7 +186,7 @@ const createUser = async () => {
             v-if="mode === 2"
             color="success"
             variant="tonal"
-            @click="createUser()"
+            @click="submit()"
           >
             Registrar
           </v-btn>
