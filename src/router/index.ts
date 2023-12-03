@@ -7,6 +7,7 @@ import { useAuthStore } from "../store/auth.store.ts";
 import Login from "../views/Login.vue";
 import HomeDashboard from "../views/Dashboard/HomeDashboard.vue";
 import Employee from "../views/Dashboard/Employee.vue";
+import CategoryView from "../views/Dashboard/CategoryView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -26,6 +27,12 @@ const router = createRouter({
       path: "/employees",
       name: "Employee",
       component: Employee,
+      meta: { requiresAuth: true },
+    },
+    {
+      path: "/categories",
+      name: "Category",
+      component: CategoryView,
       meta: { requiresAuth: true },
     },
     {
@@ -55,13 +62,13 @@ router.beforeEach(async (to, _, next) => {
     if (!decoded) next({ path: "/" });
 
     if (!(decoded.exp < Date.now() / 1000)) {
-      authStore.setToken(localStorage.getItem("token-inventas") as string)
+      authStore.setToken(localStorage.getItem("token-inventas") as string);
       return next();
     }
 
     const valid = await authStore.validTokenRefresh();
     if (!valid) return next({ path: "/" });
-    authStore.setToken(localStorage.getItem("token-inventas") as string)
+    authStore.setToken(localStorage.getItem("token-inventas") as string);
   }
   next();
 });
