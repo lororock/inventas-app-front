@@ -35,6 +35,21 @@ const submit = async () => {
   }
 };
 
+const findCategoryById = async (id: string) => {
+  loading.value = true;
+  try {
+    const result = await crudStore.findById(id);
+    category.value = result;
+    if (result.subcategories && result.subcategories.length > 0)
+      category.value.subcategories = result.subcategories.map(
+        (sub: any) => sub.name,
+      );
+  } catch (error) {
+  } finally {
+    loading.value = false;
+  }
+};
+
 const dialog = ref<boolean>(false);
 const loading = ref(false);
 </script>
@@ -51,6 +66,7 @@ const loading = ref(false);
           color="primary"
           icon="mdi-eye"
           v-bind="props"
+          @click="findCategoryById(id)"
           v-if="mode === 0"
         />
         <v-btn
@@ -60,6 +76,7 @@ const loading = ref(false);
           icon="mdi-pencil"
           variant="outlined"
           v-bind="props"
+          @click="findCategoryById(id)"
           v-else-if="mode === 1"
         />
         <v-btn

@@ -2,7 +2,6 @@
 import { ref, onMounted } from "vue";
 import useCrudStore from "../../store/crud.store.ts";
 import EntityConfig, { columnTable } from "../../interface/entity.config.ts";
-import UserDetails from "../admin/users/UserForm.vue";
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
   formComponent: Object,
