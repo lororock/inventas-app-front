@@ -6,6 +6,7 @@ import { ref } from "vue";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
+  nameForm: { type: String, default: "" },
   id: { type: String, default: "" },
   mode: { type: Number, required: true },
 });
@@ -14,9 +15,13 @@ const crudStore = useCrudStore(props.config)();
 const emit = defineEmits(["item-created"]);
 
 const submit = async () => {
-  console.log("Submit");
-  await crudStore.findAll({ limit: 10, page: 1 });
-  emit("item-created");
+  try {
+    dialog.value = !dialog.value;
+    emit("item-created");
+  } catch (error) {
+    console.error(error);
+  } finally {
+  }
 };
 
 const dialog = ref<boolean>(false);
@@ -56,8 +61,7 @@ const loading = ref(false);
           v-else
         />
       </template>
-      <v-card>
-        <v-card-title class="text-h5"> Datos usuario</v-card-title>
+      <v-card title="Datos categoría">
         <v-card-item>
           <v-form></v-form>
         </v-card-item>

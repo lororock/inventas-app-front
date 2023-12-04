@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import useCrudStore from "../../store/crud.store.ts";
 import EntityConfig, { columnTable } from "../../interface/entity.config.ts";
+import UserDetails from "../admin/users/UserForm.vue";
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
   formComponent: Object,
@@ -42,32 +43,61 @@ onMounted(() => {
 
 <template>
   <v-container>
-    <v-data-table-server
-      v-model:items-per-page="itemsPerPage"
-      :headers="headers"
-      :items-length="totalItems"
-      :items="serverItems"
-      :loading="loading"
-      :search="search"
-      item-value="name"
-      @update:options="loadItems"
-    >
-      <template v-slot:item.id="{ item }">
-        <component
-          :is="config.formComponent"
-          :config="config"
-          :mode="0"
-          :id="item.id"
-        />
-      </template>
-      <template v-slot:item.actions="{ item }">
-        <component
-          :is="config.formComponent"
-          :config="config"
-          :mode="1"
-          :id="item.id"
-        />
-      </template>
-    </v-data-table-server>
+    <v-card>
+      <v-card-title>
+        <v-row>
+          <v-col cols="9">
+            <v-text-field
+              :disabled="true"
+              v-model="search"
+              placeholder="Buscar"
+              density="compact"
+              variant="outlined"
+            />
+          </v-col>
+          <v-spacer></v-spacer>
+          <v-col cols="1">
+            <component
+              class="mt-2"
+              :is="config.formComponent"
+              :config="config"
+              :mode="2"
+              @item-created="loadItems({ page: 1, itemsPerPage })"
+            />
+          </v-col>
+        </v-row>
+      </v-card-title>
+      <v-card-item>
+        <v-data-table-server
+          v-model:items-per-page="itemsPerPage"
+          :headers="headers"
+          :items-length="totalItems"
+          :items="serverItems"
+          :loading="loading"
+          :search="search"
+          item-value="name"
+          @update:options="loadItems"
+        >
+          <template v-slot:item.id="{ item }">
+            <component
+              :is="config.formComponent"
+              :config="config"
+              :mode="0"
+              :id="item.id"
+              @item-created="loadItems({ page: 1, itemsPerPage })"
+            />
+          </template>
+          <template v-slot:item.actions="{ item }">
+            <component
+              :is="config.formComponent"
+              :config="config"
+              :mode="1"
+              :id="item.id"
+              @item-created="loadItems({ page: 1, itemsPerPage })"
+            />
+          </template>
+        </v-data-table-server>
+      </v-card-item>
+    </v-card>
   </v-container>
 </template>
