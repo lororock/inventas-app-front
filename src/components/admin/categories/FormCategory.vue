@@ -11,16 +11,27 @@ const props = defineProps({
   mode: { type: Number, required: true },
 });
 
+const category = ref<any>({
+  name: "",
+  description: "",
+  subcategories: [],
+});
+
 const crudStore = useCrudStore(props.config)();
 const emit = defineEmits(["item-created"]);
 
 const submit = async () => {
+  loading.value = !loading.value;
   try {
-    dialog.value = !dialog.value;
+    if (props.mode === 2) {
+      await crudStore.create(category.value);
+      dialog.value = false;
+    } else console.log("update");
     emit("item-created");
   } catch (error) {
     console.error(error);
   } finally {
+    loading.value = !loading.value;
   }
 };
 
@@ -62,9 +73,30 @@ const loading = ref(false);
         />
       </template>
       <v-card title="Datos categoría">
-        <v-card-item>
-          <v-form></v-form>
-        </v-card-item>
+        <v-container>
+          <v-form>
+            <v-text-field
+              variant="outlined"
+              density="compact"
+              v-model="category.name"
+              label="Nombre de la categoría"
+            />
+            <v-textarea
+              variant="outlined"
+              density="comfortable"
+              v-model="category.description"
+              label="Descripción de la categoría"
+            />
+            <v-combobox
+              density="compact"
+              label="Roles"
+              variant="outlined"
+              :chips="true"
+              :multiple="true"
+              v-model="category.subcategories"
+            />
+          </v-form>
+        </v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn

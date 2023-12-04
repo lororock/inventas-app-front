@@ -18,9 +18,15 @@ const useCrudStore = (entityConfig: entityConfig) =>
       return data;
     };
 
+    const create = async (dataReq: any) => {
+      const { data } = await axiosInstance.post(entityConfig.path, dataReq);
+      return data;
+    };
+
     return {
       findAll,
       findById,
+      create,
     };
   });
 
