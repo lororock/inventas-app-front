@@ -17,7 +17,7 @@ const serverItems = ref<{ id: string }[]>([]);
 const loading = ref<boolean>(true);
 const totalItems = ref<number>(0);
 
-const loadItems = async ({
+const listItems = async ({
   page,
   itemsPerPage,
 }: {
@@ -37,7 +37,7 @@ const loadItems = async ({
 };
 
 onMounted(() => {
-  loadItems({ page: 1, itemsPerPage: itemsPerPage.value });
+  listItems({ page: 1, itemsPerPage: itemsPerPage.value });
 });
 </script>
 
@@ -62,7 +62,7 @@ onMounted(() => {
               :is="config.formComponent"
               :config="config"
               :mode="2"
-              @item-created="loadItems({ page: 1, itemsPerPage })"
+              @item-created="listItems({ page: 1, itemsPerPage })"
             />
           </v-col>
         </v-row>
@@ -76,7 +76,7 @@ onMounted(() => {
           :loading="loading"
           :search="search"
           item-value="name"
-          @update:options="loadItems"
+          @update:options="listItems"
         >
           <template v-slot:item.id="{ item }">
             <component
@@ -84,7 +84,7 @@ onMounted(() => {
               :config="config"
               :mode="0"
               :id="item.id"
-              @item-created="loadItems({ page: 1, itemsPerPage })"
+              @item-created="listItems({ page: 1, itemsPerPage })"
             />
           </template>
           <template v-slot:item.actions="{ item }">
@@ -93,7 +93,7 @@ onMounted(() => {
               :config="config"
               :mode="1"
               :id="item.id"
-              @item-created="loadItems({ page: 1, itemsPerPage })"
+              @item-created="listItems({ page: 1, itemsPerPage })"
             />
           </template>
         </v-data-table-server>
