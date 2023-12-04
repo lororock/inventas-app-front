@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ITable from "../../components/general/ITable.vue";
 import EntityConfig from "../../interface/entity.config.ts";
+import FormCategory from "../../components/admin/categories/FormCategory.vue";
 const configTable: EntityConfig = {
   name: "Category",
   path: "categories",
@@ -10,6 +11,7 @@ const configTable: EntityConfig = {
     { title: "Descripción", key: "description", align: "start" },
     { title: "Acciones", key: "actions", sortable: false },
   ],
+  formComponent: FormCategory,
 };
 </script>
 

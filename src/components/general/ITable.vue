@@ -4,6 +4,7 @@ import useCrudStore from "../../store/crud.store.ts";
 import EntityConfig, { columnTable } from "../../interface/entity.config.ts";
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
+  formComponent: Object,
 });
 
 const crudStore = useCrudStore(props.config)();
@@ -52,10 +53,20 @@ onMounted(() => {
       @update:options="loadItems"
     >
       <template v-slot:item.id="{ item }">
-        <v-icon color="indigo" @click="console.log(item.id)" icon="mdi-eye" />
+        <component
+          :is="config.formComponent"
+          :config="config"
+          :mode="0"
+          :id="item.id"
+        />
       </template>
       <template v-slot:item.actions="{ item }">
-        <v-icon color="amber" @click="console.log(item.id)" icon="mdi-pencil" />
+        <component
+          :is="config.formComponent"
+          :config="config"
+          :mode="1"
+          :id="item.id"
+        />
       </template>
     </v-data-table-server>
   </v-container>
