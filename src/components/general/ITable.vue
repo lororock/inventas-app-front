@@ -33,6 +33,6 @@ const listItem = async () => {
 <template>
   <v-container>
     <LoadInProgress v-if="loading" />
-    <v-card v-else>{{ items }}</v-card>
+    <v-data-table :headers="config.columns" />
   </v-container>
 </template>

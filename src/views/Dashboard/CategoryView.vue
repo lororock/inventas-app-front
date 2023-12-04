@@ -4,6 +4,12 @@ import EntityConfig from "../../interface/entity.config.ts";
 const configTable: EntityConfig = {
   name: "Category",
   path: "categories",
+  columns: [
+    { title: "Detalles", key: "id", sortable: false },
+    { title: "Nombres", key: "name" },
+    { title: "Descripción", key: "description", align: "start" },
+    { title: "Acciones", key: "actions", sortable: false },
+  ],
 };
 </script>
 
