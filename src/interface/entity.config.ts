@@ -4,7 +4,7 @@ export default interface EntityConfig {
   columns: columnTable[];
 }
 
-interface columnTable {
+export interface columnTable {
   title: string;
   key: string;
   sortable?: boolean;

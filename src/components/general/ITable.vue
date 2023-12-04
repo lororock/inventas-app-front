@@ -1,18 +1,19 @@
 <script lang="ts" setup>
 import { ref, onMounted } from "vue";
 import useCrudStore from "../../store/crud.store.ts";
-import EntityConfig from "../../interface/entity.config.ts";
+import EntityConfig, { columnTable } from "../../interface/entity.config.ts";
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
 });
 
 const crudStore = useCrudStore(props.config)();
-const itemsPerPage = ref(10);
-const headers = ref(props.config.columns);
-const search = ref("");
-const serverItems = ref([]);
-const loading = ref(true);
-const totalItems = ref(0);
+
+const itemsPerPage = ref<number>(10);
+const headers = ref<columnTable[]>(props.config.columns);
+const search = ref<string>("");
+const serverItems = ref<{ id: string }[]>([]);
+const loading = ref<boolean>(true);
+const totalItems = ref<number>(0);
 
 const loadItems = async ({
   page,
@@ -39,14 +40,23 @@ onMounted(() => {
 </script>
 
 <template>
-  <v-data-table-server
-    v-model:items-per-page="itemsPerPage"
-    :headers="headers"
-    :items-length="totalItems"
-    :items="serverItems"
-    :loading="loading"
-    :search="search"
-    item-value="name"
-    @update:options="loadItems"
-  ></v-data-table-server>
+  <v-container>
+    <v-data-table-server
+      v-model:items-per-page="itemsPerPage"
+      :headers="headers"
+      :items-length="totalItems"
+      :items="serverItems"
+      :loading="loading"
+      :search="search"
+      item-value="name"
+      @update:options="loadItems"
+    >
+      <template v-slot:item.id="{ item }">
+        <v-icon color="indigo" @click="console.log(item.id)" icon="mdi-eye" />
+      </template>
+      <template v-slot:item.actions="{ item }">
+        <v-icon color="amber" @click="console.log(item.id)" icon="mdi-pencil" />
+      </template>
+    </v-data-table-server>
+  </v-container>
 </template>
