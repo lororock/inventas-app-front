@@ -15,6 +15,7 @@ const category = ref<any>({
   name: "",
   description: "",
   subcategories: [],
+  status: undefined,
 });
 
 const crudStore = useCrudStore(props.config)();
@@ -24,11 +25,18 @@ const isReadOnly = computed(() => props.mode === 0);
 
 const submit = async () => {
   loading.value = !loading.value;
+  const data = category.value;
   try {
     if (props.mode === 2) {
-      await crudStore.create(category.value);
+      await crudStore.create(data);
       dialog.value = false;
-    } else console.log("update");
+    } else {
+      await crudStore.update(props.id, {
+        ...data,
+        status: category.value.status === 2 ? 2 : 3,
+      });
+      dialog.value = false;
+    }
     emit("item-created");
   } catch (error) {
     console.error(error);
@@ -42,6 +50,7 @@ const findCategoryById = async (id: string) => {
   try {
     const result = await crudStore.findById(id);
     category.value = result;
+    delete category.value.id;
     if (result.subcategories && result.subcategories.length > 0)
       category.value.subcategories = result.subcategories.map(
         (sub: any) => sub.name,
@@ -116,6 +125,16 @@ const loading = ref(false);
               :multiple="true"
               v-model="category.subcategories"
               :disabled="isReadOnly"
+            />
+            <v-switch
+              v-if="mode === 1"
+              v-model="category.status"
+              :value="2"
+              :label="`Categoria ${
+                category.status === 2 ? 'activa' : 'inactiva'
+              }`"
+              :color="category.status === 2 ? 'success' : 'red'"
+              hide-details
             />
           </v-form>
         </v-container>

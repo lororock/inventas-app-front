@@ -23,10 +23,19 @@ const useCrudStore = (entityConfig: entityConfig) =>
       return data;
     };
 
+    const update = async (id: string, dataReq: any) => {
+      const { data } = await axiosInstance.patch(
+        `${entityConfig.path}/${id}`,
+        dataReq,
+      );
+      return data;
+    };
+
     return {
       findAll,
       findById,
       create,
+      update,
     };
   });
 
