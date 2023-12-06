@@ -12,7 +12,7 @@ const crudStore = useCrudStore(props.config)();
 const itemsPerPage = ref<number>(10);
 const headers = ref<columnTable[]>(props.config.columns);
 const search = ref<string>("");
-const serverItems = ref<{ id: string }[]>([]);
+const serverItems = ref<{ id: string; status: number }[]>([]);
 const loading = ref<boolean>(true);
 const totalItems = ref<number>(0);
 
@@ -94,6 +94,20 @@ onMounted(() => {
               :id="item.id"
               @item-created="listItems({ page: 1, itemsPerPage })"
             />
+          </template>
+          <template v-slot:item.status="{ item }">
+            <v-icon v-if="item.status === 0" color="amber" icon="mdi-clock" />
+            <v-icon
+              v-else-if="item.status === 1"
+              color="amber"
+              icon="mdi-account-clock"
+            />
+            <v-icon
+              v-else-if="item.status === 2"
+              color="success"
+              icon="mdi-check-circle-outline"
+            />
+            <v-icon v-else color="red" icon="mdi-cancel" />
           </template>
         </v-data-table-server>
       </v-card-item>

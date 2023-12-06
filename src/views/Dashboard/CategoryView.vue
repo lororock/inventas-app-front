@@ -10,6 +10,7 @@ const configTable: EntityConfig = {
     { title: "Nombres", key: "name" },
     { title: "Descripción", key: "description", align: "start" },
     { title: "Acciones", key: "actions", sortable: false },
+    { title: "Estado", key: "status", sortable: false },
   ],
   formComponent: FormCategory,
 };

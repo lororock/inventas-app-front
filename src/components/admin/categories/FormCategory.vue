@@ -2,7 +2,7 @@
 import useCrudStore from "../../../store/crud.store.ts";
 import EntityConfig from "../../../interface/entity.config.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
-import { ref } from "vue";
+import { ref, computed } from "vue";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -19,6 +19,8 @@ const category = ref<any>({
 
 const crudStore = useCrudStore(props.config)();
 const emit = defineEmits(["item-created"]);
+
+const isReadOnly = computed(() => props.mode === 0);
 
 const submit = async () => {
   loading.value = !loading.value;
@@ -97,12 +99,14 @@ const loading = ref(false);
               density="compact"
               v-model="category.name"
               label="Nombre de la categoría"
+              :disabled="isReadOnly"
             />
             <v-textarea
               variant="outlined"
               density="comfortable"
               v-model="category.description"
               label="Descripción de la categoría"
+              :disabled="isReadOnly"
             />
             <v-combobox
               density="compact"
@@ -111,6 +115,7 @@ const loading = ref(false);
               :chips="true"
               :multiple="true"
               v-model="category.subcategories"
+              :disabled="isReadOnly"
             />
           </v-form>
         </v-container>
