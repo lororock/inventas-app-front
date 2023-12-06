@@ -96,18 +96,35 @@ onMounted(() => {
             />
           </template>
           <template v-slot:item.status="{ item }">
-            <v-icon v-if="item.status === 0" color="amber" icon="mdi-clock" />
-            <v-icon
-              v-else-if="item.status === 1"
-              color="amber"
-              icon="mdi-account-clock"
-            />
-            <v-icon
-              v-else-if="item.status === 2"
-              color="success"
-              icon="mdi-check-circle-outline"
-            />
-            <v-icon v-else color="red" icon="mdi-cancel" />
+            <v-tooltip location="top">
+              <template v-slot:activator="{ props }">
+                <v-icon
+                  v-if="item.status === 0"
+                  color="amber"
+                  icon="mdi-clock"
+                  v-bind="props"
+                />
+                <v-icon
+                  v-else-if="item.status === 1"
+                  color="amber"
+                  icon="mdi-account-clock"
+                  v-bind="props"
+                />
+                <v-icon
+                  v-else-if="item.status === 2"
+                  color="success"
+                  icon="mdi-check-circle-outline"
+                  v-bind="props"
+                />
+                <v-icon v-else color="red" icon="mdi-cancel" v-bind="props" />
+              </template>
+              <span v-if="item.status === 0">Pendiente aprobación</span>
+              <span v-else-if="item.status === 1">
+                Pendiente confirmación
+              </span>
+              <span v-else-if="item.status === 2"> Activo </span>
+              <span v-else> Inactivo </span>
+            </v-tooltip>
           </template>
         </v-data-table-server>
       </v-card-item>

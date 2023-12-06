@@ -6,11 +6,10 @@ const configTable: EntityConfig = {
   name: "Category",
   path: "categories",
   columns: [
-    { title: "Detalles", key: "id", sortable: false },
+    { title: "Estado", key: "status", sortable: false },
     { title: "Nombres", key: "name" },
     { title: "Descripción", key: "description", align: "start" },
     { title: "Acciones", key: "actions", sortable: false },
-    { title: "Estado", key: "status", sortable: false },
   ],
   formComponent: FormCategory,
 };
