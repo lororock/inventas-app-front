@@ -50,9 +50,9 @@ onMounted(() => {
   const user = authStore.user;
   const userRoles = user.roles;
   listItems.value = functionsDashboard.filter((module) => {
-    module.items = module.items.filter((item) => {
-      return item.roles.some((role) => userRoles.includes(role));
-    });
+    module.items = module.items.filter((item) =>
+      item.roles.some((role) => userRoles.includes(role)),
+    );
     return module.items.length > 0;
     //TODO Validate for subItems
   });
