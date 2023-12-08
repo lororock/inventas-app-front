@@ -8,6 +8,7 @@ import Login from "../views/Login.vue";
 import HomeDashboard from "../views/Dashboard/HomeDashboard.vue";
 import Employee from "../views/Dashboard/Employee.vue";
 import CategoryView from "../views/Dashboard/CategoryView.vue";
+import Forbidden from "../views/Forbidden.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -27,30 +28,50 @@ const router = createRouter({
       path: "/employees",
       name: "Employee",
       component: Employee,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, roles: [1] },
     },
     {
       path: "/categories",
       name: "Category",
       component: CategoryView,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, roles: [1, 2, 3] },
     },
     {
       path: "/form",
       name: "Form",
       component: Form,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, roles: [0] },
     },
     {
       path: "/:pathMatch(.*)*",
       name: "NotFound",
       component: NotFound,
     },
+    {
+      path: "/:pathMatch(.*)*",
+      name: "NotFound",
+      component: NotFound,
+    },
+    {
+      path: "/forbidden",
+      name: "Forbidden",
+      component: Forbidden,
+    },
   ],
 });
 
 router.beforeEach(async (to, _, next) => {
   const authStore = useAuthStore();
+
+  const requiredRoles: any = to.meta.roles;
+  const token = authStore.token
+    ? authStore.token
+    : (localStorage.getItem("token-inventas") as string);
+  if (requiredRoles) {
+    const decoded: JwtPayload | any = jwtDecode(token);
+    if (!requiredRoles.includes(decoded.roles[0]))
+      return next({ path: "/forbidden" });
+  }
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
     const token = authStore.token

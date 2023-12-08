@@ -1,8 +1,4 @@
 <template>
-  <!--
-    Graphic from https://www.opendoodles.com/
--->
-
   <div class="grid h-screen px-4 bg-white place-content-center">
     <div class="text-center">
       <svg
@@ -39,10 +35,11 @@
       <h1
         class="mt-6 text-2xl font-bold tracking-tight text-gray-900 sm:text-4xl"
       >
-        Oppss!
+        Opss!
       </h1>
 
-      <p class="mt-4 text-gray-500">Esta página no existe.</p>
+      <p class="mt-4 text-gray-500">No tienes permiso a esta página</p>
     </div>
   </div>
 </template>
+<script setup lang="ts"></script>
