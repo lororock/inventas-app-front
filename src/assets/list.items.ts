@@ -77,7 +77,7 @@ export const functionsDashboard: DashboardItem[] = [
     ],
   },
   {
-    roles: [1, 2],
+    roles: [1, 2, 3],
     title: "Módulo de recursos",
     items: [
       {
@@ -85,6 +85,20 @@ export const functionsDashboard: DashboardItem[] = [
         roles: [1, 2],
         icon: "mdi-shape",
         title: "Categorias productos",
+        path: "categories",
+      },
+      {
+        id: 1,
+        roles: [1, 2, 3],
+        icon: "mdi-basket",
+        title: "Productos/Servicios",
+        path: "categories",
+      },
+      {
+        id: 1,
+        roles: [1, 2, 3],
+        icon: "mdi-store-outline",
+        title: "Inventario",
         path: "categories",
       },
     ],
