@@ -3,8 +3,10 @@ import { defineStore } from "pinia";
 import router from "../router/index.js";
 import axiosInstance from "../services/axios.service.ts";
 import Swal from "sweetalert2";
+import { jwtDecode } from "jwt-decode";
 
 export const useAuthStore = defineStore("auth", () => {
+  const user = ref<any>(null);
   const token = ref("");
   const refreshToken = ref("");
 
@@ -15,6 +17,7 @@ export const useAuthStore = defineStore("auth", () => {
         password,
       });
       token.value = data.token;
+      user.value = jwtDecode(token.value);
       refreshToken.value = data.refreshToken;
       localStorage.setItem("token-inventas", token.value);
       localStorage.setItem("refresh-token-inventas", refreshToken.value);
@@ -30,10 +33,13 @@ export const useAuthStore = defineStore("auth", () => {
     }
   };
 
-  const setToken = (tokenValue: string) => token.value = tokenValue
+  const setToken = (tokenValue: string) => (token.value = tokenValue);
 
   const logout = async () => {
+    localStorage.removeItem("refresh-token-inventas");
+    localStorage.removeItem("token-inventas");
     token.value = "";
+    user.value = null;
     localStorage.removeItem("token-inventas");
     localStorage.removeItem("refresh-token-inventas");
     await router.push("/");
@@ -47,6 +53,7 @@ export const useAuthStore = defineStore("auth", () => {
         `auth/valid/${refreshTokenTemp}`,
       );
       token.value = data.token;
+      user.value = jwtDecode(token.value);
       refreshToken.value = data.refreshToken;
       localStorage.setItem("token-inventas", token.value);
       localStorage.setItem("refresh-token-inventas", refreshToken.value);
@@ -55,11 +62,18 @@ export const useAuthStore = defineStore("auth", () => {
       return false;
     }
   };
+
+  const loadUser = () => {
+    const token = localStorage.getItem("token-inventas") as string;
+    user.value = jwtDecode(token);
+  };
   return {
     login,
     logout,
     validTokenRefresh,
     setToken,
     token,
+    user,
+    loadUser,
   };
 });
