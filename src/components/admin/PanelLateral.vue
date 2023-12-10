@@ -5,7 +5,7 @@
       @click.stop="nav = !nav"
     ></v-app-bar-nav-icon>
 
-    <v-toolbar-title>Opciones</v-toolbar-title>
+    <v-toolbar-title @click="loadItems()">Opciones</v-toolbar-title>
 
     <v-spacer></v-spacer>
     <v-btn variant="text" icon="mdi-magnify" />
@@ -37,26 +37,91 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
-import { functionsDashboard } from "../../assets/list.items.ts";
+import { ref, onMounted, watch } from "vue";
 import { useAuthStore } from "../../store/auth.store.ts";
 import router from "../../router";
+import DashboardItem from "../../assets/interfaces/dashboard.items.interface.ts";
 const authStore = useAuthStore();
 
-const listItems = ref(functionsDashboard);
+const functionsDashboard: DashboardItem[] = [
+  {
+    roles: [0],
+    title: "Módulo de empresas",
+    items: [
+      {
+        id: 1,
+        roles: [0],
+        icon: "mdi-domain",
+        title: "Adm. empresas",
+        path: "form",
+      },
+    ],
+  },
+  {
+    roles: [1],
+    title: "Módulo de usuarios",
+    items: [
+      {
+        id: 2,
+        roles: [1],
+        icon: "mdi-account-multiple",
+        title: "Adm. usuarios",
+        path: "employees",
+      },
+    ],
+  },
+  {
+    roles: [1, 2, 3],
+    title: "Módulo de recursos",
+    items: [
+      {
+        id: 1,
+        roles: [1, 2],
+        icon: "mdi-shape",
+        title: "Categorias productos",
+        path: "categories",
+      },
+      {
+        id: 1,
+        roles: [1, 2, 3],
+        icon: "mdi-basket",
+        title: "Productos/Servicios",
+        path: "categories",
+      },
+      {
+        id: 1,
+        roles: [1, 2, 3],
+        icon: "mdi-store-outline",
+        title: "Inventario",
+        path: "categories",
+      },
+    ],
+  },
+];
 
-onMounted(() => {
+const listItems = ref(functionsDashboard);
+const nav = ref(true);
+const currentUser = ref<any>(null);
+
+const loadItems = async () => {
   authStore.loadUser();
-  const user = authStore.user;
-  const userRoles = user.roles;
+  currentUser.value = authStore.user;
+  const userRoles = currentUser.value.roles;
   listItems.value = functionsDashboard.filter((module) => {
     module.items = module.items.filter((item) =>
       item.roles.some((role) => userRoles.includes(role)),
     );
     return module.items.length > 0;
-    //TODO Validate for subItems
   });
+};
+
+onMounted(() => {
+  loadItems();
 });
 
-let nav = ref(true);
+watch(nav, (newVal) => {
+  if (newVal) {
+    loadItems();
+  }
+});
 </script>
