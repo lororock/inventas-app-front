@@ -2,7 +2,7 @@ export default interface EntityConfig {
   name: string;
   path: string;
   columns: columnTable[];
-  formComponent: Object;
+  formComponent: Object | null;
 }
 
 export interface columnTable {

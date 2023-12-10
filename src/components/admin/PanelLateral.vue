@@ -86,7 +86,7 @@ const functionsDashboard: DashboardItem[] = [
         roles: [1, 2, 3],
         icon: "mdi-basket",
         title: "Productos/Servicios",
-        path: "categories",
+        path: "products",
       },
       {
         id: 1,

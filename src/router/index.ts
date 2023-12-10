@@ -9,6 +9,7 @@ import HomeDashboard from "../views/Dashboard/HomeDashboard.vue";
 import Employee from "../views/Dashboard/Employee.vue";
 import CategoryView from "../views/Dashboard/CategoryView.vue";
 import Forbidden from "../views/Forbidden.vue";
+import ProductsView from "../views/Dashboard/ProductsView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -34,6 +35,12 @@ const router = createRouter({
       path: "/categories",
       name: "Category",
       component: CategoryView,
+      meta: { requiresAuth: true, roles: [1, 2, 3] },
+    },
+    {
+      path: "/products",
+      name: "Product",
+      component: ProductsView,
       meta: { requiresAuth: true, roles: [1, 2, 3] },
     },
     {
