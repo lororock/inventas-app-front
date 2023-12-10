@@ -36,6 +36,8 @@ export const useAuthStore = defineStore("auth", () => {
   const setToken = (tokenValue: string) => (token.value = tokenValue);
 
   const logout = async () => {
+    localStorage.removeItem("refresh-token-inventas");
+    localStorage.removeItem("token-inventas");
     token.value = "";
     user.value = null;
     localStorage.removeItem("token-inventas");
