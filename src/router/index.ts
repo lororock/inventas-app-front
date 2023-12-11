@@ -23,7 +23,7 @@ const router = createRouter({
       path: "/home",
       name: "Home",
       component: HomeDashboard,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, roles: [0, 1, 2, 3] },
     },
     {
       path: "/employees",

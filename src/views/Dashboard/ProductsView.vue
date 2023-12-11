@@ -6,7 +6,7 @@ const configTable: EntityConfig = {
   path: "products",
   columns: [
     { title: "Estado", key: "status", sortable: false },
-    { title: "name", key: "name" },
+    { title: "Nombre", key: "name" },
     { title: "Código de barras", key: "barcode" },
     { title: "Precio de compra", key: "costPrice" },
     { title: "Precio de venta", key: "salePrice" },
