@@ -38,8 +38,11 @@ const isReadOnly = computed(() => props.mode === 0);
 const submit = async () => {
   loading.value = !loading.value;
   const data = product.value;
+  data.salePrice = +data.salePrice;
+  data.costPrice = +data.costPrice;
   try {
     if (props.mode === 2) {
+      console.log(data);
       await crudStore.create(data);
       dialog.value = false;
     } else {
@@ -200,9 +203,10 @@ onMounted(async () => {
               variant="outlined"
               :items="subcategories"
               item-title="name"
+              item-value="id"
               :chips="true"
               v-model="product.subcategory"
-              :disabled="isReadOnly"
+              :disabled="isReadOnly || !product.category"
             />
           </v-form>
         </v-container>
