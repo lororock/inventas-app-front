@@ -22,6 +22,7 @@ const product = ref<any>({
 });
 
 const categories = ref<any[]>([]);
+const subcategories = ref<any[]>([]);
 
 const crudStore = useCrudStore(props.config)();
 const crudStoreCategories = useCrudStore({
@@ -63,16 +64,9 @@ const findCategories = async () => {
 
 const findCategoryById = async () => {
   loading.value = true;
-  const { id } = product.value.category;
   try {
-    const result = await crudStoreCategories.findById(id);
-    console.log(result);
-    /*
-    if (result.subcategories && result.subcategories.length > 0)
-      product.value.subcategories = result.subcategories.map(
-        (sub: any) => sub.name,
-      );
-     */
+    const result = await crudStoreCategories.findById(product.value.category);
+    subcategories.value = result.subcategories;
   } catch (error) {
   } finally {
     loading.value = false;
@@ -186,15 +180,26 @@ onMounted(async () => {
               :color="product.status === 2 ? 'success' : 'red'"
               hide-details
             />
-            <v-combobox
+            <v-select
               density="compact"
               label="Categoría"
               variant="outlined"
               :items="categories"
               item-title="name"
+              item-value="id"
               :chips="true"
               v-model="product.category"
               @update:model-value="findCategoryById()"
+              :disabled="isReadOnly"
+            />
+            <v-select
+              density="compact"
+              label="Subcategorías"
+              variant="outlined"
+              :items="subcategories"
+              item-title="name"
+              :chips="true"
+              v-model="product.subcategory"
               :disabled="isReadOnly"
             />
           </v-form>
