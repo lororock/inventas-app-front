@@ -65,6 +65,8 @@ const findCategories = async () => {
 const findCategoryById = async () => {
   loading.value = true;
   try {
+    subcategories.value = [];
+    product.value.subcategory = null;
     const result = await crudStoreCategories.findById(product.value.category);
     subcategories.value = result.subcategories;
   } catch (error) {
@@ -180,7 +182,7 @@ onMounted(async () => {
               :color="product.status === 2 ? 'success' : 'red'"
               hide-details
             />
-            <v-select
+            <v-autocomplete
               density="compact"
               label="Categoría"
               variant="outlined"
@@ -192,7 +194,7 @@ onMounted(async () => {
               @update:model-value="findCategoryById()"
               :disabled="isReadOnly"
             />
-            <v-select
+            <v-autocomplete
               density="compact"
               label="Subcategorías"
               variant="outlined"
