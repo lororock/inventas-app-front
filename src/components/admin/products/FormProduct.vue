@@ -70,11 +70,26 @@ const findCategoryById = async () => {
   try {
     subcategories.value = [];
     product.value.subcategory = null;
-    const result = await crudStoreCategories.findById(product.value.category);
+    let id = product.value.category;
+    if (typeof id === "object") id = id.id;
+    const result = await crudStoreCategories.findById(id);
     subcategories.value = result.subcategories;
   } catch (error) {
   } finally {
     loading.value = false;
+  }
+};
+
+const findProductById = async (id: string) => {
+  try {
+    const productFound = await crudStore.findById(id);
+    delete productFound.createdAt;
+    delete productFound.updatedAt;
+    delete productFound.id;
+    product.value = productFound;
+    if (product.value.category) await findCategoryById();
+  } catch (error: any) {
+    throw new Error(error);
   }
 };
 
@@ -98,6 +113,7 @@ onMounted(async () => {
           color="primary"
           icon="mdi-eye"
           v-bind="props"
+          @click="findProductById(id)"
           v-if="mode === 0"
         />
         <v-btn
@@ -107,6 +123,7 @@ onMounted(async () => {
           icon="mdi-pencil"
           variant="outlined"
           v-bind="props"
+          @click="findProductById(id)"
           v-else-if="mode === 1"
         />
         <v-btn
@@ -163,6 +180,7 @@ onMounted(async () => {
               :step="1"
               max="100"
               thumb-label
+              :disabled="isReadOnly"
             >
               <template v-slot:append>
                 <v-text-field
