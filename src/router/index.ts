@@ -81,9 +81,6 @@ router.beforeEach(async (to, _, next) => {
   }
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    const token = authStore.token
-      ? authStore.token
-      : (localStorage.getItem("token-inventas") as string);
     if (!token) next({ path: "/" });
 
     const decoded: JwtPayload | any = jwtDecode(token);
