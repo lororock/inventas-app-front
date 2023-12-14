@@ -39,6 +39,9 @@
       </h1>
 
       <p class="mt-4 text-gray-500">No tienes permiso a esta página</p>
+      <router-link to="home">
+        Volver al home <v-icon icon="mdi-home" />
+      </router-link>
     </div>
   </div>
 </template>

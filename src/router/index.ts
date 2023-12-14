@@ -9,6 +9,7 @@ import HomeDashboard from "../views/Dashboard/HomeDashboard.vue";
 import Employee from "../views/Dashboard/Employee.vue";
 import CategoryView from "../views/Dashboard/CategoryView.vue";
 import Forbidden from "../views/Forbidden.vue";
+import ProductsView from "../views/Dashboard/ProductsView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -22,7 +23,7 @@ const router = createRouter({
       path: "/home",
       name: "Home",
       component: HomeDashboard,
-      meta: { requiresAuth: true },
+      meta: { requiresAuth: true, roles: [0, 1, 2, 3] },
     },
     {
       path: "/employees",
@@ -34,6 +35,12 @@ const router = createRouter({
       path: "/categories",
       name: "Category",
       component: CategoryView,
+      meta: { requiresAuth: true, roles: [1, 2, 3] },
+    },
+    {
+      path: "/products",
+      name: "Product",
+      component: ProductsView,
       meta: { requiresAuth: true, roles: [1, 2, 3] },
     },
     {
@@ -74,9 +81,6 @@ router.beforeEach(async (to, _, next) => {
   }
 
   if (to.matched.some((record) => record.meta.requiresAuth)) {
-    const token = authStore.token
-      ? authStore.token
-      : (localStorage.getItem("token-inventas") as string);
     if (!token) next({ path: "/" });
 
     const decoded: JwtPayload | any = jwtDecode(token);

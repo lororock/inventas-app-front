@@ -39,67 +39,13 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from "vue";
 import { useAuthStore } from "../../store/auth.store.ts";
+import useResourceStore from "../../store/resources.store.ts";
+
 import router from "../../router";
-import DashboardItem from "../../assets/interfaces/dashboard.items.interface.ts";
 const authStore = useAuthStore();
+const resourceStore = useResourceStore();
 
-const functionsDashboard: DashboardItem[] = [
-  {
-    roles: [0],
-    title: "Módulo de empresas",
-    items: [
-      {
-        id: 1,
-        roles: [0],
-        icon: "mdi-domain",
-        title: "Adm. empresas",
-        path: "form",
-      },
-    ],
-  },
-  {
-    roles: [1],
-    title: "Módulo de usuarios",
-    items: [
-      {
-        id: 2,
-        roles: [1],
-        icon: "mdi-account-multiple",
-        title: "Adm. usuarios",
-        path: "employees",
-      },
-    ],
-  },
-  {
-    roles: [1, 2, 3],
-    title: "Módulo de recursos",
-    items: [
-      {
-        id: 1,
-        roles: [1, 2],
-        icon: "mdi-shape",
-        title: "Categorias productos",
-        path: "categories",
-      },
-      {
-        id: 1,
-        roles: [1, 2, 3],
-        icon: "mdi-basket",
-        title: "Productos/Servicios",
-        path: "categories",
-      },
-      {
-        id: 1,
-        roles: [1, 2, 3],
-        icon: "mdi-store-outline",
-        title: "Inventario",
-        path: "categories",
-      },
-    ],
-  },
-];
-
-const listItems = ref(functionsDashboard);
+const listItems = ref(resourceStore.functionsDashboard);
 const nav = ref(true);
 const currentUser = ref<any>(null);
 
@@ -107,7 +53,7 @@ const loadItems = async () => {
   authStore.loadUser();
   currentUser.value = authStore.user;
   const userRoles = currentUser.value.roles;
-  listItems.value = functionsDashboard.filter((module) => {
+  listItems.value = listItems.value.filter((module) => {
     module.items = module.items.filter((item) =>
       item.roles.some((role) => userRoles.includes(role)),
     );
