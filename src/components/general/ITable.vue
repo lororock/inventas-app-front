@@ -126,6 +126,15 @@ onMounted(() => {
               <span v-else> Inactivo </span>
             </v-tooltip>
           </template>
+          <template v-slot:item.update-inventory="{ item }">
+            <!-- TODO Crear formulario para agregar o eliminar productos de un inventario -->
+            <v-btn
+              @click="console.log(item.id)"
+              color="amber-darken-2"
+              icon="mdi-pencil"
+              size="small"
+            />
+          </template>
         </v-data-table-server>
       </v-card-item>
     </v-card>
