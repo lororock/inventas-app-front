@@ -2,6 +2,7 @@
 import { ref, onMounted } from "vue";
 import useCrudStore from "../../store/crud.store.ts";
 import EntityConfig, { columnTable } from "../../interface/entity.config.ts";
+import ListProductForInventory from "../admin/inventories/ListProductForInventory.vue";
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
   formComponent: Object,
@@ -127,13 +128,7 @@ onMounted(() => {
             </v-tooltip>
           </template>
           <template v-slot:item.update-inventory="{ item }">
-            <!-- TODO Crear formulario para agregar o eliminar productos de un inventario -->
-            <v-btn
-              @click="console.log(item.id)"
-              color="amber-darken-2"
-              icon="mdi-pencil"
-              size="small"
-            />
+            <ListProductForInventory :config="config" :inventory-id="item.id" />
           </template>
         </v-data-table-server>
       </v-card-item>

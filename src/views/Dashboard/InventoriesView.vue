@@ -10,7 +10,7 @@ const configTable: EntityConfig = {
     { title: "Localización", key: "location", sortable: false },
     { title: "Numero de items", key: "total", sortable: false },
     {
-      title: "Actualizar inventario",
+      title: "Acciones",
       key: "update-inventory",
       sortable: false,
     },
