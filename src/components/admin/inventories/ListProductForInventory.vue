@@ -2,20 +2,35 @@
 import { ref } from "vue";
 import useCrudStore from "../../../store/crud.store.ts";
 import EntityConfig from "../../../interface/entity.config.ts";
-import InputOnlyNumbers from "../../general/InputOnlyNumbers.vue";
-
+import InputCurrency from "../../general/InputCurrency.vue";
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
   inventoryId: { type: String, required: true },
 });
+
+interface inventoryInterface {
+  id: string;
+  name: string;
+  location: string;
+  productInventories: [
+    {
+      id: string;
+      quantity: number;
+      name: string;
+      product: {
+        id: string;
+        name: string;
+      };
+    },
+  ];
+}
 const dialog = ref<boolean>(false);
-const inventory = ref<any>();
+const inventory = ref<inventoryInterface>();
 const loading = ref(false);
 
 const headers = ref([
   { title: "Detalles", key: "id", sortable: false },
   { title: "Cantidad", key: "quantity", sortable: false },
-  { title: "Acciones", key: "actions", sortable: false },
 ]);
 
 const crudStore = useCrudStore(props.config)();
@@ -32,15 +47,6 @@ const findInventory = async () => {
   );
   inventory.value = result;
   loading.value = !loading.value;
-};
-
-const validateNumberInput = (event: any, item: any) => {
-  event.preventDefault();
-  const { value } = event.target;
-  console.log(value);
-
-  if (isNaN(+value)) item.quantity = 0;
-  else item.quantity = value;
 };
 </script>
 
@@ -64,30 +70,16 @@ const validateNumberInput = (event: any, item: any) => {
             :items="inventory?.productInventories"
           >
             <template v-slot:item.id="{ item }">
-              <v-btn color="info" variant="text" @click="console.log(item.id)">
+              <v-btn
+                color="info"
+                variant="text"
+                @click="console.log(item.id, item.quantity)"
+              >
                 {{ item.name }} <v-icon icon="mdi-open-in-new" />
               </v-btn>
             </template>
             <template v-slot:item.quantity="{ item }">
-              <InputOnlyNumbers
-                :model-value="item.quantity"
-                :format-thousands="false"
-                icon="mdi-cash"
-              />
-            </template>
-            <template v-slot:item.actions="{ item }">
-              <v-btn
-                color="red"
-                icon="mdi-minus"
-                @click="item.quantity = item.quantity - 1"
-                size="x-small"
-              />
-              <v-btn
-                color="info"
-                icon="mdi-plus"
-                @click="item.quantity = item.quantity + 1"
-                size="x-small"
-              />
+              <InputCurrency :model-value="item.quantity" currency="CAN" />
             </template>
           </v-data-table>
         </v-card-item>
