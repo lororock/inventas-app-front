@@ -2,7 +2,7 @@
 import { ref } from "vue";
 import useCrudStore from "../../../store/crud.store.ts";
 import EntityConfig from "../../../interface/entity.config.ts";
-import { Ref } from "@vue/reactivity";
+import InputOnlyNumbers from "../../general/InputOnlyNumbers.vue";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -69,14 +69,10 @@ const validateNumberInput = (event: any, item: any) => {
               </v-btn>
             </template>
             <template v-slot:item.quantity="{ item }">
-              <v-text-field
-                density="compact"
-                v-model="item.quantity"
-                @input.prevent="validateNumberInput($event, item)"
-                single-line
-                variant="outlined"
-                label="cantidad"
-                type="number"
+              <InputOnlyNumbers
+                :model-value="item.quantity"
+                :format-thousands="false"
+                icon="mdi-cash"
               />
             </template>
             <template v-slot:item.actions="{ item }">
