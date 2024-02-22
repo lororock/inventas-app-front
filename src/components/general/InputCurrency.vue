@@ -3,12 +3,13 @@ import { useCurrencyInput } from "vue-currency-input";
 import { watch } from "vue";
 
 const props = defineProps({
-  modelValue: { type: String, required: true },
-  label: { type: String, default: "" },
+  modelValue: Number,
   icon: { type: String, default: "" },
   showButtons: { type: Boolean, default: true },
   currency: { type: String, default: "COP" },
   color: { type: String, default: "" },
+  minValue: { type: Number },
+  maxValue: { type: Number },
 });
 
 const { inputRef, formattedValue, numberValue, setValue } = useCurrencyInput({
@@ -16,7 +17,10 @@ const { inputRef, formattedValue, numberValue, setValue } = useCurrencyInput({
   hideCurrencySymbolOnFocus: false,
   hideGroupingSeparatorOnFocus: false,
   precision: 0,
-  valueRange: { min: 0 },
+  valueRange: {
+    min: props.minValue || undefined,
+    max: props.minValue || undefined,
+  },
 });
 
 watch(
@@ -29,15 +33,14 @@ watch(
 
 <template>
   <v-textField
-    :label="label"
     v-model="formattedValue"
     density="compact"
-    variant="outlined"
+    variant="solo"
     ref="inputRef"
     :prepend-inner-icon="icon"
     :color="color"
   >
-    <template #prepend v-if="showButtons">
+    <template #prepend>
       <v-btn size="x-small" icon @click="setValue(--numberValue)">➖</v-btn>
     </template>
     <template #append v-if="showButtons">
