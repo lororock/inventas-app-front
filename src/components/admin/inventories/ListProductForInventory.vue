@@ -3,6 +3,7 @@ import { ref } from "vue";
 import useCrudStore from "../../../store/crud.store.ts";
 import EntityConfig from "../../../interface/entity.config.ts";
 import InputCurrency from "../../general/InputCurrency.vue";
+import FormAddProductToInventory from "./FormAddProductToInventory.vue";
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
   inventoryId: { type: String, required: true },
@@ -69,6 +70,14 @@ const findInventory = async () => {
             :headers="headers"
             :items="inventory?.productInventories"
           >
+            <template #top>
+              <v-row>
+                <v-col cols="10" />
+                <v-col cols="1">
+                  <FormAddProductToInventory />
+                </v-col>
+              </v-row>
+            </template>
             <template v-slot:item.id="{ item }">
               <v-btn
                 color="info"
