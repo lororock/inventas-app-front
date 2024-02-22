@@ -31,11 +31,41 @@ const useCrudStore = (entityConfig: entityConfig) =>
       return data;
     };
 
+    const customRequest = async ({
+      method,
+      path,
+      body,
+      params,
+    }: {
+      method: string;
+      path: string;
+      body?: any;
+      params?: string;
+    }) => {
+      const config: any = {
+        method: method,
+        url: path,
+      };
+
+      config.data = body || undefined;
+
+      if (params) {
+        config.params = new URLSearchParams();
+        Object.keys(params).forEach((key: any) => {
+          config.params.append(key, params[key]);
+        });
+      }
+
+      const { data } = await axiosInstance(config);
+      return data;
+    };
+
     return {
       findAll,
       findById,
       create,
       update,
+      customRequest,
     };
   });
 
