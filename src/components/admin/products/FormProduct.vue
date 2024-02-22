@@ -158,27 +158,18 @@ onMounted(async () => {
             />
             <InputCurrency
               label="Precio compra"
-              :model-value="product.costPrice"
+              v-model="product.costPrice"
               icon="mdi-cash"
               :show-buttons="false"
               color="success"
-            />
-            <v-text-field
-              prepend-inner-icon="mdi-cash"
-              variant="outlined"
-              density="comfortable"
-              type="number"
-              v-model="product.costPrice"
-              label="Precio compra"
               :disabled="isReadOnly"
             />
-            <v-text-field
-              prepend-inner-icon="mdi-cash"
-              variant="outlined"
-              density="comfortable"
-              type="number"
-              v-model="product.salePrice"
+            <InputCurrency
               label="Precio venta"
+              v-model="product.salePrice"
+              icon="mdi-cash"
+              :show-buttons="false"
+              color="success"
               :disabled="isReadOnly"
             />
             <v-slider

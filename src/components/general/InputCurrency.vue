@@ -35,12 +35,12 @@ watch(
   <v-textField
     v-model="formattedValue"
     density="compact"
-    variant="solo"
+    variant="outlined"
     ref="inputRef"
     :prepend-inner-icon="icon"
     :color="color"
   >
-    <template #prepend>
+    <template #prepend v-if="showButtons">
       <v-btn size="x-small" icon @click="setValue(--numberValue)">➖</v-btn>
     </template>
     <template #append v-if="showButtons">
