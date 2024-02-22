@@ -79,7 +79,7 @@ const findInventory = async () => {
               </v-btn>
             </template>
             <template v-slot:item.quantity="{ item }">
-              <InputCurrency :model-value="item.quantity" currency="CAN" />
+              <InputCurrency v-model="item.quantity" currency="CAN" />
             </template>
           </v-data-table>
         </v-card-item>
