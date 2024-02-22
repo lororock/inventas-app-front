@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import useCrudStore from "../../../store/crud.store.ts";
-import FormProduct from "../products/FormProduct.vue";
+import EntityConfig from "../../../interface/entity.config.ts";
 
 onMounted(async () => {
   await listAllProducts();
@@ -9,19 +9,19 @@ onMounted(async () => {
 
 const productsFound = ref<any>([]);
 
-const crudStore = useCrudStore({
-  name: "Product",
-  path: "products",
+const configTable: EntityConfig = {
+  name: "inventory",
+  path: "inventories",
   columns: [
-    { title: "Estado", key: "status", sortable: false },
-    { title: "Nombre", key: "name", sortable: false },
-    { title: "Código de barras", key: "barcode", sortable: false },
-    { title: "Precio de compra", key: "costPrice", sortable: false },
-    { title: "Precio de venta", key: "salePrice", sortable: false },
+    { title: "Nombre", key: "status", sortable: false },
     { title: "Acciones", key: "actions", sortable: false },
   ],
-  formComponent: FormProduct,
-})();
+  formComponent: null,
+};
+
+const items = ref<any>([]);
+
+const crudStore = useCrudStore(configTable)();
 
 const listAllProducts = async () => {
   productsFound.value = await crudStore.customRequest({
@@ -59,6 +59,20 @@ const loading = ref(false);
             :multiple="true"
             :chips="true"
           />
+          <v-table fixed-header height="300px">
+            <thead>
+              <tr>
+                <th>Producto</th>
+                <th>Cantidad</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr v-for="(item, index) in items" :key="index">
+                <td>{{ item.status }}</td>
+                <td>{{ item.actions }}</td>
+              </tr>
+            </tbody>
+          </v-table>
         </v-form>
       </v-container>
       <v-card-actions>
