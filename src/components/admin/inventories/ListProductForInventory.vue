@@ -74,7 +74,10 @@ const findInventory = async () => {
               <v-row>
                 <v-col cols="10" />
                 <v-col cols="1">
-                  <FormAddProductToInventory :inventoryId="inventoryId" />
+                  <FormAddProductToInventory
+                    :inventoryId="inventoryId"
+                    @inventory-updated="findInventory()"
+                  />
                 </v-col>
               </v-row>
             </template>

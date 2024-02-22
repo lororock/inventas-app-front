@@ -13,6 +13,8 @@ const props = defineProps({
   inventoryId: { type: String, required: true },
 });
 
+const emit = defineEmits(["inventory-updated"]);
+
 const productsFound = ref<any>([]);
 const productsSelected = ref<any>([]);
 
@@ -78,13 +80,15 @@ const submit = async () => {
   try {
     const isValid = await validateProductsSelected();
     if (isValid) {
-      dialog.value = !dialog.value;
+      await crudStore.customRequest({
+        method: "PUT",
+        path: `inventories/${props.inventoryId}`,
+        body: transformProducts(),
+      });
+      await handleClose();
+      loading.value = !loading.value;
+      emit("inventory-updated");
     }
-    await crudStore.customRequest({
-      method: "PUT",
-      path: `inventories/${props.inventoryId}`,
-      body: transformProducts(),
-    });
   } catch (error: any) {
     await Swal.fire({
       position: "top-end",
@@ -95,8 +99,6 @@ const submit = async () => {
       timerProgressBar: true,
       showConfirmButton: false,
     });
-  } finally {
-    loading.value = !loading.value;
   }
 };
 
