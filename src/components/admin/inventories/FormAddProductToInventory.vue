@@ -9,6 +9,10 @@ onMounted(async () => {
   await listAllProducts();
 });
 
+const props = defineProps({
+  inventoryId: { type: String, required: true },
+});
+
 const productsFound = ref<any>([]);
 const productsSelected = ref<any>([]);
 
@@ -66,6 +70,9 @@ const validateProductsSelected = async () => {
   return true;
 };
 
+const transformProducts = () =>
+  productsSelected.value.map(({ id, quantity }: any) => ({ id, quantity }));
+
 const submit = async () => {
   loading.value = !loading.value;
   try {
@@ -73,9 +80,21 @@ const submit = async () => {
     if (isValid) {
       dialog.value = !dialog.value;
     }
+    await crudStore.customRequest({
+      method: "PUT",
+      path: `inventories/${props.inventoryId}`,
+      body: transformProducts(),
+    });
   } catch (error: any) {
-    console.error(error);
-    await Swal.fire("Error", error.message, "error");
+    await Swal.fire({
+      position: "top-end",
+      icon: "error",
+      title: "Error al registrar inventario",
+      toast: true,
+      timer: 5000,
+      timerProgressBar: true,
+      showConfirmButton: false,
+    });
   } finally {
     loading.value = !loading.value;
   }
