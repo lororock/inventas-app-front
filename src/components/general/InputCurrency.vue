@@ -19,7 +19,7 @@ const { inputRef, formattedValue, numberValue, setValue } = useCurrencyInput({
   precision: 0,
   valueRange: {
     min: props.minValue || undefined,
-    max: props.minValue || undefined,
+    max: props.maxValue || undefined,
   },
 });
 
@@ -39,6 +39,12 @@ watch(
     ref="inputRef"
     :prepend-inner-icon="icon"
     :color="color"
+    :hint="
+      (minValue ? 'Min: ' + minValue : '') +
+      ' ' +
+      (maxValue ? 'Max: ' + maxValue : '')
+    "
+    persistent-hint
   >
     <template #prepend v-if="showButtons">
       <v-btn size="x-small" icon @click="setValue(--numberValue)">➖</v-btn>
