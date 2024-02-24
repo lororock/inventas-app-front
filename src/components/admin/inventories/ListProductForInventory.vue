@@ -8,7 +8,7 @@ const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
   inventoryId: { type: String, required: true },
 });
-
+const emit = defineEmits(["item-created"]);
 interface inventoryInterface {
   id: string;
   name: string;
@@ -49,6 +49,11 @@ const findInventory = async () => {
   inventory.value = result;
   loading.value = !loading.value;
 };
+
+const updateInventory = async () => {
+  await findInventory();
+  emit("item-created");
+};
 </script>
 
 <template>
@@ -76,7 +81,7 @@ const findInventory = async () => {
                 <v-col cols="1">
                   <FormAddProductToInventory
                     :inventoryId="inventoryId"
-                    @inventory-updated="findInventory()"
+                    @inventory-updated="updateInventory()"
                   />
                 </v-col>
               </v-row>

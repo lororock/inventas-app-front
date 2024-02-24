@@ -128,7 +128,11 @@ onMounted(() => {
             </v-tooltip>
           </template>
           <template v-slot:item.update-inventory="{ item }">
-            <ListProductForInventory :config="config" :inventory-id="item.id" />
+            <ListProductForInventory
+              :config="config"
+              :inventory-id="item.id"
+              @item-created="listItems({ page: 1, itemsPerPage })"
+            />
           </template>
         </v-data-table-server>
       </v-card-item>
