@@ -3,7 +3,6 @@ import useCrudStore from "../../../store/crud.store.ts";
 import EntityConfig from "../../../interface/entity.config.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
 import { ref, computed } from "vue";
-import Swal from "sweetalert2";
 import { documentTypes } from "../../../assets/list.items.ts";
 
 const props = defineProps({
@@ -32,8 +31,8 @@ const loading = ref(false);
 
 // API
 
-const findClientById = () => {
-  return crudStore.findById(props.id);
+const findClientById = async () => {
+  client.value = await crudStore.findById(props.id);
 };
 
 const submit = async () => {
