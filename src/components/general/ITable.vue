@@ -3,6 +3,7 @@ import { ref, onMounted } from "vue";
 import useCrudStore from "../../store/crud.store.ts";
 import EntityConfig, { columnTable } from "../../interface/entity.config.ts";
 import ListProductForInventory from "../admin/inventories/ListProductForInventory.vue";
+import Swal from "sweetalert2";
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
   formComponent: Object,
@@ -36,6 +37,27 @@ const listItems = async ({
   }
 };
 
+const submitted = async ({
+  page,
+  itemsPerPage,
+}: {
+  page: number;
+  itemsPerPage: number;
+}) => {
+  await Swal.fire({
+    title: "Operación exitosa",
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    icon: "success",
+    timer: 3000,
+  });
+  await listItems({
+    page,
+    itemsPerPage,
+  });
+};
+
 onMounted(() => {
   listItems({ page: 1, itemsPerPage: itemsPerPage.value });
 });
@@ -62,7 +84,7 @@ onMounted(() => {
               :is="config.formComponent"
               :config="config"
               :mode="2"
-              @item-created="listItems({ page: 1, itemsPerPage })"
+              @item-created="submitted({ page: 1, itemsPerPage })"
             />
           </v-col>
         </v-row>
@@ -84,7 +106,7 @@ onMounted(() => {
               :config="config"
               :mode="0"
               :id="item.id"
-              @item-created="listItems({ page: 1, itemsPerPage })"
+              @item-created="submitted({ page: 1, itemsPerPage })"
             />
           </template>
           <template v-slot:item.actions="{ item }">
@@ -93,7 +115,7 @@ onMounted(() => {
               :config="config"
               :mode="1"
               :id="item.id"
-              @item-created="listItems({ page: 1, itemsPerPage })"
+              @item-created="submitted({ page: 1, itemsPerPage })"
             />
           </template>
           <template v-slot:item.status="{ item }">
@@ -131,7 +153,7 @@ onMounted(() => {
             <ListProductForInventory
               :config="config"
               :inventory-id="item.id"
-              @item-created="listItems({ page: 1, itemsPerPage })"
+              @item-created="submitted({ page: 1, itemsPerPage })"
             />
           </template>
         </v-data-table-server>
