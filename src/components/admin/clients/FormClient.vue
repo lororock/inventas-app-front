@@ -36,8 +36,24 @@ const findClientById = async () => {
 };
 
 const submit = async () => {
-  console.log(client.value);
-  emit("item-created");
+  loading.value = true;
+  try {
+    await crudStore.create(client.value);
+    client.value = {
+      names: "",
+      surnames: "",
+      documentNumber: "",
+      documentType: null,
+      phone: "",
+      email: "",
+    };
+    emit("item-created");
+  } catch (error) {
+    console.log(error);
+  } finally {
+    dialog.value = false;
+    loading.value = false;
+  }
 };
 </script>
 
