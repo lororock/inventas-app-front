@@ -4,6 +4,8 @@ import useCrudStore from "../../store/crud.store.ts";
 import EntityConfig, { columnTable } from "../../interface/entity.config.ts";
 import ListProductForInventory from "../admin/inventories/ListProductForInventory.vue";
 import Swal from "sweetalert2";
+import { format } from "@formkit/tempo";
+
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
   formComponent: Object,
@@ -14,7 +16,9 @@ const crudStore = useCrudStore(props.config)();
 const itemsPerPage = ref<number>(10);
 const headers = ref<columnTable[]>(props.config.columns);
 const search = ref<string>("");
-const serverItems = ref<{ id: string; status: number }[]>([]);
+const serverItems = ref<
+  { id: string; status: number; createdAt: Date | string | null }[]
+>([]);
 const loading = ref<boolean>(true);
 const totalItems = ref<number>(0);
 
@@ -155,6 +159,14 @@ onMounted(() => {
               :inventory-id="item.id"
               @item-created="submitted({ page: 1, itemsPerPage })"
             />
+          </template>
+          <template v-slot:item.createdAt="{ item }">
+            {{
+              format({
+                date: `${item.createdAt}`,
+                format: "MMMM D, YYYY h:mm a",
+              })
+            }}
           </template>
         </v-data-table-server>
       </v-card-item>
