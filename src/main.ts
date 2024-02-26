@@ -12,15 +12,16 @@ import * as directives from "vuetify/directives";
 import esLocale from "./locales/es";
 import { createI18n, useI18n } from "vue-i18n";
 import { createVueI18nAdapter } from "vuetify/locale/adapters/vue-i18n";
+import enLocale from "./locales/en.ts";
 
 const app = createApp(App);
 
-const messages = { es: esLocale };
+const messages = { en: enLocale, es: esLocale };
 
 const i18n = createI18n({
   legacy: false,
   locale: "es",
-  fallbackLocale: "es",
+  fallbackLocale: "en",
   messages,
 });
 
