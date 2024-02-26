@@ -95,10 +95,12 @@ const submit = async () => {
       icon: "error",
       title: "Error al registrar inventario",
       toast: true,
-      timer: 5000,
+      timer: 2500,
       timerProgressBar: true,
       showConfirmButton: false,
     });
+  } finally {
+    loading.value = false;
   }
 };
 
