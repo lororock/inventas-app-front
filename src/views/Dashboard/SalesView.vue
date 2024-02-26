@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import ITable from "../../components/general/ITable.vue";
 import EntityConfig from "../../interface/entity.config.ts";
+import FormSale from "../../components/admin/sales/FormSale.vue";
 const configTable: EntityConfig = {
   name: "Sale",
   path: "sales",
@@ -10,7 +11,7 @@ const configTable: EntityConfig = {
     { title: "Estado venta", key: "status", sortable: false },
     { title: "Fecha venta", key: "createdAt", sortable: false },
   ],
-  formComponent: null,
+  formComponent: FormSale,
 };
 </script>
 

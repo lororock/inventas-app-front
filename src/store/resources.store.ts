@@ -72,9 +72,20 @@ const useResourceStore = defineStore("resources", () => {
       ],
     },
   ]);
+  const saleTypes = ref<{ label: string; value: number }[]>([
+    {
+      label: "Contado",
+      value: 0,
+    },
+    {
+      label: "Crédito",
+      value: 1,
+    },
+  ]);
 
   return {
     functionsDashboard: functionsDashboard.value,
+    saleTypes: saleTypes.value,
   };
 });
 
