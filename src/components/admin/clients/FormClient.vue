@@ -32,7 +32,9 @@ const loading = ref(false);
 // API
 
 const findClientById = async () => {
+  loading.value = true;
   client.value = await crudStore.findById(props.id);
+  loading.value = false;
 };
 
 const submit = async () => {
@@ -91,9 +93,9 @@ const submit = async () => {
           v-else
         />
       </template>
-      <v-card title="Datos del cliente">
+      <v-card title="Datos del cliente" :disabled="loading" :loading="loading">
         <v-container>
-          <v-form>
+          <v-form :disabled="loading">
             <v-text-field
               variant="outlined"
               density="compact"

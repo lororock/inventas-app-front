@@ -44,6 +44,10 @@ const submitted = async ({
   page: number;
   itemsPerPage: number;
 }) => {
+  await listItems({
+    page,
+    itemsPerPage,
+  });
   await Swal.fire({
     title: "Operación exitosa",
     toast: true,
@@ -51,10 +55,6 @@ const submitted = async ({
     showConfirmButton: false,
     icon: "success",
     timer: 3000,
-  });
-  await listItems({
-    page,
-    itemsPerPage,
   });
 };
 
