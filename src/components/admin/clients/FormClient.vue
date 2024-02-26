@@ -41,7 +41,11 @@ const submit = async () => {
     if (props.mode === 2) {
       await crudStore.create(client.value);
     } else {
-      await crudStore.update(props.id, client.value);
+      delete client.value.id;
+      await crudStore.update(props.id, {
+        ...client.value,
+        status: client.value.status === 2 ? 2 : 3,
+      });
     }
     emit("item-created");
     dialog.value = false;
