@@ -38,20 +38,15 @@ const findClientById = async () => {
 const submit = async () => {
   loading.value = true;
   try {
-    await crudStore.create(client.value);
-    client.value = {
-      names: "",
-      surnames: "",
-      documentNumber: "",
-      documentType: null,
-      phone: "",
-      email: "",
-    };
+    if (props.mode === 2) {
+      await crudStore.create(client.value);
+    } else {
+      await crudStore.update(props.id, client.value);
+    }
     emit("item-created");
-  } catch (error) {
-    console.log(error);
-  } finally {
     dialog.value = false;
+  } catch (error) {
+  } finally {
     loading.value = false;
   }
 };
@@ -142,6 +137,14 @@ const submit = async () => {
               density="compact"
               v-model="client.phone"
               :disabled="isReadOnly"
+            />
+            <v-switch
+              v-if="mode === 1"
+              v-model="client.status"
+              :value="2"
+              :label="`Cliente ${client.status === 2 ? 'activo' : 'inactivo'}`"
+              :color="client.status === 2 ? 'success' : 'info'"
+              hide-details
             />
           </v-form>
         </v-container>
