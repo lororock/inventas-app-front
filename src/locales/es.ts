@@ -7,6 +7,8 @@ const esLocale = {
     dataIterator: {
       noResultsText: "No se encontraron registros correspondientes",
       loadingText: "Cargando items...",
+      rowsPerPageText: "Items por página:",
+      pageText: "{0}-{1} de {2}",
     },
     dataTable: {
       itemsPerPageText: "Filas por página:",
@@ -32,6 +34,10 @@ const esLocale = {
       itemsSelected: "{0} seleccionado(s)",
     },
   },
+  "10": "10",
+  "25": "25",
+  "50": "50",
+  "100": "100",
 };
 
 export default esLocale;

@@ -9,16 +9,24 @@ import router from "./router";
 import { createVuetify } from "vuetify";
 import * as components from "vuetify/components";
 import * as directives from "vuetify/directives";
-import es from "./locales/es";
+import esLocale from "./locales/es";
+import { createI18n, useI18n } from "vue-i18n";
+import { createVueI18nAdapter } from "vuetify/locale/adapters/vue-i18n";
 
 const app = createApp(App);
+
+const messages = { es: esLocale };
+
+const i18n = createI18n({
+  legacy: false,
+  locale: "es",
+  fallbackLocale: "es",
+  messages,
+});
+
 const vuetify = createVuetify({
   locale: {
-    locale: "es",
-    messages: { es },
-    rtl: {
-      customLocale: true,
-    },
+    adapter: createVueI18nAdapter({ i18n, useI18n }),
   },
   icons: {
     defaultSet: "mdi",
