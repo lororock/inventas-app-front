@@ -10,6 +10,8 @@ import Employee from "../views/Dashboard/Employee.vue";
 import CategoryView from "../views/Dashboard/CategoryView.vue";
 import Forbidden from "../views/Forbidden.vue";
 import ProductsView from "../views/Dashboard/ProductsView.vue";
+import InventoriesView from "../views/Dashboard/InventoriesView.vue";
+import ClientsView from "../views/Dashboard/ClientsView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -42,6 +44,18 @@ const router = createRouter({
       name: "Product",
       component: ProductsView,
       meta: { requiresAuth: true, roles: [1, 2, 3] },
+    },
+    {
+      path: "/inventories",
+      name: "Inventory",
+      component: InventoriesView,
+      meta: { requiresAuth: true, roles: [1, 2, 3] },
+    },
+    {
+      path: "/clients",
+      name: "Client",
+      component: ClientsView,
+      meta: { requiresAuth: true, roles: [1, 2] },
     },
     {
       path: "/form",

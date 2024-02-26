@@ -3,6 +3,7 @@ import useCrudStore from "../../../store/crud.store.ts";
 import EntityConfig from "../../../interface/entity.config.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
 import { ref, computed, onMounted } from "vue";
+import InputCurrency from "../../general/InputCurrency.vue";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -155,22 +156,20 @@ onMounted(async () => {
               label="Código de barras"
               :disabled="isReadOnly"
             />
-            <v-text-field
-              prepend-inner-icon="mdi-cash"
-              variant="outlined"
-              density="comfortable"
-              type="number"
-              v-model="product.costPrice"
+            <InputCurrency
               label="Precio compra"
+              v-model="product.costPrice"
+              icon="mdi-cash"
+              :show-buttons="false"
+              color="success"
               :disabled="isReadOnly"
             />
-            <v-text-field
-              prepend-inner-icon="mdi-cash"
-              variant="outlined"
-              density="comfortable"
-              type="number"
-              v-model="product.salePrice"
+            <InputCurrency
               label="Precio venta"
+              v-model="product.salePrice"
+              icon="mdi-cash"
+              :show-buttons="false"
+              color="success"
               :disabled="isReadOnly"
             />
             <v-slider
