@@ -12,6 +12,7 @@ import Forbidden from "../views/Forbidden.vue";
 import ProductsView from "../views/Dashboard/ProductsView.vue";
 import InventoriesView from "../views/Dashboard/InventoriesView.vue";
 import ClientsView from "../views/Dashboard/ClientsView.vue";
+import SalesView from "../views/Dashboard/SalesView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -56,6 +57,12 @@ const router = createRouter({
       name: "Client",
       component: ClientsView,
       meta: { requiresAuth: true, roles: [1, 2] },
+    },
+    {
+      path: "/sales",
+      name: "Sale",
+      component: SalesView,
+      meta: { requiresAuth: true, roles: [1, 2, 3] },
     },
     {
       path: "/form",
