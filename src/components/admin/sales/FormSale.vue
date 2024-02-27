@@ -5,6 +5,7 @@ import EntityConfig from "../../../interface/entity.config.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
 import { computed, onMounted, ref } from "vue";
 import Swal from "sweetalert2";
+import InputCurrency from "../../general/InputCurrency.vue";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -127,6 +128,16 @@ const foundProductByBarcode = () => {
         quantity: 1,
       });
     }
+  }
+};
+
+const calculateSubtotal = (id: string) => {
+  const productSelected = productsSelected.value.find(
+    (product) => product.id === id,
+  );
+  if (productSelected) {
+    productSelected.subtotal =
+      productSelected.quantity * productSelected.salePrice;
   }
 };
 
@@ -267,7 +278,24 @@ onMounted(async () => {
                   :items="productsSelected"
                   height="400"
                   item-value="name"
-                />
+                >
+                  <template v-slot:item.quantity="{ item }">
+                    <InputCurrency
+                      v-model="item.quantity"
+                      currency="CAN"
+                      :showButtons="false"
+                      @input="calculateSubtotal(item.id)"
+                    />
+                  </template>
+                  <template v-slot:item.subtotal="{ item }">
+                    <InputCurrency
+                      v-model="item.subtotal"
+                      bg-color="green-darken-2"
+                      :readonly="true"
+                      :showButtons="false"
+                    />
+                  </template>
+                </v-data-table-virtual>
               </v-col>
             </v-row>
           </v-form>
