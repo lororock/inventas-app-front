@@ -24,15 +24,7 @@ const emit = defineEmits(["item-created"]);
 const sale = ref<any>({ type: 0 });
 const clients = ref<{ documentNumber: string; documentType: number }[]>([]);
 const inventories = ref<{ id: string; location: string }[]>([]);
-const products = ref<
-  {
-    id: string;
-    name: string;
-    barcode: string;
-    attrs?: any;
-    salePrice: number;
-  }[]
->([]);
+
 const barcodeTemp = ref<string>("");
 
 const headersProductsSelected = ref<any[]>([
@@ -50,6 +42,20 @@ const productsSelected = ref<
     salePrice: number;
   }[]
 >([]);
+
+const products = computed<
+  {
+    id: string;
+    name: string;
+    barcode: string;
+    attrs?: any;
+    salePrice: number;
+  }[]
+>(() => {
+  return sale.value.inventoryId?.productInventories.map(({ product }) => ({
+    ...product,
+  }));
+});
 
 const totalQuantity = computed<number>(() => {
   return +productsSelected.value.reduce(
@@ -72,10 +78,14 @@ const submit = async () => {
   try {
     const data = {
       ...sale.value,
-      clientId: sale.value.clientId.id,
-      inventoryId: sale.value.inventoryId.id,
+      clientId: sale.value.clientId?.id,
+      inventoryId: sale.value.inventoryId?.id,
+      productsIds: productsSelected.value.map(({ id, quantity }) => ({
+        id,
+        quantity,
+      })),
     };
-    console.log(data);
+    await crudStore.create(data);
     emit("item-created");
     handleClose();
   } catch (error) {
@@ -86,16 +96,10 @@ const submit = async () => {
 };
 
 const findInventories = async () => {
-  const foundInventories = await crudStore.customRequest({
+  inventories.value = await crudStore.customRequest({
     method: "GET",
     path: "inventories/find/all",
   });
-  inventories.value = foundInventories.map(
-    ({ location, id }: { location: string; id: string }) => ({
-      id,
-      location,
-    }),
-  );
 };
 
 const findClients = async () => {
@@ -120,13 +124,6 @@ const findClients = async () => {
       fullName: `${names} ${surnames} - ${documentNumber}`,
     }),
   );
-};
-
-const findProducts = async () => {
-  products.value = await crudStore.customRequest({
-    method: "GET",
-    path: "products/find/all",
-  });
 };
 
 const foundProductByBarcode = () => {
@@ -187,7 +184,6 @@ const handleClose = () => {
 
 onMounted(async () => {
   await findClients();
-  await findProducts();
   await findInventories();
 });
 </script>
@@ -244,10 +240,10 @@ onMounted(async () => {
                   density="compact"
                   variant="outlined"
                   v-model="sale.inventoryId"
-                  label="Clientes"
+                  label="Seleccionar inventario"
                   :items="inventories"
                   item-title="location"
-                  :disabled="isReadOnly"
+                  :disabled="isReadOnly || !!sale.inventoryId"
                   :chips="true"
                   item-color="info"
                   :return-object="true"
@@ -307,6 +303,7 @@ onMounted(async () => {
                   @focusout="focused = false"
                   @keydown.enter="foundProductByBarcode"
                   v-model="barcodeTemp"
+                  :disabled="!sale.inventoryId"
                 >
                   <template #append>
                     <v-tooltip
