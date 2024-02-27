@@ -5,6 +5,7 @@ import EntityConfig, { columnTable } from "../../interface/entity.config.ts";
 import ListProductForInventory from "../admin/inventories/ListProductForInventory.vue";
 import Swal from "sweetalert2";
 import { format } from "@formkit/tempo";
+import InputCurrency from "./InputCurrency.vue";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -32,7 +33,10 @@ const listItems = async ({
   loading.value = true;
   try {
     const result = await crudStore.findAll({ page, limit: itemsPerPage });
-    serverItems.value = result.items;
+    serverItems.value = result.items.map((i) => ({
+      ...i,
+      totalAmount: +i.totalAmount,
+    }));
     totalItems.value = result.meta.totalItems;
   } catch (error) {
     console.error(error);
@@ -167,6 +171,13 @@ onMounted(() => {
                 format: "MMMM D, YYYY h:mm a",
               })
             }}
+          </template>
+          <template v-slot:item.totalAmount="{ item }">
+            <InputCurrency
+              v-model="item.totalAmount"
+              variant="plain"
+              :show-buttons="false"
+            />
           </template>
         </v-data-table-server>
       </v-card-item>

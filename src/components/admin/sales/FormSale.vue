@@ -52,7 +52,7 @@ const products = computed<
     salePrice: number;
   }[]
 >(() => {
-  return sale.value.inventoryId?.productInventories.map(({ product }) => ({
+  return sale.value.inventoryId?.productInventories.map(({ product }: any) => ({
     ...product,
   }));
 });
@@ -80,10 +80,12 @@ const submit = async () => {
       ...sale.value,
       clientId: sale.value.clientId?.id,
       inventoryId: sale.value.inventoryId?.id,
-      productsIds: productsSelected.value.map(({ id, quantity }) => ({
-        id,
-        quantity,
-      })),
+      productsIds: productsSelected.value.map(
+        ({ id, quantity }: { id: string; quantity: number }) => ({
+          id,
+          quantity,
+        }),
+      ),
     };
     await crudStore.create(data);
     emit("item-created");
