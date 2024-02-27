@@ -22,8 +22,32 @@ const emit = defineEmits(["item-created"]);
 
 const sale = ref<any>({});
 const clients = ref<{ documentNumber: string; documentType: number }[]>([]);
-const products = ref<{ name: string; barcode: string; attrs?: any }[]>([]);
+const products = ref<
+  {
+    id: string;
+    name: string;
+    barcode: string;
+    attrs?: any;
+    salePrice: number;
+  }[]
+>([]);
 const barcodeTemp = ref<string>("");
+
+const headersProductsSelected = ref<any[]>([
+  { title: "Producto", key: "name", sortable: false },
+  { title: "precio unitario", key: "salePrice", sortable: false },
+  { title: "#", key: "quantity", sortable: false },
+  { title: "Subtotal", key: "subtotal", sortable: false },
+]);
+const productsSelected = ref<
+  {
+    id: string;
+    name: string;
+    subtotal: number;
+    quantity: number;
+    salePrice: number;
+  }[]
+>([]);
 
 const isReadOnly = computed(() => props.mode === 0);
 
@@ -84,9 +108,25 @@ const foundProductByBarcode = () => {
       title: "Producto no encontrado",
       icon: "error",
     });
-    //emitir sonido de no encontrado
+    //TODO emitir sonido de no encontrado
   } else {
-    //emitir sonido de no encontrado
+    //TODO emitir sonido de no encontrado
+    const productSelected = productsSelected.value.find(
+      (product) => product.id === foundProduct.id,
+    );
+    if (productSelected) {
+      productSelected.quantity = productSelected.quantity + 1;
+      productSelected.subtotal =
+        productSelected.quantity * productSelected.salePrice;
+    } else {
+      productsSelected.value.push({
+        id: foundProduct.id,
+        name: foundProduct.name,
+        salePrice: foundProduct.salePrice,
+        subtotal: foundProduct.salePrice,
+        quantity: 1,
+      });
+    }
   }
 };
 
@@ -219,6 +259,15 @@ onMounted(async () => {
                     </v-tooltip>
                   </template>
                 </v-text-field>
+              </v-col>
+              <v-col cols="12">
+                <hr />
+                <v-data-table-virtual
+                  :headers="headersProductsSelected"
+                  :items="productsSelected"
+                  height="400"
+                  item-value="name"
+                />
               </v-col>
             </v-row>
           </v-form>
