@@ -21,7 +21,7 @@ const salesTypes = ref(resourceStore.saleTypes);
 
 const emit = defineEmits(["item-created"]);
 
-const sale = ref<any>({});
+const sale = ref<any>({ type: 0 });
 const clients = ref<{ documentNumber: string; documentType: number }[]>([]);
 const products = ref<
   {
@@ -69,7 +69,10 @@ const isReadOnly = computed(() => props.mode === 0);
 const submit = async () => {
   loading.value = !loading.value;
   try {
+    const data = { ...sale.value, clientId: sale.value.clientId.id };
+    console.log(data);
     emit("item-created");
+    handleClose();
   } catch (error) {
     console.error(error);
   } finally {
@@ -82,7 +85,6 @@ const findClients = async () => {
     method: "GET",
     path: "clients/find/all",
   });
-  console.log();
 
   clients.value = foundClients.map(
     ({
@@ -158,6 +160,12 @@ const calculateSubtotal = (id: string) => {
 const focused = ref<boolean>(false);
 const dialog = ref<boolean>(false);
 const loading = ref(false);
+
+const handleClose = () => {
+  productsSelected.value = [];
+  dialog.value = false;
+  sale.value = { type: 0 };
+};
 
 onMounted(async () => {
   await findClients();
@@ -245,6 +253,7 @@ onMounted(async () => {
               </v-col>
               <v-col cols="4">
                 <v-select
+                  v-model="sale.type"
                   label="Tipo de factura"
                   variant="outlined"
                   density="compact"
@@ -304,7 +313,6 @@ onMounted(async () => {
                   <template v-slot:item.quantity="{ item }">
                     <InputCurrency
                       v-model.number="item.quantity"
-                      variant="plain"
                       currency="CAN"
                       :showButtons="false"
                       :min-value="1"
@@ -355,10 +363,11 @@ onMounted(async () => {
             color="success"
             variant="tonal"
             @click="submit()"
+            :disabled="productsSelected.length === 0"
           >
             Registrar
           </v-btn>
-          <v-btn color="red-darken-1" variant="tonal" @click="dialog = !dialog">
+          <v-btn color="red-darken-1" variant="tonal" @click="handleClose">
             Cancelar
           </v-btn>
         </v-card-actions>
