@@ -23,6 +23,7 @@ const emit = defineEmits(["item-created"]);
 
 const sale = ref<any>({ type: 0 });
 const clients = ref<{ documentNumber: string; documentType: number }[]>([]);
+const inventories = ref<{ id: string; location: string }[]>([]);
 const products = ref<
   {
     id: string;
@@ -69,7 +70,11 @@ const isReadOnly = computed(() => props.mode === 0);
 const submit = async () => {
   loading.value = !loading.value;
   try {
-    const data = { ...sale.value, clientId: sale.value.clientId.id };
+    const data = {
+      ...sale.value,
+      clientId: sale.value.clientId.id,
+      inventoryId: sale.value.inventoryId.id,
+    };
     console.log(data);
     emit("item-created");
     handleClose();
@@ -78,6 +83,19 @@ const submit = async () => {
   } finally {
     loading.value = !loading.value;
   }
+};
+
+const findInventories = async () => {
+  const foundInventories = await crudStore.customRequest({
+    method: "GET",
+    path: "inventories/find/all",
+  });
+  inventories.value = foundInventories.map(
+    ({ location, id }: { location: string; id: string }) => ({
+      id,
+      location,
+    }),
+  );
 };
 
 const findClients = async () => {
@@ -170,6 +188,7 @@ const handleClose = () => {
 onMounted(async () => {
   await findClients();
   await findProducts();
+  await findInventories();
 });
 </script>
 
@@ -221,7 +240,21 @@ onMounted(async () => {
           <v-form>
             <v-row>
               <v-col cols="8">
-                <v-combobox
+                <v-autocomplete
+                  density="compact"
+                  variant="outlined"
+                  v-model="sale.inventoryId"
+                  label="Clientes"
+                  :items="inventories"
+                  item-title="location"
+                  :disabled="isReadOnly"
+                  :chips="true"
+                  item-color="info"
+                  :return-object="true"
+                />
+              </v-col>
+              <v-col cols="8">
+                <v-autocomplete
                   density="compact"
                   variant="outlined"
                   v-model="sale.clientId"
@@ -231,6 +264,7 @@ onMounted(async () => {
                   :disabled="isReadOnly"
                   :chips="true"
                   item-color="info"
+                  :return-object="true"
                 >
                   <template #append>
                     <v-tooltip text="Crear cliente">
@@ -249,7 +283,7 @@ onMounted(async () => {
                       :subtitle="item.raw.documentNumber"
                     />
                   </template>
-                </v-combobox>
+                </v-autocomplete>
               </v-col>
               <v-col cols="4">
                 <v-select
