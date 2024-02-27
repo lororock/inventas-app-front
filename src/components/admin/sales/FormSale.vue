@@ -4,6 +4,7 @@ import useResourceStore from "../../../store/resources.store.ts";
 import EntityConfig from "../../../interface/entity.config.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
 import { computed, onMounted, ref } from "vue";
+import Swal from "sweetalert2";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -22,6 +23,7 @@ const emit = defineEmits(["item-created"]);
 const sale = ref<any>({});
 const clients = ref<{ documentNumber: string; documentType: number }[]>([]);
 const products = ref<{ name: string; barcode: string; attrs?: any }[]>([]);
+const barcodeTemp = ref<string>("");
 
 const isReadOnly = computed(() => props.mode === 0);
 
@@ -66,6 +68,26 @@ const findProducts = async () => {
     method: "GET",
     path: "products/find/all",
   });
+};
+
+const foundProductByBarcode = () => {
+  const foundProduct = products.value.find(
+    ({ barcode }) => barcode === barcodeTemp.value,
+  );
+  barcodeTemp.value = "";
+  if (!foundProduct) {
+    Swal.fire({
+      position: "top-end",
+      timer: 1500,
+      toast: true,
+      showConfirmButton: false,
+      title: "Producto no encontrado",
+      icon: "error",
+    });
+    //emitir sonido de no encontrado
+  } else {
+    //emitir sonido de no encontrado
+  }
 };
 
 const focused = ref<boolean>(false);
@@ -175,6 +197,8 @@ onMounted(async () => {
                   variant="outlined"
                   @focus="focused = true"
                   @focusout="focused = false"
+                  @keydown.enter="foundProductByBarcode"
+                  v-model="barcodeTemp"
                 >
                   <template #append>
                     <v-tooltip
@@ -200,7 +224,7 @@ onMounted(async () => {
           </v-form>
         </v-container>
         <v-card-actions>
-          <v-spacer></v-spacer>
+          <v-spacer />
           <v-btn
             v-if="mode === 1"
             color="indigo"
