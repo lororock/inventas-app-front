@@ -123,18 +123,21 @@ const handleClose = async () => {
     <v-card title="Datos inventario" :loading="loading" :disabled="loading">
       <v-container>
         <v-form>
-          <v-combobox
+          <v-autocomplete
             v-model="productsSelected"
             density="compact"
             label="Productos"
             variant="outlined"
             :items="productsFound"
             item-title="name"
+            item-value="id"
             color="success"
             :multiple="true"
             :chips="true"
             closable-chips
             item-color="success"
+            :creatable="false"
+            :return-object="true"
           />
           <v-table fixed-header height="300px">
             <thead>

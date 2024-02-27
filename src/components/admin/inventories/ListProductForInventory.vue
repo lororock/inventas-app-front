@@ -96,13 +96,16 @@ const updateInventory = async () => {
               </v-btn>
             </template>
             <template v-slot:item.quantity="{ item }">
-              <InputCurrency v-model="item.quantity" currency="CAN" />
+              <InputCurrency
+                v-model="item.quantity"
+                currency="CAN"
+                :show-buttons="false"
+              />
             </template>
           </v-data-table>
         </v-card-item>
         <v-card-actions>
           <v-spacer />
-          <v-btn color="primary" variant="tonal"> Guardar cambios </v-btn>
           <v-btn color="red-darken-1" variant="tonal" @click="dialog = !dialog">
             Cancelar
           </v-btn>
