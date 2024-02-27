@@ -50,6 +50,20 @@ const productsSelected = ref<
   }[]
 >([]);
 
+const totalQuantity = computed<number>(() => {
+  return +productsSelected.value.reduce(
+    (acc, product) => acc + product.quantity,
+    0,
+  );
+});
+
+const totalSum = computed<number>(() => {
+  return +productsSelected.value.reduce(
+    (acc, product) => acc + product.subtotal,
+    0,
+  );
+});
+
 const isReadOnly = computed(() => props.mode === 0);
 
 const submit = async () => {
@@ -116,15 +130,15 @@ const foundProductByBarcode = () => {
       (product) => product.id === foundProduct.id,
     );
     if (productSelected) {
-      productSelected.quantity = productSelected.quantity + 1;
+      productSelected.quantity = +productSelected.quantity + 1;
       productSelected.subtotal =
-        productSelected.quantity * productSelected.salePrice;
+        +productSelected.quantity * +productSelected.salePrice;
     } else {
       productsSelected.value.push({
         id: foundProduct.id,
         name: foundProduct.name,
-        salePrice: foundProduct.salePrice,
-        subtotal: foundProduct.salePrice,
+        salePrice: +foundProduct.salePrice,
+        subtotal: +foundProduct.salePrice,
         quantity: 1,
       });
     }
@@ -137,7 +151,7 @@ const calculateSubtotal = (id: string) => {
   );
   if (productSelected) {
     productSelected.subtotal =
-      productSelected.quantity * productSelected.salePrice;
+      +productSelected.quantity * +productSelected.salePrice;
   }
 };
 
@@ -279,23 +293,49 @@ onMounted(async () => {
                   height="400"
                   item-value="name"
                 >
+                  <template v-slot:item.salePrice="{ item }">
+                    <InputCurrency
+                      v-model.number="item.salePrice"
+                      variant="plain"
+                      :readonly="true"
+                      :showButtons="false"
+                    />
+                  </template>
                   <template v-slot:item.quantity="{ item }">
                     <InputCurrency
-                      v-model="item.quantity"
+                      v-model.number="item.quantity"
+                      variant="plain"
                       currency="CAN"
                       :showButtons="false"
+                      :min-value="1"
                       @input="calculateSubtotal(item.id)"
                     />
                   </template>
                   <template v-slot:item.subtotal="{ item }">
                     <InputCurrency
-                      v-model="item.subtotal"
-                      bg-color="green-darken-2"
+                      v-model.number="item.subtotal"
+                      variant="plain"
                       :readonly="true"
                       :showButtons="false"
                     />
                   </template>
                 </v-data-table-virtual>
+              </v-col>
+              <v-col cols="12">
+                <hr />
+                <InputCurrency
+                  v-model.number="totalQuantity"
+                  currency="CAN"
+                  bg-color="green"
+                  :readonly="true"
+                  :showButtons="false"
+                />
+                <InputCurrency
+                  v-model.number="totalSum"
+                  bg-color="green-darken-1"
+                  :readonly="true"
+                  :showButtons="false"
+                />
               </v-col>
             </v-row>
           </v-form>
