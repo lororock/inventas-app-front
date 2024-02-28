@@ -49,6 +49,7 @@ onMounted(() => {
               v-model="configStore.inventoryId"
               item-title="location"
               item-value="id"
+              :clearable="true"
               @update:modelValue="configStore.saveInventoryId"
             />
           </v-list-item>

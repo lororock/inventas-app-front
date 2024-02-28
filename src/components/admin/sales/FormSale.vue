@@ -6,6 +6,7 @@ import LoadInProgress from "../../general/LoadInProgress.vue";
 import { computed, onMounted, ref } from "vue";
 import Swal from "sweetalert2";
 import InputCurrency from "../../general/InputCurrency.vue";
+import useConfigStore from "../../../store/use.config.store.ts";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -13,6 +14,8 @@ const props = defineProps({
   id: { type: String, default: "" },
   mode: { type: Number, required: true },
 });
+
+const configStore = useConfigStore();
 
 const crudStore = useCrudStore(props.config)();
 const resourceStore = useResourceStore();
@@ -185,6 +188,7 @@ const handleClose = () => {
 };
 
 onMounted(async () => {
+  await configStore.validateInventoryChecked();
   await findClients();
   await findInventories();
 });
