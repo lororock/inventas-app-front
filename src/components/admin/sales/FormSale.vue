@@ -184,6 +184,10 @@ const handleClose = () => {
   sale.value = { type: 0 };
 };
 
+const findSaleById = () => {
+  console.log(props.id);
+};
+
 onMounted(async () => {
   await configStore.validateInventoryChecked();
   await findClients();
@@ -203,11 +207,7 @@ onMounted(async () => {
           color="primary"
           icon="mdi-eye"
           v-bind="props"
-          @click="
-            () => {
-              console.log('ok');
-            }
-          "
+          @click="findSaleById"
           v-if="mode === 0"
         />
         <v-btn
@@ -217,11 +217,7 @@ onMounted(async () => {
           icon="mdi-pencil"
           variant="outlined"
           v-bind="props"
-          @click="
-            () => {
-              console.log('ok');
-            }
-          "
+          @click="findSaleById"
           v-else-if="mode === 1"
         />
         <v-btn
@@ -246,7 +242,7 @@ onMounted(async () => {
                   label="Clientes"
                   :items="clients"
                   item-title="fullName"
-                  :disabled="isReadOnly"
+                  :disabled="mode !== 2"
                   :chips="true"
                   item-color="info"
                   :return-object="true"
@@ -280,6 +276,7 @@ onMounted(async () => {
                   :items="salesTypes"
                   item-value="value"
                   item-title="label"
+                  :disabled="mode !== 2"
                 />
               </v-col>
               <v-col cols="6">
@@ -293,6 +290,7 @@ onMounted(async () => {
                   @focusout="focused = false"
                   @keydown.enter="foundProductByBarcode"
                   v-model="barcodeTemp"
+                  :disabled="mode !== 2"
                 >
                   <template #append>
                     <v-tooltip
