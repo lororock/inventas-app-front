@@ -26,8 +26,6 @@ const emit = defineEmits(["item-created"]);
 
 const sale = ref<any>({ type: 0 });
 const clients = ref<{ documentNumber: string; documentType: number }[]>([]);
-const inventories = ref<{ id: string; location: string }[]>([]);
-
 const barcodeTemp = ref<string>("");
 
 const headersProductsSelected = ref<any[]>([
@@ -46,7 +44,7 @@ const productsSelected = ref<
   }[]
 >([]);
 
-const products = computed<
+const products = ref<
   {
     id: string;
     name: string;
@@ -54,11 +52,7 @@ const products = computed<
     attrs?: any;
     salePrice: number;
   }[]
->(() => {
-  return sale.value.inventoryId?.productInventories.map(({ product }: any) => ({
-    ...product,
-  }));
-});
+>([]);
 
 const totalQuantity = computed<number>(() => {
   return +productsSelected.value.reduce(
@@ -82,7 +76,7 @@ const submit = async () => {
     const data = {
       ...sale.value,
       clientId: sale.value.clientId?.id,
-      inventoryId: sale.value.inventoryId?.id,
+      inventoryId: configStore.inventoryId,
       productsIds: productsSelected.value.map(
         ({ id, quantity }: { id: string; quantity: number }) => ({
           id,
@@ -98,13 +92,6 @@ const submit = async () => {
   } finally {
     loading.value = !loading.value;
   }
-};
-
-const findInventories = async () => {
-  inventories.value = await crudStore.customRequest({
-    method: "GET",
-    path: "inventories/find/all",
-  });
 };
 
 const findClients = async () => {
@@ -129,6 +116,16 @@ const findClients = async () => {
       fullName: `${names} ${surnames} - ${documentNumber}`,
     }),
   );
+};
+
+const findProducts = async () => {
+  const { productInventories } = await crudStore.customRequest({
+    method: "GET",
+    path: `inventories/${configStore.inventoryId}`,
+  });
+  products.value = productInventories.map(({ product }: any) => ({
+    ...product,
+  }));
 };
 
 const foundProductByBarcode = () => {
@@ -190,7 +187,7 @@ const handleClose = () => {
 onMounted(async () => {
   await configStore.validateInventoryChecked();
   await findClients();
-  await findInventories();
+  await findProducts();
 });
 </script>
 
@@ -245,20 +242,6 @@ onMounted(async () => {
                 <v-autocomplete
                   density="compact"
                   variant="outlined"
-                  v-model="sale.inventoryId"
-                  label="Seleccionar inventario"
-                  :items="inventories"
-                  item-title="location"
-                  :disabled="isReadOnly || !!sale.inventoryId"
-                  :chips="true"
-                  item-color="info"
-                  :return-object="true"
-                />
-              </v-col>
-              <v-col cols="8">
-                <v-autocomplete
-                  density="compact"
-                  variant="outlined"
                   v-model="sale.clientId"
                   label="Clientes"
                   :items="clients"
@@ -267,6 +250,7 @@ onMounted(async () => {
                   :chips="true"
                   item-color="info"
                   :return-object="true"
+                  :clearable="true"
                 >
                   <template #append>
                     <v-tooltip text="Crear cliente">
@@ -309,7 +293,6 @@ onMounted(async () => {
                   @focusout="focused = false"
                   @keydown.enter="foundProductByBarcode"
                   v-model="barcodeTemp"
-                  :disabled="!sale.inventoryId"
                 >
                   <template #append>
                     <v-tooltip
