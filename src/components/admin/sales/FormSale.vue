@@ -68,8 +68,6 @@ const totalSum = computed<number>(() => {
   );
 });
 
-const isReadOnly = computed(() => props.mode === 0);
-
 const submit = async () => {
   loading.value = !loading.value;
   try {
@@ -184,8 +182,9 @@ const handleClose = () => {
   sale.value = { type: 0 };
 };
 
-const findSaleById = () => {
-  console.log(props.id);
+const findSaleById = async () => {
+  const saleFound = await crudStore.findById(props.id);
+  console.log(saleFound);
 };
 
 onMounted(async () => {
