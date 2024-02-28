@@ -2,7 +2,7 @@ import { defineStore } from "pinia";
 import { ref } from "vue";
 
 const useConfigStore = defineStore("config", () => {
-  const inventoryId = ref(localStorage.getItem("inventoryId") || null);
+  const inventoryId: any = ref(localStorage.getItem("inventoryId"));
 
   const saveInventoryId = (id: string) => {
     localStorage.setItem("inventoryId", id);

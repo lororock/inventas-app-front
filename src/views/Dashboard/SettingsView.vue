@@ -1,6 +1,8 @@
 <script setup lang="ts">
 import useCrudStore from "../../store/crud.store.ts";
 import { onMounted, ref } from "vue";
+import useConfigStore from "../../store/use.config.store.ts";
+const configStore = useConfigStore();
 
 const crudStore = useCrudStore({
   name: "",
@@ -44,9 +46,10 @@ onMounted(() => {
               density="compact"
               variant="outlined"
               :items="inventories"
+              v-model="configStore.inventoryId"
               item-title="location"
               item-value="id"
-              @update:model-value="console.log('12')"
+              @update:modelValue="configStore.saveInventoryId"
             />
           </v-list-item>
         </v-list>
