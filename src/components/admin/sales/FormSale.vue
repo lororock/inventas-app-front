@@ -3,7 +3,7 @@ import useCrudStore from "../../../store/crud.store.ts";
 import useResourceStore from "../../../store/resources.store.ts";
 import EntityConfig from "../../../interface/entity.config.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
-import { computed, onMounted, ref } from "vue";
+import { computed, ref } from "vue";
 import Swal from "sweetalert2";
 import InputCurrency from "../../general/InputCurrency.vue";
 import useConfigStore from "../../../store/use.config.store.ts";
@@ -187,11 +187,14 @@ const findSaleById = async () => {
   console.log(saleFound);
 };
 
-onMounted(async () => {
+const loadData = async () => {
   await configStore.validateInventoryChecked();
   await findClients();
   await findProducts();
-});
+  if (props.mode !== 2) {
+    await findSaleById();
+  }
+};
 </script>
 
 <template>
@@ -206,7 +209,7 @@ onMounted(async () => {
           color="primary"
           icon="mdi-eye"
           v-bind="props"
-          @click="findSaleById"
+          @click="loadData"
           v-if="mode === 0"
         />
         <v-btn
@@ -216,7 +219,7 @@ onMounted(async () => {
           icon="mdi-pencil"
           variant="outlined"
           v-bind="props"
-          @click="findSaleById"
+          @click="loadData"
           v-else-if="mode === 1"
         />
         <v-btn
@@ -225,6 +228,7 @@ onMounted(async () => {
           color="success"
           icon="mdi-plus"
           variant="outlined"
+          @click="loadData"
           v-bind="props"
           v-else
         />
