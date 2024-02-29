@@ -408,6 +408,7 @@ const loadData = async () => {
                       currency="CAN"
                       :showButtons="false"
                       :min-value="1"
+                      :variant="mode !== 2 ? 'plain' : 'outlined'"
                       :readonly="mode !== 2"
                       @input="calculateSubtotal(item.id)"
                     />
