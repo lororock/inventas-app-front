@@ -196,8 +196,8 @@ onMounted(async () => {
               v-if="mode === 1"
               v-model="product.status"
               :value="2"
-              :label="`Categoria ${
-                product.status === 2 ? 'activa' : 'inactiva'
+              :label="`Producto ${
+                product.status === 2 ? 'activo' : 'inactiva'
               }`"
               :color="product.status === 2 ? 'success' : 'red'"
               hide-details

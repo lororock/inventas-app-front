@@ -7,6 +7,7 @@ import { computed, ref } from "vue";
 import Swal from "sweetalert2";
 import InputCurrency from "../../general/InputCurrency.vue";
 import useConfigStore from "../../../store/use.config.store.ts";
+import { format } from "@formkit/tempo";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -184,7 +185,20 @@ const handleClose = () => {
 
 const findSaleById = async () => {
   const saleFound = await crudStore.findById(props.id);
-  console.log(saleFound);
+  sale.value = {
+    ...sale.value,
+    createdAt: saleFound.createdAt,
+    status: saleFound.status,
+  };
+  productsSelected.value = saleFound.salesDetails.map(
+    ({ id, product, quantity, subtotal, unitPrice }: any) => ({
+      id,
+      name: product.name,
+      quantity,
+      subtotal: +subtotal,
+      unitPrice: +unitPrice,
+    }),
+  );
 };
 
 const loadData = async () => {
@@ -315,9 +329,23 @@ const loadData = async () => {
                   </template>
                 </v-text-field>
               </v-col>
+              <v-col cols="6">
+                <v-switch
+                  :prepend-icon="sale.status === 2 ? 'mdi-check' : 'mdi-close'"
+                  v-model="sale.status"
+                  hide-details
+                  :true-value="2"
+                  :false-value="3"
+                  :color="sale.status === 2 ? 'success' : 'red'"
+                  :label="
+                    sale.status === 2 ? 'Venta activa' : 'Venta rechazada'
+                  "
+                ></v-switch>
+              </v-col>
               <v-col cols="12">
                 <hr />
                 <v-data-table-virtual
+                  :disabled="mode !== 2"
                   :headers="headersProductsSelected"
                   :items="productsSelected"
                   height="400"
@@ -337,6 +365,7 @@ const loadData = async () => {
                       currency="CAN"
                       :showButtons="false"
                       :min-value="1"
+                      :readonly="mode !== 2"
                       @input="calculateSubtotal(item.id)"
                     />
                   </template>
@@ -351,7 +380,16 @@ const loadData = async () => {
                 </v-data-table-virtual>
               </v-col>
               <v-col cols="12">
-                <hr />
+                <v-text-field
+                  density="compact"
+                  :model-value="`Factura creada ${format({
+                    date: sale.createdAt,
+                    format: 'MMMM D, YYYY h:mm a',
+                  })}`"
+                  bg-color="primary"
+                  v-if="mode !== 2"
+                  :showButtons="false"
+                />
                 <InputCurrency
                   v-model.number="totalQuantity"
                   currency="CAN"
