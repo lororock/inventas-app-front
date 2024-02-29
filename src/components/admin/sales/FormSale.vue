@@ -201,6 +201,48 @@ const findSaleById = async () => {
   );
 };
 
+const changeStatusForSaleById = async () => {
+  loading.value = true;
+  dialog.value = false;
+  const title = `¿Quieres ${
+    sale.value.status === 3 ? "cancelar" : "reactivar"
+  } la venta?`;
+  const { isConfirmed, isDenied } = await Swal.fire({
+    title,
+    showDenyButton: true,
+    showCancelButton: true,
+    confirmButtonText: "Si",
+    denyButtonText: "No",
+  });
+  if (isConfirmed) {
+    try {
+      await crudStore.update(props.id, { status: sale.value.status });
+      await Swal.fire({
+        title: "Operacion exitosa",
+        toast: true,
+        position: "top-end",
+        icon: "success",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      emit("item-created");
+    } catch (error) {
+      await Swal.fire({
+        title: "Error al tratar",
+        toast: true,
+        position: "top-end",
+        icon: "error",
+        showConfirmButton: false,
+        timer: 3000,
+      });
+      dialog.value = true;
+    }
+  } else if (isDenied) {
+    dialog.value = true;
+  }
+  loading.value = false;
+};
+
 const loadData = async () => {
   await configStore.validateInventoryChecked();
   await findClients();
@@ -340,6 +382,7 @@ const loadData = async () => {
                   :label="
                     sale.status === 2 ? 'Venta activa' : 'Venta rechazada'
                   "
+                  @update:model-value="changeStatusForSaleById"
                 ></v-switch>
               </v-col>
               <v-col cols="12">
