@@ -172,6 +172,14 @@ onMounted(() => {
               })
             }}
           </template>
+          <template v-slot:item.billedMonth="{ item }">
+            {{
+              format({
+                date: `${item.createdAt}`,
+                format: "MMMM",
+              })
+            }}
+          </template>
           <template v-slot:item.totalAmount="{ item }">
             <InputCurrency
               v-model="item.totalAmount"
