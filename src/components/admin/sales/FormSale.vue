@@ -383,6 +383,7 @@ const loadData = async () => {
                   :label="
                     sale.status === 2 ? 'Venta activa' : 'Venta rechazada'
                   "
+                  v-if="mode !== 2"
                   @update:model-value="changeStatusForSaleById"
                 ></v-switch>
               </v-col>
