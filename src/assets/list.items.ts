@@ -77,7 +77,7 @@ export const functionsDashboard: DashboardItem[] = [
     ],
   },
   {
-    roles: [1, 2],
+    roles: [1, 2, 3],
     title: "Módulo de recursos",
     items: [
       {
@@ -87,53 +87,22 @@ export const functionsDashboard: DashboardItem[] = [
         title: "Categorias productos",
         path: "categories",
       },
+      {
+        id: 1,
+        roles: [1, 2, 3],
+        icon: "mdi-basket",
+        title: "Productos/Servicios",
+        path: "categories",
+      },
+      {
+        id: 1,
+        roles: [1, 2, 3],
+        icon: "mdi-store-outline",
+        title: "Inventario",
+        path: "categories",
+      },
     ],
   },
-  /**
-  {
-    rol: 1,
-    title: "Módulo de ventas",
-    items: [
-      { id: 4, rol: 2, icon: "mdi-cash-plus", title: "Registro Ventas" },
-      { id: 5, rol: 2, icon: "mdi-account-group", title: "Clientes" },
-      { id: 6, rol: 2, icon: "mdi-cash-plus", title: "Cuentas por cobrar" },
-      { id: 7, rol: 2, icon: "mdi-currency-eth", title: "Movimientos" },
-    ]
-  },
-  {
-    rol: 1,
-    title: "Módulo de inventario",
-    items: [{ id: 8, rol: 2, icon: "mdi-barcode", title: "Registro Productos" },
-      { id: 9, rol: 2, icon: "mdi-shape", title: "Categorias" },
-      { id: 10, rol: 2, icon: "mdi-text-short", title: "Marcas" },
-      { id: 11, rol: 2, icon: "mdi-warehouse", title: "Bodegas" },
-      { id: 12, rol: 2, icon: "mdi-share-all-outline", title: "Movimientos" },]
-  },
-  {
-    rol: 1,
-    title: "Módulo de usuarios",
-    items: [
-      {
-        id: 13,
-        rol: 2,
-        icon: "mdi-account-multiple",
-        title: "Registro empleados",
-      },
-      {
-        id: 14,
-        rol: 2,
-        icon: "mdi-account-cog",
-        title: "Actualizar empleados",
-      },
-      {
-        id: 15,
-        rol: 2,
-        icon: "mdi-cash-register",
-        title: "Cajas",
-      },
-    ]
-  },
-      */
 ];
 
 export const recommendationsFormDashboard = [

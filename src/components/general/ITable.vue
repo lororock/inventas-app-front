@@ -2,6 +2,11 @@
 import { ref, onMounted } from "vue";
 import useCrudStore from "../../store/crud.store.ts";
 import EntityConfig, { columnTable } from "../../interface/entity.config.ts";
+import ListProductForInventory from "../admin/inventories/ListProductForInventory.vue";
+import Swal from "sweetalert2";
+import { format } from "@formkit/tempo";
+import InputCurrency from "./InputCurrency.vue";
+
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
   formComponent: Object,
@@ -12,7 +17,9 @@ const crudStore = useCrudStore(props.config)();
 const itemsPerPage = ref<number>(10);
 const headers = ref<columnTable[]>(props.config.columns);
 const search = ref<string>("");
-const serverItems = ref<{ id: string; status: number }[]>([]);
+const serverItems = ref<
+  { id: string; status: number; createdAt: Date | string | null }[]
+>([]);
 const loading = ref<boolean>(true);
 const totalItems = ref<number>(0);
 
@@ -26,13 +33,37 @@ const listItems = async ({
   loading.value = true;
   try {
     const result = await crudStore.findAll({ page, limit: itemsPerPage });
-    serverItems.value = result.items;
+    serverItems.value = result.items.map((i) => ({
+      ...i,
+      totalAmount: +i.totalAmount,
+    }));
     totalItems.value = result.meta.totalItems;
   } catch (error) {
     console.error(error);
   } finally {
     loading.value = false;
   }
+};
+
+const submitted = async ({
+  page,
+  itemsPerPage,
+}: {
+  page: number;
+  itemsPerPage: number;
+}) => {
+  await listItems({
+    page,
+    itemsPerPage,
+  });
+  await Swal.fire({
+    title: "Operación exitosa",
+    toast: true,
+    position: "top-end",
+    showConfirmButton: false,
+    icon: "success",
+    timer: 3000,
+  });
 };
 
 onMounted(() => {
@@ -61,7 +92,7 @@ onMounted(() => {
               :is="config.formComponent"
               :config="config"
               :mode="2"
-              @item-created="listItems({ page: 1, itemsPerPage })"
+              @item-created="submitted({ page: 1, itemsPerPage })"
             />
           </v-col>
         </v-row>
@@ -83,7 +114,7 @@ onMounted(() => {
               :config="config"
               :mode="0"
               :id="item.id"
-              @item-created="listItems({ page: 1, itemsPerPage })"
+              @item-created="submitted({ page: 1, itemsPerPage })"
             />
           </template>
           <template v-slot:item.actions="{ item }">
@@ -92,7 +123,7 @@ onMounted(() => {
               :config="config"
               :mode="1"
               :id="item.id"
-              @item-created="listItems({ page: 1, itemsPerPage })"
+              @item-created="submitted({ page: 1, itemsPerPage })"
             />
           </template>
           <template v-slot:item.status="{ item }">
@@ -125,6 +156,36 @@ onMounted(() => {
               <span v-else-if="item.status === 2"> Activo </span>
               <span v-else> Inactivo </span>
             </v-tooltip>
+          </template>
+          <template v-slot:item.update-inventory="{ item }">
+            <ListProductForInventory
+              :config="config"
+              :inventory-id="item.id"
+              @item-created="submitted({ page: 1, itemsPerPage })"
+            />
+          </template>
+          <template v-slot:item.createdAt="{ item }">
+            {{
+              format({
+                date: `${item.createdAt}`,
+                format: "MMMM D, YYYY h:mm a",
+              })
+            }}
+          </template>
+          <template v-slot:item.billedMonth="{ item }">
+            {{
+              format({
+                date: `${item.createdAt}`,
+                format: "MMMM",
+              })
+            }}
+          </template>
+          <template v-slot:item.totalAmount="{ item }">
+            <InputCurrency
+              v-model="item.totalAmount"
+              variant="plain"
+              :show-buttons="false"
+            />
           </template>
         </v-data-table-server>
       </v-card-item>

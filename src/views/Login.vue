@@ -17,7 +17,7 @@ const schema = yup.object({
     .max(50, "Debe tener máximo de 50 caracteres")
     .matches(
       /(?:(?=.*\d)|(?=.*\W+))(?![.\n])(?=.*[A-Z])(?=.*[a-z]).*$/,
-      "El password debería tener una mayúscula, una minúscula y un numero"
+      "El password debería tener una mayúscula, una minúscula y un numero",
     ),
 });
 
@@ -41,10 +41,7 @@ const submitLogin = async () => {
 
 const visible = ref(false);
 
-const togglePasswordVisibility = () => {
-  visible.value = !visible.value;
-  console.log("hola");
-};
+const togglePasswordVisibility = () => (visible.value = !visible.value);
 </script>
 
 <template>
