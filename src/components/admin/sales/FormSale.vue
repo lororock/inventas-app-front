@@ -196,7 +196,7 @@ const findSaleById = async () => {
       name: product.name,
       quantity,
       subtotal: +subtotal,
-      unitPrice: +unitPrice,
+      salePrice: +unitPrice,
     }),
   );
 };
