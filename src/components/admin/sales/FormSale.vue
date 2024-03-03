@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import InputCurrency from "../../general/InputCurrency.vue";
 import useConfigStore from "../../../store/use.config.store.ts";
 import { format } from "@formkit/tempo";
+import useSoundStore from "../../../store/sound.store.ts";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -20,6 +21,7 @@ const configStore = useConfigStore();
 
 const crudStore = useCrudStore(props.config)();
 const resourceStore = useResourceStore();
+const soundStore = useSoundStore();
 
 const salesTypes = ref(resourceStore.saleTypes);
 
@@ -127,7 +129,7 @@ const findProducts = async () => {
   }));
 };
 
-const foundProductByBarcode = () => {
+const foundProductByBarcode = async () => {
   const foundProduct = products.value.find(
     ({ barcode }) => barcode === barcodeTemp.value,
   );
@@ -141,9 +143,8 @@ const foundProductByBarcode = () => {
       title: "Producto no encontrado",
       icon: "error",
     });
-    //TODO emitir sonido de no encontrado
+    await soundStore().playError();
   } else {
-    //TODO emitir sonido de no encontrado
     const productSelected = productsSelected.value.find(
       (product) => product.id === foundProduct.id,
     );
