@@ -6,11 +6,12 @@ const configTable: EntityConfig = {
   path: "sales/find/all/credits",
   columns: [
     { title: "Número de documento", key: "documentNumber", sortable: false },
-    { title: "Nombres", key: "names", sortable: false },
-    { title: "Apellidos", key: "surnames", sortable: false },
-    { title: "Deuda", key: "diff", sortable: false },
+    { title: "Nombre completo", key: "fullname", sortable: false },
     { title: "Crédito acumulado", key: "totalCredits", sortable: false },
     { title: "Pagos relizados", key: "totalPayments", sortable: false },
+    { title: "% Abono", key: "percentage", sortable: false },
+    { title: "% Pendiente", key: "inverse-percentage", sortable: false },
+    { title: "Pendiente por pagar", key: "diff", sortable: false },
   ],
   formComponent: null,
 };

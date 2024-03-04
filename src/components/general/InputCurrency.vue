@@ -7,7 +7,6 @@ const props = defineProps({
   icon: { type: String, default: "" },
   showButtons: { type: Boolean, default: true },
   currency: { type: String, default: "COP" },
-  color: { type: String, default: "" },
   minValue: { type: Number },
   maxValue: { type: Number },
 });
@@ -38,7 +37,6 @@ watch(
     variant="outlined"
     ref="inputRef"
     :prepend-inner-icon="icon"
-    :color="color"
   >
     <template #prepend v-if="showButtons">
       <v-btn size="x-small" icon @click="setValue(--numberValue)">➖</v-btn>

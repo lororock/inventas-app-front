@@ -18,7 +18,19 @@ const itemsPerPage = ref<number>(10);
 const headers = ref<columnTable[]>(props.config.columns);
 const search = ref<string>("");
 const serverItems = ref<
-  { id: string; status: number; createdAt: Date | string | null }[]
+  {
+    id: string;
+    status: number;
+    createdAt: Date | string | null;
+    totalAmount: number;
+    diff: number;
+    totalCredits: number;
+    totalPayments: number;
+    names: string;
+    surnames: string;
+    fullname: string;
+    percentage: number;
+  }[]
 >([]);
 const loading = ref<boolean>(true);
 const totalItems = ref<number>(0);
@@ -33,7 +45,7 @@ const listItems = async ({
   loading.value = true;
   try {
     const result = await crudStore.findAll({ page, limit: itemsPerPage });
-    serverItems.value = result.items.map((i) => ({
+    serverItems.value = result.items.map((i: any) => ({
       ...i,
       totalAmount: +i.totalAmount,
     }));
@@ -186,6 +198,40 @@ onMounted(() => {
               variant="plain"
               :show-buttons="false"
             />
+          </template>
+          <template v-slot:item.diff="{ item }">
+            <InputCurrency
+              readonly
+              v-model="item.diff"
+              icon="mdi-cash"
+              :show-buttons="false"
+              bg-color="amber-lighten-4"
+            />
+          </template>
+          <template v-slot:item.totalCredits="{ item }">
+            <InputCurrency
+              readonly
+              v-model="item.totalCredits"
+              variant="plain"
+              :show-buttons="false"
+            />
+          </template>
+          <template v-slot:item.totalPayments="{ item }">
+            <InputCurrency
+              readonly
+              v-model="item.totalPayments"
+              variant="plain"
+              :show-buttons="false"
+            />
+          </template>
+          <template v-slot:item.fullname="{ item }">
+            {{ item.names }} {{ item.surnames }}
+          </template>
+          <template v-slot:item.percentage="{ item }">
+            <v-chip color="green-accent-4"> {{ item.percentage }}% </v-chip>
+          </template>
+          <template v-slot:item.inverse-percentage="{ item }">
+            <v-chip color="red-darken-4"> {{ 100 - item.percentage }}% </v-chip>
           </template>
         </v-data-table-server>
       </v-card-item>
