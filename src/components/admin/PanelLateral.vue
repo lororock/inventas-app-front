@@ -8,9 +8,6 @@
     <v-toolbar-title @click="loadItems()">Opciones</v-toolbar-title>
 
     <v-spacer></v-spacer>
-    <v-btn variant="text" icon="mdi-magnify" />
-
-    <v-btn variant="text" icon="mdi-filter" />
 
     <v-btn variant="text" icon="mdi-logout" @click="authStore.logout()" />
   </v-app-bar>
