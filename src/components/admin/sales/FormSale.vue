@@ -8,6 +8,7 @@ import Swal from "sweetalert2";
 import InputCurrency from "../../general/InputCurrency.vue";
 import useConfigStore from "../../../store/use.config.store.ts";
 import { format } from "@formkit/tempo";
+import useSoundStore from "../../../store/sound.store.ts";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -20,6 +21,7 @@ const configStore = useConfigStore();
 
 const crudStore = useCrudStore(props.config)();
 const resourceStore = useResourceStore();
+const soundStore = useSoundStore();
 
 const salesTypes = ref(resourceStore.saleTypes);
 
@@ -86,8 +88,16 @@ const submit = async () => {
     await crudStore.create(data);
     emit("item-created");
     handleClose();
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    await Swal.fire({
+      title: "Error al registrar venta",
+      toast: true,
+      html: error.response.data.message,
+      position: "top-end",
+      icon: "error",
+      showConfirmButton: false,
+      timer: 3000,
+    });
   } finally {
     loading.value = !loading.value;
   }
@@ -127,7 +137,7 @@ const findProducts = async () => {
   }));
 };
 
-const foundProductByBarcode = () => {
+const foundProductByBarcode = async () => {
   const foundProduct = products.value.find(
     ({ barcode }) => barcode === barcodeTemp.value,
   );
@@ -141,9 +151,8 @@ const foundProductByBarcode = () => {
       title: "Producto no encontrado",
       icon: "error",
     });
-    //TODO emitir sonido de no encontrado
+    await soundStore().playError();
   } else {
-    //TODO emitir sonido de no encontrado
     const productSelected = productsSelected.value.find(
       (product) => product.id === foundProduct.id,
     );
@@ -196,7 +205,7 @@ const findSaleById = async () => {
       name: product.name,
       quantity,
       subtotal: +subtotal,
-      unitPrice: +unitPrice,
+      salePrice: +unitPrice,
     }),
   );
 };
@@ -226,9 +235,9 @@ const changeStatusForSaleById = async () => {
         timer: 3000,
       });
       emit("item-created");
-    } catch (error) {
+    } catch (error: any) {
       await Swal.fire({
-        title: "Error al tratar",
+        title: "Error al tratar de actualizar venta",
         toast: true,
         position: "top-end",
         icon: "error",
@@ -382,6 +391,7 @@ const loadData = async () => {
                   :label="
                     sale.status === 2 ? 'Venta activa' : 'Venta rechazada'
                   "
+                  v-if="mode !== 2"
                   @update:model-value="changeStatusForSaleById"
                 ></v-switch>
               </v-col>
