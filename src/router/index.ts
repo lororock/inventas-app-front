@@ -67,8 +67,8 @@ const router = createRouter({
       meta: { requiresAuth: true, roles: [1, 2, 3] },
     },
     {
-      path: "/sales/credits",
-      name: "sales/credits",
+      path: "/payments",
+      name: "Payment",
       component: SalesCreditsView,
       meta: { requiresAuth: true, roles: [1, 2, 3] },
     },

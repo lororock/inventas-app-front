@@ -61,7 +61,7 @@ const useResourceStore = defineStore("resources", () => {
           roles: [1, 2, 3],
           icon: "mdi-account-cash-outline",
           title: "Cuentas por cobrar",
-          path: "sales/credits",
+          path: "payments",
         },
         {
           id: 1,
