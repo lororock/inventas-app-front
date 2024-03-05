@@ -37,6 +37,11 @@ watch(
     variant="outlined"
     ref="inputRef"
     :prepend-inner-icon="icon"
+    :hint="
+      (minValue ? `min: ${minValue}` : '') +
+      ' ' +
+      (maxValue ? `max: ${maxValue}` : '')
+    "
   >
     <template #prepend v-if="showButtons">
       <v-btn size="x-small" icon @click="setValue(--numberValue)">➖</v-btn>
