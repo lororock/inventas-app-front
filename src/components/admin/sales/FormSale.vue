@@ -88,8 +88,16 @@ const submit = async () => {
     await crudStore.create(data);
     emit("item-created");
     handleClose();
-  } catch (error) {
-    console.error(error);
+  } catch (error: any) {
+    await Swal.fire({
+      title: "Error al registrar venta",
+      toast: true,
+      html: error.response.data.message,
+      position: "top-end",
+      icon: "error",
+      showConfirmButton: false,
+      timer: 3000,
+    });
   } finally {
     loading.value = !loading.value;
   }
@@ -227,9 +235,9 @@ const changeStatusForSaleById = async () => {
         timer: 3000,
       });
       emit("item-created");
-    } catch (error) {
+    } catch (error: any) {
       await Swal.fire({
-        title: "Error al tratar",
+        title: "Error al tratar de actualizar venta",
         toast: true,
         position: "top-end",
         icon: "error",
