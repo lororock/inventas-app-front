@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import ITable from "../../components/general/ITable.vue";
 import EntityConfig from "../../interface/entity.config.ts";
+import FormPayment from "../../components/admin/sales/FormPayment.vue";
 const configTable: EntityConfig = {
-  name: "SalesCredits",
-  path: "sales/find/all/credits",
+  name: "PaymentsCredits",
+  path: "payments/find/all/credits",
   columns: [
     { title: "Número de documento", key: "documentNumber", sortable: false },
     { title: "Nombre completo", key: "fullname", sortable: false },
@@ -13,7 +14,7 @@ const configTable: EntityConfig = {
     { title: "% Pendiente", key: "inverse-percentage", sortable: false },
     { title: "Pendiente por pagar", key: "diff", sortable: false },
   ],
-  formComponent: null,
+  formComponent: FormPayment,
 };
 </script>
 
