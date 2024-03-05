@@ -11,7 +11,7 @@ const configTable: EntityConfig = {
     { title: "Crédito acumulado", key: "totalCredits", sortable: false },
     { title: "Pagos relizados", key: "totalPayments", sortable: false },
     { title: "% Abono", key: "percentage", sortable: false },
-    { title: "% Pendiente", key: "inverse-percentage", sortable: false },
+    { title: "% Pendiente", key: "inversePercentage", sortable: false },
     { title: "Pendiente por pagar", key: "diff", sortable: false },
   ],
   formComponent: FormPayment,

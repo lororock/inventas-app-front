@@ -30,6 +30,7 @@ const serverItems = ref<
     surnames: string;
     fullname: string;
     percentage: number;
+    inversePercentage: number;
   }[]
 >([]);
 const loading = ref<boolean>(true);
@@ -230,8 +231,10 @@ onMounted(() => {
           <template v-slot:item.percentage="{ item }">
             <v-chip color="green-accent-4"> {{ item.percentage }}% </v-chip>
           </template>
-          <template v-slot:item.inverse-percentage="{ item }">
-            <v-chip color="red-darken-4"> {{ 100 - item.percentage }}% </v-chip>
+          <template v-slot:item.inversePercentage="{ item }">
+            <v-chip color="red-accent-4">
+              {{ item.inversePercentage }}%
+            </v-chip>
           </template>
         </v-data-table-server>
       </v-card-item>
