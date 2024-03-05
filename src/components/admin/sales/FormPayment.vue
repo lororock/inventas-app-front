@@ -19,26 +19,32 @@ const loading = ref(false);
 
 const clients = ref<any[]>([]);
 const payment = ref<{ clientId: string | null; totalAmount: number }>({
-  totalAmount: 0,
+  totalAmount: 10,
   clientId: null,
 });
 
 const emit = defineEmits(["item-created"]);
 
 const submit = async () => {
-  debugger;
   loading.value = true;
   try {
+    await crudStore.customRequest({
+      method: "POST",
+      path: "payments",
+      body: { ...payment.value },
+    });
     emit("item-created");
-    console.log("alv");
     handleClose();
   } catch (error: any) {
     await Swal.fire({
       icon: "error",
       title: "Oops...",
-      text: error.message,
+      text: error.response.data.message,
       toast: true,
       timer: 2500,
+      position: "top-end",
+      showConfirmButton: false,
+      timerProgressBar: true,
     });
   } finally {
     loading.value = false;
@@ -47,6 +53,7 @@ const submit = async () => {
 
 const handleClose = () => {
   dialog.value = false;
+  payment.value = { clientId: null, totalAmount: 10 };
 };
 
 const findClients = async () => {
@@ -94,7 +101,7 @@ const loadData = async () => {
       </template>
       <v-card title="Factura de pago" :disabled="loading" :loading="loading">
         <v-container>
-          <v-form>
+          <v-form @submit.prevent="submit">
             <v-row>
               <v-col cols="12">
                 <v-autocomplete
@@ -104,10 +111,10 @@ const loadData = async () => {
                   label="Clientes"
                   :items="clients"
                   item-title="fullName"
+                  item-value="id"
                   :disabled="mode !== 2"
                   :chips="true"
                   item-color="info"
-                  :return-object="true"
                   :clearable="true"
                   append-icon="mdi-magnify"
                 >
@@ -139,7 +146,7 @@ const loadData = async () => {
             v-if="mode === 2"
             color="success"
             variant="tonal"
-            @click="submit()"
+            @click="submit"
           >
             Registrar pago
           </v-btn>
