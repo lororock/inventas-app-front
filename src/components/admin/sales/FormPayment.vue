@@ -27,6 +27,19 @@ const emit = defineEmits(["item-created"]);
 
 const submit = async () => {
   loading.value = true;
+  dialog.value = false;
+  const { isDenied } = await Swal.fire({
+    title: "¿Deseas registrar el pago?",
+    showDenyButton: true,
+    showCancelButton: false,
+    confirmButtonText: "Si",
+    denyButtonText: "No",
+  });
+  if (isDenied) {
+    loading.value = false;
+    dialog.value = true;
+    return;
+  }
   try {
     await crudStore.customRequest({
       method: "POST",
@@ -41,11 +54,12 @@ const submit = async () => {
       title: "Oops...",
       text: error.response.data.message,
       toast: true,
-      timer: 2500,
+      timer: 4000,
       position: "top-end",
       showConfirmButton: false,
       timerProgressBar: true,
     });
+    handleClose();
   } finally {
     loading.value = false;
   }
