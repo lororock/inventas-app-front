@@ -2,6 +2,7 @@
 import useCrudStore from "../../store/crud.store.ts";
 import { onMounted, ref } from "vue";
 import useConfigStore from "../../store/use.config.store.ts";
+import router from "../../router";
 const configStore = useConfigStore();
 
 const crudStore = useCrudStore({
@@ -31,6 +32,7 @@ onMounted(() => {
         <v-list>
           <v-list-item title="Control de usuarios">
             <v-btn
+              @click="router.push('users')"
               color="primary"
               variant="tonal"
               prepend-icon="mdi-account-group"
