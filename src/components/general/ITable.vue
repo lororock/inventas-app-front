@@ -26,8 +26,11 @@ const serverItems = ref<
     diff: number;
     totalCredits: number;
     totalPayments: number;
+    firstName: string;
+    lastName: string;
     names: string;
     surnames: string;
+    fulname: string;
     fullname: string;
     percentage: number;
     inversePercentage: number;
@@ -227,6 +230,9 @@ onMounted(() => {
           </template>
           <template v-slot:item.fullname="{ item }">
             {{ item.names }} {{ item.surnames }}
+          </template>
+          <template v-slot:item.fulname="{ item }">
+            {{ item.firstName }} {{ item.lastName }}
           </template>
           <template v-slot:item.percentage="{ item }">
             <v-chip color="green-accent-4"> {{ item.percentage }}% </v-chip>
