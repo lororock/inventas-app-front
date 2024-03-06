@@ -37,7 +37,7 @@ export const genders = [
 export const roles = [
   {
     value: 1,
-    label: "Dueño y/o responsable del negocio",
+    label: "Administrador",
   },
   {
     value: 2,
