@@ -14,7 +14,7 @@ const props = defineProps({
   mode: { type: Number, required: true }, //0 - view, 1 - edit, 2 - create
 });
 
-const emit = defineEmits(["user-created"]);
+const emit = defineEmits(["item-created"]);
 
 const isReadOnly = computed(() => props.mode === 0 || props.mode === 1);
 
@@ -49,7 +49,7 @@ const submit = async () => {
         },
         props.id,
       );
-    emit("user-created");
+    emit("item-created");
     dialog.value = !dialog.value;
   } catch (error) {
     throw error;
@@ -84,38 +84,38 @@ const submit = async () => {
         />
         <v-btn
           type="icon"
-          size="x-small"
+          size="small"
           color="success"
-          icon="mdi-plus"
+          icon="mdi-account-plus"
           variant="outlined"
           v-bind="props"
           v-else
         />
       </template>
-      <v-card>
-        <v-card-title class="text-h5"> Datos usuario</v-card-title>
-        <v-card-item>
+      <v-card title="Datos usuario">
+        <v-container>
           <v-form>
             <v-text-field
               label="Correo electrónico"
               variant="outlined"
               density="compact"
               v-model="user.email"
-              :disabled="isReadOnly"
+              :isReadOnly="isReadOnly"
+              :disabled="mode === 1"
             />
             <v-text-field
               label="Nombres"
               variant="outlined"
               density="compact"
               v-model="user.firstName"
-              :disabled="isReadOnly"
+              :readonly="isReadOnly"
             />
             <v-text-field
               label="Apellidos"
               variant="outlined"
               density="compact"
               v-model="user.lastName"
-              :disabled="isReadOnly"
+              :readonly="isReadOnly"
             />
             <v-select
               density="compact"
@@ -124,7 +124,7 @@ const submit = async () => {
               label="Tipo de documento"
               :items="documentTypes"
               item-title="label"
-              :disabled="isReadOnly"
+              :readonly="isReadOnly"
             >
               <template v-slot:item="{ props, item }">
                 <v-list-item v-bind="props" :subtitle="item.raw.description" />
@@ -135,14 +135,14 @@ const submit = async () => {
               variant="outlined"
               density="compact"
               v-model="user.documentNumber"
-              :disabled="isReadOnly"
+              :readonly="isReadOnly"
             />
             <v-text-field
               label="Numero de celular"
               variant="outlined"
               density="compact"
               v-model="user.phone"
-              :disabled="isReadOnly"
+              :readonly="isReadOnly"
             />
             <v-select
               density="compact"
@@ -152,7 +152,7 @@ const submit = async () => {
               item-title="label"
               item-value="value"
               v-model="user.gender"
-              :disabled="isReadOnly"
+              :readonly="isReadOnly"
             />
             <v-text-field
               label="Fecha de nacimiento"
@@ -160,7 +160,7 @@ const submit = async () => {
               variant="outlined"
               density="compact"
               v-model="user.birthdate"
-              :disabled="isReadOnly"
+              :readonly="isReadOnly"
             />
             <v-combobox
               density="compact"
@@ -172,7 +172,7 @@ const submit = async () => {
               :chips="true"
               :multiple="true"
               v-model="user.roles"
-              :disabled="mode === 0"
+              :readonly="mode === 0"
             />
             <v-switch
               v-if="mode === 1"
@@ -183,7 +183,7 @@ const submit = async () => {
               hide-details
             />
           </v-form>
-        </v-card-item>
+        </v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
           <v-btn
