@@ -84,9 +84,9 @@ const loading = ref(false);
         />
         <v-btn
           type="icon"
-          size="x-small"
+          size="small"
           color="success"
-          icon="mdi-plus"
+          icon="mdi-office-building-plus-outline"
           variant="outlined"
           v-bind="props"
           v-else

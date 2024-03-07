@@ -32,6 +32,7 @@ const clients = ref<{ documentNumber: string; documentType: number }[]>([]);
 const barcodeTemp = ref<string>("");
 
 const headersProductsSelected = ref<any[]>([
+  { title: "action", key: "action", sortable: false },
   { title: "Producto", key: "name", sortable: false },
   { title: "precio unitario", key: "salePrice", sortable: false },
   { title: "#", key: "quantity", sortable: false },
@@ -89,15 +90,15 @@ const submit = async () => {
     emit("item-created");
     handleClose();
   } catch (error: any) {
+    dialog.value = false;
     await Swal.fire({
       title: "Error al registrar venta",
-      toast: true,
       html: error.response.data.message,
-      position: "top-end",
       icon: "error",
       showConfirmButton: false,
       timer: 3000,
     });
+    dialog.value = true;
   } finally {
     loading.value = !loading.value;
   }
@@ -132,9 +133,11 @@ const findProducts = async () => {
     method: "GET",
     path: `inventories/${configStore.inventoryId}`,
   });
-  products.value = productInventories.map(({ product }: any) => ({
-    ...product,
-  }));
+  products.value =
+    productInventories &&
+    productInventories.map(({ product }: any) => ({
+      ...product,
+    }));
 };
 
 const foundProductByBarcode = async () => {
@@ -180,6 +183,12 @@ const calculateSubtotal = (id: string) => {
     productSelected.subtotal =
       +productSelected.quantity * +productSelected.salePrice;
   }
+};
+
+const removeProduct = (idSelected: string) => {
+  productsSelected.value = productsSelected.value.filter(
+    ({ id }) => id !== idSelected,
+  );
 };
 
 const focused = ref<boolean>(false);
@@ -266,6 +275,7 @@ const loadData = async () => {
   <v-row justify="center">
     <LoadInProgress v-if="loading" />
     <v-dialog v-model="dialog" :persistent="true" max-width="800">
+      <LoadInProgress v-if="loading" />
       <template v-slot:activator="{ props }">
         <v-btn
           type="icon"
@@ -289,16 +299,16 @@ const loadData = async () => {
         />
         <v-btn
           type="icon"
-          size="x-small"
+          size="small"
           color="success"
-          icon="mdi-plus"
+          icon="mdi-printer-pos-plus"
           variant="outlined"
           @click="loadData"
           v-bind="props"
           v-else
         />
       </template>
-      <v-card title="Datos categoría">
+      <v-card title="Factura de venta">
         <v-container>
           <v-form>
             <v-row>
@@ -404,6 +414,15 @@ const loadData = async () => {
                   height="400"
                   item-value="name"
                 >
+                  <template v-slot:item.action="{ item }">
+                    <v-btn
+                      :disabled="mode !== 2"
+                      size="x-small"
+                      color="red"
+                      icon="mdi-trash-can"
+                      @click="removeProduct(item.id)"
+                    />
+                  </template>
                   <template v-slot:item.salePrice="{ item }">
                     <InputCurrency
                       v-model.number="item.salePrice"
@@ -418,6 +437,7 @@ const loadData = async () => {
                       currency="CAN"
                       :showButtons="false"
                       :min-value="1"
+                      :max-value="100"
                       :variant="mode !== 2 ? 'plain' : 'outlined'"
                       :readonly="mode !== 2"
                       @input="calculateSubtotal(item.id)"

@@ -129,9 +129,9 @@ onMounted(async () => {
         />
         <v-btn
           type="icon"
-          size="x-small"
+          size="small"
           color="success"
-          icon="mdi-plus"
+          icon="mdi-basket-plus"
           variant="outlined"
           v-bind="props"
           v-else

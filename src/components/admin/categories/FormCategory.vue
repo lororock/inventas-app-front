@@ -92,9 +92,9 @@ const loading = ref(false);
         />
         <v-btn
           type="icon"
-          size="x-small"
+          size="small"
           color="success"
-          icon="mdi-plus"
+          icon="mdi-shape-plus"
           variant="outlined"
           v-bind="props"
           v-else
@@ -119,7 +119,7 @@ const loading = ref(false);
             />
             <v-combobox
               density="compact"
-              label="Roles"
+              label="Subcategorias"
               variant="outlined"
               :chips="true"
               :multiple="true"

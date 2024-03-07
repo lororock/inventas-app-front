@@ -106,8 +106,9 @@ const loadData = async () => {
       <template v-slot:activator="{ props }">
         <v-btn
           type="icon"
+          size="small"
           color="success"
-          icon="mdi-account-plus"
+          icon="mdi-cash-plus"
           variant="outlined"
           @click="loadData"
           v-bind="props"
