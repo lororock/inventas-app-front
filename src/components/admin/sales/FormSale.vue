@@ -32,6 +32,7 @@ const clients = ref<{ documentNumber: string; documentType: number }[]>([]);
 const barcodeTemp = ref<string>("");
 
 const headersProductsSelected = ref<any[]>([
+  { title: "action", key: "action", sortable: false },
   { title: "Producto", key: "name", sortable: false },
   { title: "precio unitario", key: "salePrice", sortable: false },
   { title: "#", key: "quantity", sortable: false },
@@ -184,6 +185,12 @@ const calculateSubtotal = (id: string) => {
   }
 };
 
+const removeProduct = (idSelected: string) => {
+  productsSelected.value = productsSelected.value.filter(
+    ({ id }) => id !== idSelected,
+  );
+};
+
 const focused = ref<boolean>(false);
 const dialog = ref<boolean>(false);
 const loading = ref(false);
@@ -301,7 +308,7 @@ const loadData = async () => {
           v-else
         />
       </template>
-      <v-card title="Datos categoría">
+      <v-card title="Factura de venta">
         <v-container>
           <v-form>
             <v-row>
@@ -407,6 +414,15 @@ const loadData = async () => {
                   height="400"
                   item-value="name"
                 >
+                  <template v-slot:item.action="{ item }">
+                    <v-btn
+                      :disabled="mode !== 2"
+                      size="x-small"
+                      color="red"
+                      icon="mdi-trash-can"
+                      @click="removeProduct(item.id)"
+                    />
+                  </template>
                   <template v-slot:item.salePrice="{ item }">
                     <InputCurrency
                       v-model.number="item.salePrice"
