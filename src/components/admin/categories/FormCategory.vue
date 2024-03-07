@@ -119,7 +119,7 @@ const loading = ref(false);
             />
             <v-combobox
               density="compact"
-              label="Roles"
+              label="Subcategorias"
               variant="outlined"
               :chips="true"
               :multiple="true"
