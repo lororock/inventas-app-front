@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import ITable from "../../components/general/ITable.vue";
 import EntityConfig from "../../interface/entity.config.ts";
-import FormPayment from "../../components/admin/sales/FormPayment.vue";
+import FormPayment from "../../components/admin/payments/FormPayment.vue";
 const configTable: EntityConfig = {
   name: "PaymentsCredits",
   path: "payments/find/all/credits",
