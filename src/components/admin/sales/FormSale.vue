@@ -289,9 +289,9 @@ const loadData = async () => {
         />
         <v-btn
           type="icon"
-          size="x-small"
+          size="small"
           color="success"
-          icon="mdi-plus"
+          icon="mdi-printer-pos-plus"
           variant="outlined"
           @click="loadData"
           v-bind="props"
