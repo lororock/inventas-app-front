@@ -18,21 +18,8 @@ const useResourceStore = defineStore("resources", () => {
       ],
     },
     {
-      roles: [1],
-      title: "Módulo de usuarios",
-      items: [
-        {
-          id: 2,
-          roles: [1],
-          icon: "mdi-account-multiple",
-          title: "Adm. usuarios",
-          path: "employees",
-        },
-      ],
-    },
-    {
       roles: [1, 2, 3],
-      title: "Módulo de recursos",
+      title: "Recursos",
       items: [
         {
           id: 1,
@@ -51,7 +38,7 @@ const useResourceStore = defineStore("resources", () => {
         {
           id: 1,
           roles: [1, 2, 3],
-          icon: "mdi-store-outline",
+          icon: "mdi-office-building",
           title: "Inventarios",
           path: "inventories",
         },
@@ -62,12 +49,44 @@ const useResourceStore = defineStore("resources", () => {
           title: "Clientes",
           path: "clients",
         },
+        {
+          id: 1,
+          roles: [1, 2, 3],
+          icon: "mdi-printer-pos",
+          title: "Ventas",
+          path: "sales",
+        },
+        {
+          id: 1,
+          roles: [1, 2, 3],
+          icon: "mdi-account-cash-outline",
+          title: "Cuentas por cobrar",
+          path: "payments",
+        },
+        {
+          id: 1,
+          roles: [1, 2, 3],
+          icon: "mdi-cog",
+          title: "Ajustes",
+          path: "settings",
+        },
       ],
+    },
+  ]);
+  const saleTypes = ref<{ label: string; value: number }[]>([
+    {
+      label: "Contado",
+      value: 0,
+    },
+    {
+      label: "Crédito",
+      value: 1,
     },
   ]);
 
   return {
     functionsDashboard: functionsDashboard.value,
+    saleTypes: saleTypes.value,
   };
 });
 

@@ -4,6 +4,9 @@ import useCrudStore from "../../store/crud.store.ts";
 import EntityConfig, { columnTable } from "../../interface/entity.config.ts";
 import ListProductForInventory from "../admin/inventories/ListProductForInventory.vue";
 import Swal from "sweetalert2";
+import { format } from "@formkit/tempo";
+import InputCurrency from "./InputCurrency.vue";
+
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
   formComponent: Object,
@@ -14,7 +17,25 @@ const crudStore = useCrudStore(props.config)();
 const itemsPerPage = ref<number>(10);
 const headers = ref<columnTable[]>(props.config.columns);
 const search = ref<string>("");
-const serverItems = ref<{ id: string; status: number }[]>([]);
+const serverItems = ref<
+  {
+    id: string;
+    status: number;
+    createdAt: Date | string | null;
+    totalAmount: number;
+    diff: number;
+    totalCredits: number;
+    totalPayments: number;
+    firstName: string;
+    lastName: string;
+    names: string;
+    surnames: string;
+    fulname: string;
+    fullname: string;
+    percentage: number;
+    inversePercentage: number;
+  }[]
+>([]);
 const loading = ref<boolean>(true);
 const totalItems = ref<number>(0);
 
@@ -28,7 +49,10 @@ const listItems = async ({
   loading.value = true;
   try {
     const result = await crudStore.findAll({ page, limit: itemsPerPage });
-    serverItems.value = result.items;
+    serverItems.value = result.items.map((i: any) => ({
+      ...i,
+      totalAmount: +i.totalAmount,
+    }));
     totalItems.value = result.meta.totalItems;
   } catch (error) {
     console.error(error);
@@ -155,6 +179,68 @@ onMounted(() => {
               :inventory-id="item.id"
               @item-created="submitted({ page: 1, itemsPerPage })"
             />
+          </template>
+          <template v-slot:item.createdAt="{ item }">
+            {{
+              format({
+                date: `${item.createdAt}`,
+                format: "MMMM D, YYYY h:mm a",
+              })
+            }}
+          </template>
+          <template v-slot:item.billedMonth="{ item }">
+            {{
+              format({
+                date: `${item.createdAt}`,
+                format: "MMMM",
+              })
+            }}
+          </template>
+          <template v-slot:item.totalAmount="{ item }">
+            <InputCurrency
+              v-model="item.totalAmount"
+              variant="plain"
+              :show-buttons="false"
+            />
+          </template>
+          <template v-slot:item.diff="{ item }">
+            <InputCurrency
+              readonly
+              v-model="item.diff"
+              icon="mdi-cash"
+              :show-buttons="false"
+              bg-color="amber-lighten-4"
+            />
+          </template>
+          <template v-slot:item.totalCredits="{ item }">
+            <InputCurrency
+              readonly
+              v-model="item.totalCredits"
+              variant="plain"
+              :show-buttons="false"
+            />
+          </template>
+          <template v-slot:item.totalPayments="{ item }">
+            <InputCurrency
+              readonly
+              v-model="item.totalPayments"
+              variant="plain"
+              :show-buttons="false"
+            />
+          </template>
+          <template v-slot:item.fullname="{ item }">
+            {{ item.names }} {{ item.surnames }}
+          </template>
+          <template v-slot:item.fulname="{ item }">
+            {{ item.firstName }} {{ item.lastName }}
+          </template>
+          <template v-slot:item.percentage="{ item }">
+            <v-chip color="green-accent-4"> {{ item.percentage }}% </v-chip>
+          </template>
+          <template v-slot:item.inversePercentage="{ item }">
+            <v-chip color="red-accent-4">
+              {{ item.inversePercentage }}%
+            </v-chip>
           </template>
         </v-data-table-server>
       </v-card-item>

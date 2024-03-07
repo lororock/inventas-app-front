@@ -7,7 +7,6 @@ const props = defineProps({
   icon: { type: String, default: "" },
   showButtons: { type: Boolean, default: true },
   currency: { type: String, default: "COP" },
-  color: { type: String, default: "" },
   minValue: { type: Number },
   maxValue: { type: Number },
 });
@@ -38,13 +37,11 @@ watch(
     variant="outlined"
     ref="inputRef"
     :prepend-inner-icon="icon"
-    :color="color"
     :hint="
-      (minValue ? 'Min: ' + minValue : '') +
+      (minValue ? `min: ${minValue}` : '') +
       ' ' +
-      (maxValue ? 'Max: ' + maxValue : '')
+      (maxValue ? `max: ${maxValue}` : '')
     "
-    persistent-hint
   >
     <template #prepend v-if="showButtons">
       <v-btn size="x-small" icon @click="setValue(--numberValue)">➖</v-btn>

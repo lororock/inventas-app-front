@@ -6,12 +6,15 @@ import NotFound from "../views/NotFoundView.vue";
 import { useAuthStore } from "../store/auth.store.ts";
 import Login from "../views/Login.vue";
 import HomeDashboard from "../views/Dashboard/HomeDashboard.vue";
-import Employee from "../views/Dashboard/Employee.vue";
 import CategoryView from "../views/Dashboard/CategoryView.vue";
 import Forbidden from "../views/Forbidden.vue";
 import ProductsView from "../views/Dashboard/ProductsView.vue";
 import InventoriesView from "../views/Dashboard/InventoriesView.vue";
 import ClientsView from "../views/Dashboard/ClientsView.vue";
+import SalesView from "../views/Dashboard/SalesView.vue";
+import SettingsView from "../views/Dashboard/SettingsView.vue";
+import SalesCreditsView from "../views/Dashboard/SalesCreditsView.vue";
+import UsersView from "../views/Dashboard/UsersView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -26,12 +29,6 @@ const router = createRouter({
       name: "Home",
       component: HomeDashboard,
       meta: { requiresAuth: true, roles: [0, 1, 2, 3] },
-    },
-    {
-      path: "/employees",
-      name: "Employee",
-      component: Employee,
-      meta: { requiresAuth: true, roles: [1] },
     },
     {
       path: "/categories",
@@ -56,6 +53,30 @@ const router = createRouter({
       name: "Client",
       component: ClientsView,
       meta: { requiresAuth: true, roles: [1, 2] },
+    },
+    {
+      path: "/sales",
+      name: "Sale",
+      component: SalesView,
+      meta: { requiresAuth: true, roles: [1, 2, 3] },
+    },
+    {
+      path: "/payments",
+      name: "Payment",
+      component: SalesCreditsView,
+      meta: { requiresAuth: true, roles: [1, 2, 3] },
+    },
+    {
+      path: "/users",
+      name: "User",
+      component: UsersView,
+      meta: { requiresAuth: true, roles: [1, 2, 3] },
+    },
+    {
+      path: "/settings",
+      name: "Setting",
+      component: SettingsView,
+      meta: { requiresAuth: true, roles: [1, 2, 3] },
     },
     {
       path: "/form",
