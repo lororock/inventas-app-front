@@ -89,15 +89,15 @@ const submit = async () => {
     emit("item-created");
     handleClose();
   } catch (error: any) {
+    dialog.value = false;
     await Swal.fire({
       title: "Error al registrar venta",
-      toast: true,
       html: error.response.data.message,
-      position: "top-end",
       icon: "error",
       showConfirmButton: false,
       timer: 3000,
     });
+    dialog.value = true;
   } finally {
     loading.value = !loading.value;
   }
@@ -132,9 +132,11 @@ const findProducts = async () => {
     method: "GET",
     path: `inventories/${configStore.inventoryId}`,
   });
-  products.value = productInventories.map(({ product }: any) => ({
-    ...product,
-  }));
+  products.value =
+    productInventories &&
+    productInventories.map(({ product }: any) => ({
+      ...product,
+    }));
 };
 
 const foundProductByBarcode = async () => {
@@ -266,6 +268,7 @@ const loadData = async () => {
   <v-row justify="center">
     <LoadInProgress v-if="loading" />
     <v-dialog v-model="dialog" :persistent="true" max-width="800">
+      <LoadInProgress v-if="loading" />
       <template v-slot:activator="{ props }">
         <v-btn
           type="icon"
@@ -418,6 +421,7 @@ const loadData = async () => {
                       currency="CAN"
                       :showButtons="false"
                       :min-value="1"
+                      :max-value="100"
                       :variant="mode !== 2 ? 'plain' : 'outlined'"
                       :readonly="mode !== 2"
                       @input="calculateSubtotal(item.id)"
