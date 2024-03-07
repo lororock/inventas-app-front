@@ -28,3 +28,8 @@ dist-ssr
 
 # NPM
 package-lock.json
+
+#Deploy wit firebase
+.firebaserc
+.firebase
+firebase.json
