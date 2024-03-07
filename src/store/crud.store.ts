@@ -1,7 +1,9 @@
+import * as dotenv from "dotenv";
 import { defineStore } from "pinia";
 import entityConfig from "../interface/entity.config.ts";
 import axiosInstance from "../services/axios.service.ts";
 import PaginationInterface from "../interface/pagination.interface.ts";
+dotenv.config();
 
 const useCrudStore = (entityConfig: entityConfig) =>
   defineStore(entityConfig.name, () => {
