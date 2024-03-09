@@ -59,7 +59,7 @@ const togglePasswordVisibility = () => (visible.value = !visible.value);
       >
         <img
           alt="Night"
-          src="https://images.unsplash.com/photo-1617195737496-bc30194e3a19?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=870&q=80"
+          src="https://images.unsplash.com/photo-1556740758-90de374c12ad?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D"
           class="absolute inset-0 h-full w-full object-cover opacity-80"
         />
 
@@ -163,7 +163,6 @@ const togglePasswordVisibility = () => (visible.value = !visible.value);
             <div class="col-span-6 sm:flex sm:items-center sm:gap-4">
               <button
                 :disabled="!meta.valid"
-                block
                 type="submit"
                 class="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition focus:outline-none focus:ring active:text-blue-500"
               >
@@ -171,8 +170,13 @@ const togglePasswordVisibility = () => (visible.value = !visible.value);
               </button>
 
               <p class="mt-4 text-sm text-gray-500 sm:mt-0">
-                Already have an account?
-                <a href="#" class="text-gray-700 underline">Log in</a>.
+                Created by
+                <a
+                  href="https://github.com/carlosdizx"
+                  class="text-gray-700 underline"
+                  target="_blank"
+                  >Carlos Ernesto Díaz Basante</a
+                >
               </p>
             </div>
           </v-form>

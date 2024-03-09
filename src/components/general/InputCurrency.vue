@@ -11,7 +11,7 @@ const props = defineProps({
   maxValue: { type: Number },
 });
 
-const { inputRef, formattedValue, numberValue, setValue } = useCurrencyInput({
+const { inputRef, formattedValue, setValue } = useCurrencyInput({
   currency: props.currency,
   hideCurrencySymbolOnFocus: false,
   hideGroupingSeparatorOnFocus: false,
@@ -24,7 +24,7 @@ const { inputRef, formattedValue, numberValue, setValue } = useCurrencyInput({
 
 watch(
   () => props.modelValue,
-  (value) => {
+  (value: any) => {
     setValue(value);
   },
 );
@@ -43,11 +43,11 @@ watch(
       (maxValue ? `max: ${maxValue}` : '')
     "
   >
-    <template #prepend v-if="showButtons">
-      <v-btn size="x-small" icon @click="setValue(--numberValue)">➖</v-btn>
-    </template>
-    <template #append v-if="showButtons">
-      <v-btn size="x-small" icon @click="setValue(++numberValue)">➕</v-btn>
-    </template>
+    <!--    <template #prepend v-if="showButtons">-->
+    <!--      <v-btn size="x-small" icon @click="setValue(&#45;&#45;modelValue)">➖</v-btn>-->
+    <!--    </template>-->
+    <!--    <template #append v-if="showButtons">-->
+    <!--      <v-btn size="x-small" icon @click="setValue(++numberValue)">➕</v-btn>-->
+    <!--    </template>-->
   </v-textField>
 </template>
