@@ -274,7 +274,7 @@ const loadData = async () => {
 <template>
   <v-row justify="center">
     <LoadInProgress v-if="loading" />
-    <v-dialog v-model="dialog" :persistent="true" max-width="800">
+    <v-dialog v-model="dialog" :persistent="true" max-width="1200">
       <LoadInProgress v-if="loading" />
       <template v-slot:activator="{ props }">
         <v-btn
