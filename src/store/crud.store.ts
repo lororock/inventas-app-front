@@ -31,6 +31,14 @@ const useCrudStore = (entityConfig: entityConfig) =>
       return data;
     };
 
+    const changeStatus = async (id: string, dataReq: { status: number }) => {
+      const { data } = await axiosInstance.put(
+        `${entityConfig.path}/status/${id}`,
+        dataReq,
+      );
+      return data;
+    };
+
     const customRequest = async ({
       method,
       path,
@@ -65,6 +73,7 @@ const useCrudStore = (entityConfig: entityConfig) =>
       findById,
       create,
       update,
+      changeStatus,
       customRequest,
     };
   });

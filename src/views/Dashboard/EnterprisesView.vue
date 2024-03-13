@@ -6,7 +6,6 @@ const configTable: EntityConfig = {
   name: "Enterprise",
   path: "enterprises",
   columns: [
-    { title: "Estado", key: "status", sortable: false },
     { title: "Empresa", key: "name", sortable: false },
     { title: "Dirección", key: "address", sortable: false },
     { title: "Email de facturas", key: "email", sortable: false },

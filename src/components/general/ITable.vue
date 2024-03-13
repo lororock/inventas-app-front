@@ -6,6 +6,7 @@ import ListProductForInventory from "../admin/inventories/ListProductForInventor
 import Swal from "sweetalert2";
 import { format } from "@formkit/tempo";
 import InputCurrency from "./InputCurrency.vue";
+import router from "../../router";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -31,6 +32,28 @@ const status = ref<{ value: number; name: string; props: any }[]>([
     props: { disabled: false },
   },
 ]);
+
+const changeStatus = async (item: any) => {
+  const { isConfirmed } = await Swal.fire({
+    title: "¿Quieres cambiar el estado del registro?",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    allowOutsideClick: false,
+  });
+  console.log(isConfirmed);
+  if (isConfirmed) {
+    try {
+      await crudStore.changeStatus(item.id, { status: item.status });
+    } catch (error: any) {
+      await Swal.fire({
+        title: "Oops",
+        text: error.message,
+        icon: "error",
+      });
+    }
+  }
+  router.go(0);
+};
 
 const itemsPerPage = ref<number>(10);
 const headers = ref<columnTable[]>(props.config.columns);
@@ -275,6 +298,7 @@ onMounted(() => {
                     ? 'amber'
                     : 'red'
               "
+              @update:model-value="changeStatus(item)"
             />
           </template>
         </v-data-table-server>
