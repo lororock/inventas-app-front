@@ -14,6 +14,24 @@ const props = defineProps({
 
 const crudStore = useCrudStore(props.config)();
 
+const status = ref<{ value: number; name: string; props: any }[]>([
+  {
+    value: 1,
+    name: "Pendiente activar",
+    props: { disabled: true },
+  },
+  {
+    value: 2,
+    name: "Activo",
+    props: { disabled: false },
+  },
+  {
+    value: 3,
+    name: "Inactivo",
+    props: { disabled: false },
+  },
+]);
+
 const itemsPerPage = ref<number>(10);
 const headers = ref<columnTable[]>(props.config.columns);
 const search = ref<string>("");
@@ -241,6 +259,23 @@ onMounted(() => {
             <v-chip color="red-accent-4">
               {{ item.inversePercentage }}%
             </v-chip>
+          </template>
+          <template v-slot:item.statusActions="{ item }">
+            <v-select
+              v-model="item.status"
+              :items="status"
+              variant="outlined"
+              density="compact"
+              item-title="name"
+              item-disabled="disable"
+              :bg-color="
+                item.status === 2
+                  ? 'success'
+                  : item.status === 1
+                    ? 'amber'
+                    : 'red'
+              "
+            />
           </template>
         </v-data-table-server>
       </v-card-item>

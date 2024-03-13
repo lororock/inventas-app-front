@@ -12,6 +12,11 @@ const configTable: EntityConfig = {
     { title: "Email de facturas", key: "email", sortable: false },
     { title: "Fecha de creacion", key: "createdAt", sortable: false },
     { title: "Detalles", key: "id", sortable: false },
+    {
+      title: "Estado de la empresa",
+      key: "statusActions",
+      sortable: false,
+    },
   ],
   formComponent: FormEnterprise,
 };
