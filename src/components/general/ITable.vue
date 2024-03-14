@@ -34,13 +34,13 @@ const status = ref<{ value: number; name: string; props: any }[]>([
 ]);
 
 const changeStatus = async (item: any) => {
+  loading.value = true;
   const { isConfirmed } = await Swal.fire({
     title: "¿Quieres cambiar el estado del registro?",
     showCancelButton: true,
     confirmButtonText: "Yes",
     allowOutsideClick: false,
   });
-  console.log(isConfirmed);
   if (isConfirmed) {
     try {
       await crudStore.changeStatus(item.id, { status: item.status });
@@ -52,6 +52,7 @@ const changeStatus = async (item: any) => {
       });
     }
   }
+  loading.value = false;
   router.go(0);
 };
 
