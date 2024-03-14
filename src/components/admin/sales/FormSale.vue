@@ -146,7 +146,7 @@ const foundProductByBarcode = async () => {
   );
   barcodeTemp.value = "";
   if (!foundProduct) {
-    Swal.fire({
+    await Swal.fire({
       position: "top-end",
       timer: 1500,
       toast: true,
@@ -262,12 +262,14 @@ const changeStatusForSaleById = async () => {
 };
 
 const loadData = async () => {
+  loading.value = true;
   await configStore.validateInventoryChecked();
   await findClients();
   await findProducts();
   if (props.mode !== 2) {
     await findSaleById();
   }
+  loading.value = false;
 };
 </script>
 
