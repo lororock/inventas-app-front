@@ -8,8 +8,8 @@ const configTable: EntityConfig = {
   columns: [
     { title: "Detalles", key: "id", sortable: false },
     { title: "Total pagado", key: "totalAmount", sortable: false },
-    { title: "Estado venta", key: "status", sortable: false },
     { title: "Fecha venta", key: "createdAt", sortable: false },
+    { title: "Estado de la venta", key: "statusActions", sortable: false },
   ],
   formComponent: FormSale,
 };
