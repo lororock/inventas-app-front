@@ -77,6 +77,7 @@ const serverItems = ref<
     fullname: string;
     percentage: number;
     inversePercentage: number;
+    type: number;
   }[]
 >([]);
 const loading = ref<boolean>(true);
@@ -234,7 +235,7 @@ onMounted(() => {
             </v-chip>
           </template>
           <template v-slot:item.updatedAt="{ item }">
-            <v-chip color="success" variant="outlined">
+            <v-chip color="primary" variant="outlined">
               {{
                 format({
                   date: `${item.updatedAt}`,
@@ -314,6 +315,13 @@ onMounted(() => {
               "
               @update:model-value="changeStatus(item)"
             />
+          </template>
+          <template v-slot:item.saleType="{ item }">
+            <v-chip
+              :color="item.type === 0 ? 'blue-accent-4' : 'orange-darken-3'"
+            >
+              {{ item.type === 0 ? "CONTADO" : "CRÉDITO" }}
+            </v-chip>
           </template>
         </v-data-table-server>
       </v-card-item>
