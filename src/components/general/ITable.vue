@@ -64,6 +64,7 @@ const serverItems = ref<
     id: string;
     status: number;
     createdAt: Date | string | null;
+    updatedAt: Date | string | null;
     totalAmount: number;
     diff: number;
     totalCredits: number;
@@ -223,12 +224,24 @@ onMounted(() => {
             />
           </template>
           <template v-slot:item.createdAt="{ item }">
-            {{
-              format({
-                date: `${item.createdAt}`,
-                format: "MMMM D, YYYY h:mm a",
-              })
-            }}
+            <v-chip color="success" variant="outlined">
+              {{
+                format({
+                  date: `${item.createdAt}`,
+                  format: "YYYY-MM-D h:mm a",
+                })
+              }}
+            </v-chip>
+          </template>
+          <template v-slot:item.updatedAt="{ item }">
+            <v-chip color="success" variant="outlined">
+              {{
+                format({
+                  date: `${item.updatedAt}`,
+                  format: "YYYY-MM-D h:mm a",
+                })
+              }}
+            </v-chip>
           </template>
           <template v-slot:item.billedMonth="{ item }">
             {{
