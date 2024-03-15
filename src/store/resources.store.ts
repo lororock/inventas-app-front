@@ -38,7 +38,7 @@ const useResourceStore = defineStore("resources", () => {
         {
           id: 1,
           roles: [1, 2, 3],
-          icon: "mdi-office-building",
+          icon: "mdi-warehouse",
           title: "Inventarios",
           path: "inventories",
         },

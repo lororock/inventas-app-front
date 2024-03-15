@@ -17,7 +17,7 @@ const product = ref<any>({
   barcode: null,
   salePrice: 0,
   costPrice: 0,
-  discountPercentage: 0,
+  requiresInventory: true,
   category: null,
   subcategory: null,
 });
@@ -29,7 +29,7 @@ const crudStore = useCrudStore(props.config)();
 const crudStoreCategories = useCrudStore({
   path: "categories",
   name: "Category",
-  formComponent: null,
+  formComponent: undefined,
   columns: [],
 })();
 const emit = defineEmits(["item-created"]);
@@ -172,26 +172,6 @@ onMounted(async () => {
               color="success"
               :disabled="isReadOnly"
             />
-            <v-slider
-              validate-on="input"
-              label="Descuento del producto"
-              v-model="product.discountPercentage"
-              :step="1"
-              max="100"
-              thumb-label
-              :disabled="isReadOnly"
-            >
-              <template v-slot:append>
-                <v-text-field
-                  v-model="product.discountPercentage"
-                  type="number"
-                  style="width: 80px"
-                  density="compact"
-                  hide-details
-                  variant="outlined"
-                />
-              </template>
-            </v-slider>
             <v-switch
               v-if="mode === 1"
               v-model="product.status"
@@ -202,6 +182,20 @@ onMounted(async () => {
               :color="product.status === 2 ? 'success' : 'red'"
               hide-details
             />
+            <v-switch
+              v-model="product.requiresInventory"
+              label="Producto requiere inventario"
+              :disabled="isReadOnly"
+              color="success"
+              density="compact"
+            >
+              <template #details>
+                <v-chip
+                  >Si esta activo no require registrar producto en un inventario
+                  para poder venderlo</v-chip
+                >"
+              </template>
+            </v-switch>
             <v-autocomplete
               density="compact"
               label="Categoría"

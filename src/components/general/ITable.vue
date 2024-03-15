@@ -78,6 +78,7 @@ const serverItems = ref<
     percentage: number;
     inversePercentage: number;
     type: number;
+    requiresInventory: boolean;
   }[]
 >([]);
 const loading = ref<boolean>(true);
@@ -322,6 +323,24 @@ onMounted(() => {
             >
               {{ item.type === 0 ? "CONTADO" : "CRÉDITO" }}
             </v-chip>
+          </template>
+          <template v-slot:item.requiresInventory="{ item }">
+            <v-tooltip location="top">
+              <template v-slot:activator="{ props }">
+                <v-icon
+                  :color="
+                    item.requiresInventory ? 'blue-accent-4' : 'orange-darken-3'
+                  "
+                  :icon="
+                    item.requiresInventory
+                      ? 'mdi-warehouse'
+                      : 'mdi-office-building-remove'
+                  "
+                  v-bind="props"
+                />
+              </template>
+              <span>{{ item.requiresInventory ? "Si" : "No" }}</span>
+            </v-tooltip>
           </template>
         </v-data-table-server>
       </v-card-item>
