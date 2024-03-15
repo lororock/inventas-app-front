@@ -449,6 +449,7 @@ const loadData = async () => {
                   item-disabled="disable"
                   :color="sale.status === 2 ? 'success' : 'red'"
                   @update:model-value="changeStatus"
+                  :disabled="sale.status === 3"
                 >
                   <template #prepend>
                     <v-icon
