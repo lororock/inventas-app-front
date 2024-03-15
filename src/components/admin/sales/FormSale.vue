@@ -141,60 +141,9 @@ const findProducts = async () => {
     }));
 };
 
-const selectProduct = async (items: any) => {
-  for (const item of items) {
-    const productExist = products.value.find(({ id }) => id === item.id);
-    if (productExist) {
-      const productSelected = productsSelected.value.find(
-        ({ id }) => id === productExist.id,
-      );
-      if (productSelected) {
-        productSelected.quantity = +productSelected.quantity + 1;
-        productSelected.subtotal =
-          +productSelected.quantity * +productSelected.salePrice;
-      } else {
-        productsSelected.value.push({
-          id: productExist.id,
-          name: productExist.name,
-          salePrice: +productExist.salePrice,
-          subtotal: +productExist.salePrice,
-          quantity: 1,
-        });
-      }
-    } else {
-      await Swal.fire({
-        position: "top-end",
-        timer: 1500,
-        toast: true,
-        showConfirmButton: false,
-        title: "Producto no encontrado",
-        icon: "error",
-      });
-      await soundStore().playError();
-    }
-  }
-
-  // const productSelected = productsSelected.value.find(
-  //     (product) => product.id === foundProduct.id,
-  // );
-  // if (productSelected) {
-  //   productSelected.quantity = +productSelected.quantity + 1;
-  //   productSelected.subtotal =
-  //       +productSelected.quantity * +productSelected.salePrice;
-  // } else {
-  //   productsSelected.value.push({
-  //     id: foundProduct.id,
-  //     name: foundProduct.name,
-  //     salePrice: +foundProduct.salePrice,
-  //     subtotal: +foundProduct.salePrice,
-  //     quantity: 1,
-  //   });
-  // }
-};
-
 const foundProductByBarcode = async () => {
   const foundProduct = products.value.find(
-    ({ barcode }) => barcode === barcodeTemp.value,
+    ({ barcode }: any) => barcode === barcodeTemp.value,
   );
   barcodeTemp.value = "";
   if (!foundProduct) {
