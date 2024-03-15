@@ -240,12 +240,14 @@ const changeStatus = async () => {
   dialog.value = false;
   const { isConfirmed } = await Swal.fire({
     title: "¿Quieres cambiar el estado de la venta?",
-    html: `${sale.value.status === 3 ? "Rechazar venta" : "Activar venta"}`,
-    confirmButtonText: "Si, cambiar el estado",
+    confirmButtonText: `Si, ${
+      sale.value.status === 3 ? "rechazar venta" : "activar venta"
+    }`,
     denyButtonText: "No",
     showDenyButton: true,
     showCancelButton: false,
     allowOutsideClick: false,
+    icon: "info",
   });
   if (isConfirmed) {
     const { isConfirmed } = await Swal.fire({
@@ -257,13 +259,21 @@ const changeStatus = async () => {
           : "Estás cancelando una venta. ¿Deseas restaurar los ítems vendidos al inventario?",
       confirmButtonText:
         sale.value.status === 3 ? "Si, restaurar items" : "Si, restar items",
-      denyButtonText: "No",
+      denyButtonText: `${
+        sale.value.status === 2
+          ? "No, solo activar venta"
+          : "No, solo rechazar venta"
+      }`,
       showDenyButton: true,
       showCancelButton: false,
       allowOutsideClick: false,
+      icon: "warning",
     });
     try {
-      await crudStore.changeStatus(props.id, { status: sale.value.status });
+      await crudStore.changeStatus(props.id, {
+        status: sale.value.status,
+        restore: isConfirmed,
+      });
     } catch (error: any) {
       await Swal.fire({
         title: "Oops",
