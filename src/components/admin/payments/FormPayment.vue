@@ -105,6 +105,17 @@ const loadData = async () => {
     <v-dialog v-model="dialog" :persistent="true" max-width="600">
       <template v-slot:activator="{ props }">
         <v-btn
+          v-if="mode === 1"
+          type="icon"
+          size="small"
+          color="primary"
+          icon="mdi-text-account"
+          variant="outlined"
+          @click="loadData"
+          v-bind="props"
+        />
+        <v-btn
+          v-else
           type="icon"
           size="small"
           color="success"
