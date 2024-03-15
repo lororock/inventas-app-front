@@ -32,10 +32,10 @@ const clients = ref<{ documentNumber: string; documentType: number }[]>([]);
 const barcodeTemp = ref<string>("");
 
 const headersProductsSelected = ref<any[]>([
-  { title: "action", key: "action", sortable: false },
+  { title: "Eliminar", key: "action", sortable: false },
   { title: "Producto", key: "name", sortable: false },
   { title: "precio unitario", key: "salePrice", sortable: false },
-  { title: "#", key: "quantity", sortable: false },
+  { title: "Cantidad", key: "quantity", sortable: false },
   { title: "Subtotal", key: "subtotal", sortable: false },
 ]);
 const productsSelected = ref<
@@ -49,13 +49,14 @@ const productsSelected = ref<
 >([]);
 
 const products = ref<
-  {
-    id: string;
-    name: string;
-    barcode: string;
-    attrs?: any;
-    salePrice: number;
-  }[]
+  | {
+      id: string;
+      name: string;
+      barcode: string;
+      attrs?: any;
+      salePrice: number;
+    }[]
+  | any
 >([]);
 
 const totalQuantity = computed<number>(() => {
@@ -138,6 +139,57 @@ const findProducts = async () => {
     productInventories.map(({ product }: any) => ({
       ...product,
     }));
+};
+
+const selectProduct = async (items: any) => {
+  for (const item of items) {
+    const productExist = products.value.find(({ id }) => id === item.id);
+    if (productExist) {
+      const productSelected = productsSelected.value.find(
+        ({ id }) => id === productExist.id,
+      );
+      if (productSelected) {
+        productSelected.quantity = +productSelected.quantity + 1;
+        productSelected.subtotal =
+          +productSelected.quantity * +productSelected.salePrice;
+      } else {
+        productsSelected.value.push({
+          id: productExist.id,
+          name: productExist.name,
+          salePrice: +productExist.salePrice,
+          subtotal: +productExist.salePrice,
+          quantity: 1,
+        });
+      }
+    } else {
+      await Swal.fire({
+        position: "top-end",
+        timer: 1500,
+        toast: true,
+        showConfirmButton: false,
+        title: "Producto no encontrado",
+        icon: "error",
+      });
+      await soundStore().playError();
+    }
+  }
+
+  // const productSelected = productsSelected.value.find(
+  //     (product) => product.id === foundProduct.id,
+  // );
+  // if (productSelected) {
+  //   productSelected.quantity = +productSelected.quantity + 1;
+  //   productSelected.subtotal =
+  //       +productSelected.quantity * +productSelected.salePrice;
+  // } else {
+  //   productsSelected.value.push({
+  //     id: foundProduct.id,
+  //     name: foundProduct.name,
+  //     salePrice: +foundProduct.salePrice,
+  //     subtotal: +foundProduct.salePrice,
+  //     quantity: 1,
+  //   });
+  // }
 };
 
 const foundProductByBarcode = async () => {
@@ -391,6 +443,24 @@ const loadData = async () => {
                     </v-tooltip>
                   </template>
                 </v-text-field>
+              </v-col>
+              <v-col cols="6" v-if="mode === 2">
+                <v-autocomplete
+                  density="compact"
+                  label="Productos"
+                  variant="outlined"
+                  v-model.number="productsSelected"
+                  :items="products"
+                  item-title="name"
+                  item-value="id"
+                  color="success"
+                  :multiple="true"
+                  :chips="true"
+                  closable-chips
+                  item-color="success"
+                  :creatable="false"
+                  :return-object="true"
+                />
               </v-col>
               <v-col cols="6">
                 <v-switch
