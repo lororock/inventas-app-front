@@ -36,7 +36,7 @@ const submitLogin = async () => {
 
 (async () => {
   const isAuth = await authStore.validTokenRefresh();
-  if (isAuth) await router.push("/form");
+  if (isAuth) await router.push("/home");
 })();
 
 const visible = ref(false);

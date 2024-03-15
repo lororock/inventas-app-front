@@ -33,7 +33,7 @@ const useCrudStore = (entityConfig: entityConfig) =>
 
     const changeStatus = async (
       id: string,
-      dataReq: { status: number; restore?: boolean },
+      dataReq: { status: number; restore?: boolean; id?: string },
     ) => {
       const { data } = await axiosInstance.put(
         `${entityConfig.path}/status/${id}`,

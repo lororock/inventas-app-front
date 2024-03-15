@@ -272,12 +272,13 @@ const changeStatus = async () => {
     try {
       await crudStore.changeStatus(props.id, {
         status: sale.value.status,
+        id: configStore.inventoryId,
         restore: isConfirmed,
       });
     } catch (error: any) {
       await Swal.fire({
         title: "Oops",
-        text: error.message,
+        text: error.response.data.message,
         icon: "error",
       });
     }
