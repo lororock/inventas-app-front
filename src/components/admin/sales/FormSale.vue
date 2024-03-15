@@ -248,6 +248,20 @@ const changeStatus = async () => {
     allowOutsideClick: false,
   });
   if (isConfirmed) {
+    const { isConfirmed } = await Swal.fire({
+      title: "¿Esta operación afecta al inventario?",
+      html:
+        sale.value.status === 2
+          ? "Estás activando una venta. ¿Deseas restar los ítems vendidos del inventario? <br/>" +
+            "<b>Si no cuentas con la cantidad minima en el inventario no se podra realizar la activación</b>"
+          : "Estás cancelando una venta. ¿Deseas restaurar los ítems vendidos al inventario?",
+      confirmButtonText:
+        sale.value.status === 3 ? "Si, restaurar items" : "Si, restar items",
+      denyButtonText: "No",
+      showDenyButton: true,
+      showCancelButton: false,
+      allowOutsideClick: false,
+    });
     try {
       await crudStore.changeStatus(props.id, { status: sale.value.status });
     } catch (error: any) {
