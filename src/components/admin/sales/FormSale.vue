@@ -9,6 +9,7 @@ import InputCurrency from "../../general/InputCurrency.vue";
 import useConfigStore from "../../../store/use.config.store.ts";
 import { format } from "@formkit/tempo";
 import useSoundStore from "../../../store/sound.store.ts";
+import router from "../../../router";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -28,6 +29,20 @@ const salesTypes = ref(resourceStore.saleTypes);
 const emit = defineEmits(["item-created"]);
 
 const sale = ref<any>({ type: 0 });
+
+const status = ref<{ value: number; name: string; props: any }[]>([
+  {
+    value: 2,
+    name: "Activa",
+    props: { disabled: false },
+  },
+  {
+    value: 3,
+    name: "Inactiva",
+    props: { disabled: false },
+  },
+]);
+
 const clients = ref<{ documentNumber: string; documentType: number }[]>([]);
 const barcodeTemp = ref<string>("");
 
@@ -220,46 +235,32 @@ const findSaleById = async () => {
   );
 };
 
-const changeStatusForSaleById = async () => {
+const changeStatus = async () => {
   loading.value = true;
   dialog.value = false;
-  const title = `¿Quieres ${
-    sale.value.status === 3 ? "cancelar" : "reactivar"
-  } la venta?`;
-  const { isConfirmed, isDenied } = await Swal.fire({
-    title,
-    showDenyButton: true,
-    showCancelButton: true,
-    confirmButtonText: "Si",
+  const { isConfirmed } = await Swal.fire({
+    title: "¿Quieres cambiar el estado de la venta?",
+    html: `${sale.value.status === 3 ? "Rechazar venta" : "Activar venta"}`,
+    confirmButtonText: "Si, cambiar el estado",
     denyButtonText: "No",
+    showDenyButton: true,
+    showCancelButton: false,
+    allowOutsideClick: false,
   });
   if (isConfirmed) {
     try {
-      await crudStore.update(props.id, { status: sale.value.status });
-      await Swal.fire({
-        title: "Operacion exitosa",
-        toast: true,
-        position: "top-end",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 3000,
-      });
-      emit("item-created");
+      await crudStore.changeStatus(props.id, { status: sale.value.status });
     } catch (error: any) {
       await Swal.fire({
-        title: "Error al tratar de actualizar venta",
-        toast: true,
-        position: "top-end",
+        title: "Oops",
+        text: error.message,
         icon: "error",
-        showConfirmButton: false,
-        timer: 3000,
       });
-      dialog.value = true;
     }
-  } else if (isDenied) {
-    dialog.value = true;
   }
   loading.value = false;
+  dialog.value = false;
+  router.go(0);
 };
 
 const loadData = async () => {
@@ -412,19 +413,33 @@ const loadData = async () => {
                 />
               </v-col>
               <v-col cols="6">
-                <v-switch
-                  :prepend-icon="sale.status === 2 ? 'mdi-check' : 'mdi-close'"
-                  v-model="sale.status"
-                  hide-details
-                  :true-value="2"
-                  :false-value="3"
-                  :color="sale.status === 2 ? 'success' : 'red'"
-                  :label="
-                    sale.status === 2 ? 'Venta activa' : 'Venta rechazada'
-                  "
+                <v-select
                   v-if="mode !== 2"
-                  @update:model-value="changeStatusForSaleById"
-                ></v-switch>
+                  label="Estado de la venta"
+                  v-model="sale.status"
+                  :items="status"
+                  variant="outlined"
+                  density="compact"
+                  item-title="name"
+                  item-disabled="disable"
+                  :color="sale.status === 2 ? 'success' : 'red'"
+                  @update:model-value="changeStatus"
+                >
+                  <template #prepend>
+                    <v-icon
+                      v-if="sale.status === 2"
+                      icon="mdi-check-circle-outline"
+                      variant="outlined"
+                      color="success"
+                    />
+                    <v-icon
+                      v-if="sale.status === 3"
+                      icon="mdi-close-circle-outline"
+                      variant="outlined"
+                      color="red"
+                    />
+                  </template>
+                </v-select>
               </v-col>
               <v-col cols="12">
                 <hr />

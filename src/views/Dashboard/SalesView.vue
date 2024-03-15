@@ -11,7 +11,7 @@ const configTable: EntityConfig = {
     { title: "Fecha de creación", key: "createdAt", sortable: false },
     { title: "Fecha de actualización", key: "updatedAt", sortable: false },
     { title: "Tipo de venta", key: "saleType", sortable: false },
-    { title: "Estado de la venta", key: "statusActions", sortable: false },
+    { title: "Estado", key: "status", sortable: false },
   ],
   formComponent: FormSale,
 };
