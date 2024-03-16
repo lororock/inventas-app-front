@@ -290,7 +290,11 @@ const changeStatus = async () => {
 
 const loadData = async () => {
   loading.value = true;
-  await configStore.validateInventoryChecked();
+  const inventories = await crudStore.customRequest({
+    method: "GET",
+    path: `inventories/find/all`,
+  });
+  await configStore.validateInventoryChecked(inventories);
   await findClients();
   await findProducts();
   if (props.mode !== 2) {

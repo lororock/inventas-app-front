@@ -19,19 +19,24 @@ const useConfigStore = defineStore("config", () => {
     });
   };
 
-  const validateInventoryChecked = async () => {
-    if (!!inventoryId.value) return;
-    else {
-      await router.push("settings");
-      await Swal.fire({
-        title: "No ha configurado el inventario",
-        toast: true,
-        position: "top-end",
-        icon: "error",
-        showConfirmButton: false,
-        timer: 3000,
-      });
+  const validateInventoryChecked = async (inventories: any[]) => {
+    if (!!inventoryId.value) {
+      const inventoryFound = inventories.find(
+        (inventory) => inventory.id === inventoryId.value,
+      );
+      if (!!inventoryFound) return;
     }
+    await router.push("settings");
+    localStorage.removeItem("inventoryId");
+    inventoryId.value = undefined;
+    await Swal.fire({
+      title: "No ha configurado el inventario",
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      showConfirmButton: false,
+      timer: 3000,
+    });
   };
 
   return {
