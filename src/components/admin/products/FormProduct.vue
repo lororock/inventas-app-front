@@ -4,6 +4,7 @@ import EntityConfig from "../../../interface/entity.config.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
 import { ref, computed, onMounted } from "vue";
 import InputCurrency from "../../general/InputCurrency.vue";
+import Swal from "sweetalert2";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -70,7 +71,6 @@ const findCategoryById = async () => {
   loading.value = true;
   try {
     subcategories.value = [];
-    product.value.subcategory = null;
     let id = product.value.category;
     if (typeof id === "object") id = id.id;
     const result = await crudStoreCategories.findById(id);
@@ -82,6 +82,7 @@ const findCategoryById = async () => {
 };
 
 const findProductById = async (id: string) => {
+  loading.value = true;
   try {
     const productFound = await crudStore.findById(id);
     delete productFound.createdAt;
@@ -90,7 +91,10 @@ const findProductById = async (id: string) => {
     product.value = productFound;
     if (product.value.category) await findCategoryById();
   } catch (error: any) {
+    await Swal.fire("Oops", error.response.data.message, "error");
     throw new Error(error);
+  } finally {
+    loading.value = false;
   }
 };
 
