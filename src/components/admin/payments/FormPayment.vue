@@ -6,6 +6,7 @@ import { ref } from "vue";
 import Swal from "sweetalert2";
 import InputCurrency from "../../general/InputCurrency.vue";
 import { format } from "@formkit/tempo";
+import router from "../../../router";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -129,6 +130,34 @@ const findClients = async () => {
       fullName: `${names} ${surnames} - ${documentNumber}`,
     }),
   );
+};
+
+const changeStatus = async (item: any) => {
+  loading.value = true;
+  dialog.value = false;
+  const { isConfirmed } = await Swal.fire({
+    title: "¿Quieres cambiar el estado del pago?",
+    showCancelButton: true,
+    confirmButtonText: "Si",
+    allowOutsideClick: false,
+  });
+  if (isConfirmed) {
+    try {
+      await crudStore.customRequest({
+        method: "PUT",
+        path: `payments/status/${item.id}`,
+        body: { status: item.status },
+      });
+    } catch (error: any) {
+      await Swal.fire({
+        title: "Oops",
+        text: error.message,
+        icon: "error",
+      });
+    }
+  }
+  loading.value = false;
+  router.go(0);
 };
 
 const findSalesByClientId = async () => {
@@ -279,6 +308,7 @@ const loadData = async () => {
                             ? 'amber'
                             : 'red'
                       "
+                      @update:model-value="changeStatus(item)"
                     />
                   </template>
                 </v-data-table-virtual>
