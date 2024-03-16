@@ -517,9 +517,21 @@ const loadData = async () => {
               </v-col>
               <v-col cols="12">
                 <v-text-field
+                  :readonly="true"
                   density="compact"
                   :model-value="`Factura creada ${format({
                     date: sale.createdAt,
+                    format: 'MMMM D, YYYY h:mm a',
+                  })}`"
+                  bg-color="primary"
+                  v-if="mode !== 2"
+                  :showButtons="false"
+                />
+                <v-text-field
+                  :readonly="true"
+                  density="compact"
+                  :model-value="`Factura actualizada ${format({
+                    date: sale.updatedAt,
                     format: 'MMMM D, YYYY h:mm a',
                   })}`"
                   bg-color="primary"
