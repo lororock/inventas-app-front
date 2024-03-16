@@ -4,6 +4,7 @@ import useCrudStore from "../../../store/crud.store.ts";
 import EntityConfig from "../../../interface/entity.config.ts";
 import InputCurrency from "../../general/InputCurrency.vue";
 import FormAddProductToInventory from "./FormAddProductToInventory.vue";
+import { format } from "@formkit/tempo";
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
   inventoryId: { type: String, required: true },
@@ -22,6 +23,8 @@ interface inventoryInterface {
         id: string;
         name: string;
       };
+      createdAt: Date;
+      updatedAt: Date;
     },
   ];
 }
@@ -30,8 +33,10 @@ const inventory = ref<inventoryInterface>();
 const loading = ref(false);
 
 const headers = ref([
-  { title: "Detalles", key: "id", sortable: false },
-  { title: "Cantidad", key: "quantity", sortable: false },
+  { title: "Producto", key: "id", sortable: false },
+  { title: "Cantidad existentes", key: "quantity", sortable: false },
+  { title: "Creado", key: "createdAt", sortable: false },
+  { title: "Actualizado", key: "updatedAt", sortable: false },
 ]);
 
 const crudStore = useCrudStore(props.config)();
@@ -40,10 +45,12 @@ const findInventory = async () => {
   loading.value = !loading.value;
   const result = await crudStore.findById(props.inventoryId);
   result.productInventories = result.productInventories.map(
-    ({ product, quantity }: any) => ({
+    ({ product, quantity, createdAt, updatedAt }: any) => ({
       id: product.id,
       name: product.name,
       quantity,
+      createdAt,
+      updatedAt,
     }),
   );
   inventory.value = result;
@@ -58,7 +65,7 @@ const updateInventory = async () => {
 
 <template>
   <v-row justify="center">
-    <v-dialog v-model="dialog" :persistent="true" max-width="600">
+    <v-dialog v-model="dialog" :persistent="true" max-width="1200">
       <template v-slot:activator="{ props }">
         <v-btn
           v-bind="props"
@@ -69,6 +76,7 @@ const updateInventory = async () => {
           Actualizar inventario <v-icon icon="mdi-list-status" />
         </v-btn>
       </template>
+
       <v-card v-if="inventory" :loading="loading" :title="inventory?.location">
         <v-card-item>
           <v-data-table
@@ -87,13 +95,7 @@ const updateInventory = async () => {
               </v-row>
             </template>
             <template v-slot:item.id="{ item }">
-              <v-btn
-                color="info"
-                variant="text"
-                @click="console.log(item.id, item.quantity)"
-              >
-                {{ item.name }} <v-icon icon="mdi-open-in-new" />
-              </v-btn>
+              {{ item.name }}
             </template>
             <template v-slot:item.quantity="{ item }">
               <InputCurrency
@@ -101,6 +103,26 @@ const updateInventory = async () => {
                 currency="CAN"
                 :show-buttons="false"
               />
+            </template>
+            <template v-slot:item.createdAt="{ item }">
+              <v-chip color="success" variant="outlined">
+                {{
+                  format({
+                    date: `${item.createdAt}`,
+                    format: "YYYY-MM-D h:mm a",
+                  })
+                }}
+              </v-chip>
+            </template>
+            <template v-slot:item.updatedAt="{ item }">
+              <v-chip color="primary" variant="outlined">
+                {{
+                  format({
+                    date: `${item.updatedAt}`,
+                    format: "YYYY-MM-D h:mm a",
+                  })
+                }}
+              </v-chip>
             </template>
           </v-data-table>
         </v-card-item>

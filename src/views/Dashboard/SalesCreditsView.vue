@@ -13,6 +13,7 @@ const configTable: EntityConfig = {
     { title: "% Abono", key: "percentage", sortable: false },
     { title: "% Pendiente", key: "inversePercentage", sortable: false },
     { title: "Pendiente por pagar", key: "diff", sortable: false },
+    { title: "Ver pagos", key: "actions", sortable: false },
   ],
   formComponent: FormPayment,
 };

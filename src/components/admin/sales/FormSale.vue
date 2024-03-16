@@ -9,6 +9,7 @@ import InputCurrency from "../../general/InputCurrency.vue";
 import useConfigStore from "../../../store/use.config.store.ts";
 import { format } from "@formkit/tempo";
 import useSoundStore from "../../../store/sound.store.ts";
+import router from "../../../router";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -28,14 +29,28 @@ const salesTypes = ref(resourceStore.saleTypes);
 const emit = defineEmits(["item-created"]);
 
 const sale = ref<any>({ type: 0 });
+
+const status = ref<{ value: number; name: string; props: any }[]>([
+  {
+    value: 2,
+    name: "Activa",
+    props: { disabled: false },
+  },
+  {
+    value: 3,
+    name: "Inactiva",
+    props: { disabled: false },
+  },
+]);
+
 const clients = ref<{ documentNumber: string; documentType: number }[]>([]);
 const barcodeTemp = ref<string>("");
 
 const headersProductsSelected = ref<any[]>([
-  { title: "action", key: "action", sortable: false },
+  { title: "Eliminar", key: "action", sortable: false },
   { title: "Producto", key: "name", sortable: false },
   { title: "precio unitario", key: "salePrice", sortable: false },
-  { title: "#", key: "quantity", sortable: false },
+  { title: "Cantidad", key: "quantity", sortable: false },
   { title: "Subtotal", key: "subtotal", sortable: false },
 ]);
 const productsSelected = ref<
@@ -49,13 +64,14 @@ const productsSelected = ref<
 >([]);
 
 const products = ref<
-  {
-    id: string;
-    name: string;
-    barcode: string;
-    attrs?: any;
-    salePrice: number;
-  }[]
+  | {
+      id: string;
+      name: string;
+      barcode: string;
+      attrs?: any;
+      salePrice: number;
+    }[]
+  | any
 >([]);
 
 const totalQuantity = computed<number>(() => {
@@ -142,11 +158,11 @@ const findProducts = async () => {
 
 const foundProductByBarcode = async () => {
   const foundProduct = products.value.find(
-    ({ barcode }) => barcode === barcodeTemp.value,
+    ({ barcode }: any) => barcode === barcodeTemp.value,
   );
   barcodeTemp.value = "";
   if (!foundProduct) {
-    Swal.fire({
+    await Swal.fire({
       position: "top-end",
       timer: 1500,
       toast: true,
@@ -219,62 +235,75 @@ const findSaleById = async () => {
   );
 };
 
-const changeStatusForSaleById = async () => {
+const changeStatus = async () => {
   loading.value = true;
   dialog.value = false;
-  const title = `¿Quieres ${
-    sale.value.status === 3 ? "cancelar" : "reactivar"
-  } la venta?`;
-  const { isConfirmed, isDenied } = await Swal.fire({
-    title,
-    showDenyButton: true,
-    showCancelButton: true,
-    confirmButtonText: "Si",
+  const { isConfirmed } = await Swal.fire({
+    title: "¿Quieres cambiar el estado de la venta?",
+    confirmButtonText: `Si, ${
+      sale.value.status === 3 ? "rechazar venta" : "activar venta"
+    }`,
     denyButtonText: "No",
+    showDenyButton: true,
+    showCancelButton: false,
+    allowOutsideClick: false,
+    icon: "info",
   });
   if (isConfirmed) {
+    const { isConfirmed } = await Swal.fire({
+      title: "¿Esta operación afecta al inventario?",
+      html:
+        sale.value.status === 2
+          ? "Estás activando una venta. ¿Deseas restar los ítems vendidos del inventario? <br/>" +
+            "<b>Si no cuentas con la cantidad minima en el inventario no se podra realizar la activación</b>"
+          : "Estás cancelando una venta. ¿Deseas restaurar los ítems vendidos al inventario?",
+      confirmButtonText:
+        sale.value.status === 3 ? "Si, restaurar items" : "Si, restar items",
+      denyButtonText: `${
+        sale.value.status === 2
+          ? "No, solo activar venta"
+          : "No, solo rechazar venta"
+      }`,
+      showDenyButton: true,
+      showCancelButton: false,
+      allowOutsideClick: false,
+      icon: "warning",
+    });
     try {
-      await crudStore.update(props.id, { status: sale.value.status });
-      await Swal.fire({
-        title: "Operacion exitosa",
-        toast: true,
-        position: "top-end",
-        icon: "success",
-        showConfirmButton: false,
-        timer: 3000,
+      await crudStore.changeStatus(props.id, {
+        status: sale.value.status,
+        id: configStore.inventoryId,
+        restore: isConfirmed,
       });
-      emit("item-created");
     } catch (error: any) {
       await Swal.fire({
-        title: "Error al tratar de actualizar venta",
-        toast: true,
-        position: "top-end",
+        title: "Oops",
+        text: error.response.data.message,
         icon: "error",
-        showConfirmButton: false,
-        timer: 3000,
       });
-      dialog.value = true;
     }
-  } else if (isDenied) {
-    dialog.value = true;
   }
   loading.value = false;
+  dialog.value = false;
+  router.go(0);
 };
 
 const loadData = async () => {
+  loading.value = true;
   await configStore.validateInventoryChecked();
   await findClients();
   await findProducts();
   if (props.mode !== 2) {
     await findSaleById();
   }
+  loading.value = false;
 };
 </script>
 
 <template>
   <v-row justify="center">
     <LoadInProgress v-if="loading" />
-    <v-dialog v-model="dialog" :persistent="true" max-width="800">
+    <v-dialog v-model="dialog" :persistent="true" max-width="1200">
       <LoadInProgress v-if="loading" />
       <template v-slot:activator="{ props }">
         <v-btn
@@ -390,20 +419,53 @@ const loadData = async () => {
                   </template>
                 </v-text-field>
               </v-col>
+              <v-col cols="6" v-if="mode === 2">
+                <v-autocomplete
+                  density="compact"
+                  label="Productos"
+                  variant="outlined"
+                  v-model.number="productsSelected"
+                  :items="products"
+                  item-title="name"
+                  item-value="id"
+                  color="success"
+                  :multiple="true"
+                  :chips="true"
+                  closable-chips
+                  item-color="success"
+                  :creatable="false"
+                  :return-object="true"
+                />
+              </v-col>
               <v-col cols="6">
-                <v-switch
-                  :prepend-icon="sale.status === 2 ? 'mdi-check' : 'mdi-close'"
-                  v-model="sale.status"
-                  hide-details
-                  :true-value="2"
-                  :false-value="3"
-                  :color="sale.status === 2 ? 'success' : 'red'"
-                  :label="
-                    sale.status === 2 ? 'Venta activa' : 'Venta rechazada'
-                  "
+                <v-select
                   v-if="mode !== 2"
-                  @update:model-value="changeStatusForSaleById"
-                ></v-switch>
+                  label="Estado de la venta"
+                  v-model="sale.status"
+                  :items="status"
+                  variant="outlined"
+                  density="compact"
+                  item-title="name"
+                  item-disabled="disable"
+                  :color="sale.status === 2 ? 'success' : 'red'"
+                  @update:model-value="changeStatus"
+                  :disabled="sale.status === 3"
+                >
+                  <template #prepend>
+                    <v-icon
+                      v-if="sale.status === 2"
+                      icon="mdi-check-circle-outline"
+                      variant="outlined"
+                      color="success"
+                    />
+                    <v-icon
+                      v-if="sale.status === 3"
+                      icon="mdi-close-circle-outline"
+                      variant="outlined"
+                      color="red"
+                    />
+                  </template>
+                </v-select>
               </v-col>
               <v-col cols="12">
                 <hr />

@@ -1,7 +1,6 @@
 import { createWebHistory, createRouter } from "vue-router";
 import { jwtDecode, JwtPayload } from "jwt-decode";
 
-import Form from "../views/FormView.vue";
 import NotFound from "../views/NotFoundView.vue";
 import { useAuthStore } from "../store/auth.store.ts";
 import Login from "../views/Login.vue";
@@ -15,6 +14,7 @@ import SalesView from "../views/Dashboard/SalesView.vue";
 import SettingsView from "../views/Dashboard/SettingsView.vue";
 import SalesCreditsView from "../views/Dashboard/SalesCreditsView.vue";
 import UsersView from "../views/Dashboard/UsersView.vue";
+import EnterprisesView from "../views/Dashboard/EnterprisesView.vue";
 
 const router = createRouter({
   history: createWebHistory(),
@@ -29,6 +29,12 @@ const router = createRouter({
       name: "Home",
       component: HomeDashboard,
       meta: { requiresAuth: true, roles: [0, 1, 2, 3] },
+    },
+    {
+      path: "/enterprises",
+      name: "Enterprise",
+      component: EnterprisesView,
+      meta: { requiresAuth: true, roles: [0] },
     },
     {
       path: "/categories",
@@ -77,12 +83,6 @@ const router = createRouter({
       name: "Setting",
       component: SettingsView,
       meta: { requiresAuth: true, roles: [1, 2, 3] },
-    },
-    {
-      path: "/form",
-      name: "Form",
-      component: Form,
-      meta: { requiresAuth: true, roles: [0] },
     },
     {
       path: "/:pathMatch(.*)*",

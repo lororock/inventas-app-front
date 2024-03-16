@@ -6,6 +6,7 @@ import ListProductForInventory from "../admin/inventories/ListProductForInventor
 import Swal from "sweetalert2";
 import { format } from "@formkit/tempo";
 import InputCurrency from "./InputCurrency.vue";
+import router from "../../router";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -13,6 +14,47 @@ const props = defineProps({
 });
 
 const crudStore = useCrudStore(props.config)();
+
+const status = ref<{ value: number; name: string; props: any }[]>([
+  {
+    value: 1,
+    name: "Pendiente activar",
+    props: { disabled: true },
+  },
+  {
+    value: 2,
+    name: "Activo",
+    props: { disabled: false },
+  },
+  {
+    value: 3,
+    name: "Inactivo",
+    props: { disabled: false },
+  },
+]);
+
+const changeStatus = async (item: any) => {
+  loading.value = true;
+  const { isConfirmed } = await Swal.fire({
+    title: "¿Quieres cambiar el estado del registro?",
+    showCancelButton: true,
+    confirmButtonText: "Yes",
+    allowOutsideClick: false,
+  });
+  if (isConfirmed) {
+    try {
+      await crudStore.changeStatus(item.id, { status: item.status });
+    } catch (error: any) {
+      await Swal.fire({
+        title: "Oops",
+        text: error.message,
+        icon: "error",
+      });
+    }
+  }
+  loading.value = false;
+  router.go(0);
+};
 
 const itemsPerPage = ref<number>(10);
 const headers = ref<columnTable[]>(props.config.columns);
@@ -22,6 +64,7 @@ const serverItems = ref<
     id: string;
     status: number;
     createdAt: Date | string | null;
+    updatedAt: Date | string | null;
     totalAmount: number;
     diff: number;
     totalCredits: number;
@@ -34,6 +77,8 @@ const serverItems = ref<
     fullname: string;
     percentage: number;
     inversePercentage: number;
+    type: number;
+    requiresInventory: boolean;
   }[]
 >([]);
 const loading = ref<boolean>(true);
@@ -181,12 +226,24 @@ onMounted(() => {
             />
           </template>
           <template v-slot:item.createdAt="{ item }">
-            {{
-              format({
-                date: `${item.createdAt}`,
-                format: "MMMM D, YYYY h:mm a",
-              })
-            }}
+            <v-chip color="success" variant="outlined">
+              {{
+                format({
+                  date: `${item.createdAt}`,
+                  format: "YYYY-MM-D h:mm a",
+                })
+              }}
+            </v-chip>
+          </template>
+          <template v-slot:item.updatedAt="{ item }">
+            <v-chip color="primary" variant="outlined">
+              {{
+                format({
+                  date: `${item.updatedAt}`,
+                  format: "YYYY-MM-D h:mm a",
+                })
+              }}
+            </v-chip>
           </template>
           <template v-slot:item.billedMonth="{ item }">
             {{
@@ -201,15 +258,16 @@ onMounted(() => {
               v-model="item.totalAmount"
               variant="plain"
               :show-buttons="false"
+              hide-details
             />
           </template>
           <template v-slot:item.diff="{ item }">
             <InputCurrency
               readonly
               v-model="item.diff"
-              icon="mdi-cash"
               :show-buttons="false"
               bg-color="amber-lighten-4"
+              hide-details
             />
           </template>
           <template v-slot:item.totalCredits="{ item }">
@@ -218,6 +276,7 @@ onMounted(() => {
               v-model="item.totalCredits"
               variant="plain"
               :show-buttons="false"
+              hide-details
             />
           </template>
           <template v-slot:item.totalPayments="{ item }">
@@ -226,6 +285,7 @@ onMounted(() => {
               v-model="item.totalPayments"
               variant="plain"
               :show-buttons="false"
+              hide-details
             />
           </template>
           <template v-slot:item.fullname="{ item }">
@@ -235,12 +295,57 @@ onMounted(() => {
             {{ item.firstName }} {{ item.lastName }}
           </template>
           <template v-slot:item.percentage="{ item }">
-            <v-chip color="green-accent-4"> {{ item.percentage }}% </v-chip>
+            <v-chip variant="outlined" color="green-accent-4">
+              {{ item.percentage }}%
+            </v-chip>
           </template>
           <template v-slot:item.inversePercentage="{ item }">
-            <v-chip color="red-accent-4">
+            <v-chip variant="outlined" color="red-accent-4">
               {{ item.inversePercentage }}%
             </v-chip>
+          </template>
+          <template v-slot:item.statusActions="{ item }">
+            <v-select
+              v-model="item.status"
+              :items="status"
+              variant="outlined"
+              density="compact"
+              item-title="name"
+              item-disabled="disable"
+              :bg-color="
+                item.status === 2
+                  ? 'success'
+                  : item.status === 1
+                    ? 'amber'
+                    : 'red'
+              "
+              @update:model-value="changeStatus(item)"
+            />
+          </template>
+          <template v-slot:item.saleType="{ item }">
+            <v-chip
+              :color="item.type === 0 ? 'blue-accent-4' : 'orange-darken-3'"
+            >
+              {{ item.type === 0 ? "CONTADO" : "CRÉDITO" }}
+            </v-chip>
+          </template>
+          <template v-slot:item.requiresInventory="{ item }">
+            <v-tooltip location="top">
+              <template v-slot:activator="{ props }">
+                <v-icon
+                  :color="
+                    item.requiresInventory ? 'blue-accent-4' : 'orange-darken-3'
+                  "
+                  :icon="
+                    item.requiresInventory
+                      ? 'mdi-warehouse'
+                      : 'mdi-office-building-remove'
+                  "
+                  v-bind="props"
+                />
+              </template>
+              <span>{{ item.requiresInventory ? "Si" : "No" }}</span>
+            </v-tooltip>
           </template>
         </v-data-table-server>
       </v-card-item>

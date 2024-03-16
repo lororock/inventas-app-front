@@ -11,6 +11,7 @@ const configTable: EntityConfig = {
     { title: "Código de barras", key: "barcode", sortable: false },
     { title: "Precio de compra", key: "costPrice", sortable: false },
     { title: "Precio de venta", key: "salePrice", sortable: false },
+    { title: "Requiere inventario", key: "requiresInventory", sortable: false },
     { title: "Acciones", key: "actions", sortable: false },
   ],
   formComponent: FormProduct,
