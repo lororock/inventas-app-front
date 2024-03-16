@@ -4,6 +4,7 @@ import EntityConfig from "../../../interface/entity.config.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
 import { ref, computed, onMounted } from "vue";
 import InputCurrency from "../../general/InputCurrency.vue";
+import Swal from "sweetalert2";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -17,7 +18,7 @@ const product = ref<any>({
   barcode: null,
   salePrice: 0,
   costPrice: 0,
-  discountPercentage: 0,
+  requiresInventory: true,
   category: null,
   subcategory: null,
 });
@@ -29,7 +30,7 @@ const crudStore = useCrudStore(props.config)();
 const crudStoreCategories = useCrudStore({
   path: "categories",
   name: "Category",
-  formComponent: null,
+  formComponent: undefined,
   columns: [],
 })();
 const emit = defineEmits(["item-created"]);
@@ -70,7 +71,6 @@ const findCategoryById = async () => {
   loading.value = true;
   try {
     subcategories.value = [];
-    product.value.subcategory = null;
     let id = product.value.category;
     if (typeof id === "object") id = id.id;
     const result = await crudStoreCategories.findById(id);
@@ -82,6 +82,7 @@ const findCategoryById = async () => {
 };
 
 const findProductById = async (id: string) => {
+  loading.value = true;
   try {
     const productFound = await crudStore.findById(id);
     delete productFound.createdAt;
@@ -90,7 +91,10 @@ const findProductById = async (id: string) => {
     product.value = productFound;
     if (product.value.category) await findCategoryById();
   } catch (error: any) {
+    await Swal.fire("Oops", error.response.data.message, "error");
     throw new Error(error);
+  } finally {
+    loading.value = false;
   }
 };
 
@@ -172,26 +176,6 @@ onMounted(async () => {
               color="success"
               :disabled="isReadOnly"
             />
-            <v-slider
-              validate-on="input"
-              label="Descuento del producto"
-              v-model="product.discountPercentage"
-              :step="1"
-              max="100"
-              thumb-label
-              :disabled="isReadOnly"
-            >
-              <template v-slot:append>
-                <v-text-field
-                  v-model="product.discountPercentage"
-                  type="number"
-                  style="width: 80px"
-                  density="compact"
-                  hide-details
-                  variant="outlined"
-                />
-              </template>
-            </v-slider>
             <v-switch
               v-if="mode === 1"
               v-model="product.status"
@@ -202,6 +186,20 @@ onMounted(async () => {
               :color="product.status === 2 ? 'success' : 'red'"
               hide-details
             />
+            <v-switch
+              v-model="product.requiresInventory"
+              label="Producto requiere inventario"
+              :disabled="isReadOnly"
+              color="success"
+              density="compact"
+            >
+              <template #details>
+                <v-chip
+                  >Si esta activo no require registrar producto en un inventario
+                  para poder venderlo</v-chip
+                >"
+              </template>
+            </v-switch>
             <v-autocomplete
               density="compact"
               label="Categoría"

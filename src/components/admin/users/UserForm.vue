@@ -3,6 +3,7 @@ import { computed, ref } from "vue";
 import useUserStore from "../../../store/useUserStore.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
 import { documentTypes, genders, roles } from "../../../assets/list.items.ts";
+import Swal from "sweetalert2";
 const userStore = useUserStore();
 
 const dialog = ref<boolean>(false);
@@ -50,9 +51,12 @@ const submit = async () => {
         props.id,
       );
     emit("item-created");
+    user.value = {};
     dialog.value = !dialog.value;
-  } catch (error) {
-    throw error;
+  } catch (error: any) {
+    dialog.value = !dialog.value;
+    await Swal.fire("Oops", error.response.data.message, "error");
+    dialog.value = !dialog.value;
   }
 };
 </script>

@@ -1,5 +1,3 @@
-import DashboardItem from "./interfaces/dashboard.items.interface.ts";
-
 export const documentTypes = [
   {
     value: 0,
@@ -46,62 +44,6 @@ export const roles = [
   {
     value: 3,
     label: "Contador",
-  },
-];
-
-export const functionsDashboard: DashboardItem[] = [
-  {
-    roles: [0],
-    title: "Módulo de empresas",
-    items: [
-      {
-        id: 1,
-        roles: [0],
-        icon: "mdi-domain",
-        title: "Adm. empresas",
-        path: "form",
-      },
-    ],
-  },
-  {
-    roles: [1],
-    title: "Módulo de usuarios",
-    items: [
-      {
-        id: 2,
-        roles: [1],
-        icon: "mdi-account-multiple",
-        title: "Adm. usuarios",
-        path: "employees",
-      },
-    ],
-  },
-  {
-    roles: [1, 2, 3],
-    title: "Módulo de recursos",
-    items: [
-      {
-        id: 1,
-        roles: [1, 2],
-        icon: "mdi-shape",
-        title: "Categorias productos",
-        path: "categories",
-      },
-      {
-        id: 1,
-        roles: [1, 2, 3],
-        icon: "mdi-basket",
-        title: "Productos/Servicios",
-        path: "categories",
-      },
-      {
-        id: 1,
-        roles: [1, 2, 3],
-        icon: "mdi-store-outline",
-        title: "Inventario",
-        path: "categories",
-      },
-    ],
   },
 ];
 
