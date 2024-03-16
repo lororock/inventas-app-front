@@ -258,15 +258,16 @@ onMounted(() => {
               v-model="item.totalAmount"
               variant="plain"
               :show-buttons="false"
+              hide-details
             />
           </template>
           <template v-slot:item.diff="{ item }">
             <InputCurrency
               readonly
               v-model="item.diff"
-              icon="mdi-cash"
               :show-buttons="false"
               bg-color="amber-lighten-4"
+              hide-details
             />
           </template>
           <template v-slot:item.totalCredits="{ item }">
@@ -275,6 +276,7 @@ onMounted(() => {
               v-model="item.totalCredits"
               variant="plain"
               :show-buttons="false"
+              hide-details
             />
           </template>
           <template v-slot:item.totalPayments="{ item }">
@@ -283,6 +285,7 @@ onMounted(() => {
               v-model="item.totalPayments"
               variant="plain"
               :show-buttons="false"
+              hide-details
             />
           </template>
           <template v-slot:item.fullname="{ item }">

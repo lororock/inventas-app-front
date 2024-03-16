@@ -49,6 +49,7 @@ const payments = ref<
 >([]);
 
 const client = ref<{
+  id: string;
   names: string;
   surnames: string;
   documentNumber: string;
@@ -133,6 +134,7 @@ const findClients = async () => {
 };
 
 const changeStatus = async (item: any) => {
+  console.log(item);
   loading.value = true;
   dialog.value = false;
   const { isConfirmed } = await Swal.fire({
@@ -271,6 +273,7 @@ const loadData = async () => {
                     <InputCurrency
                       v-model="item.totalAmount"
                       :readonly="true"
+                      variant="plain"
                     />
                   </template>
                   <template v-slot:item.createdAt="{ item }">
@@ -309,6 +312,7 @@ const loadData = async () => {
                             : 'red'
                       "
                       @update:model-value="changeStatus(item)"
+                      :disabled="item.status === 3"
                     />
                   </template>
                 </v-data-table-virtual>
