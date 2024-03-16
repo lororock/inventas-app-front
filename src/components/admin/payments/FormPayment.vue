@@ -5,6 +5,7 @@ import LoadInProgress from "../../general/LoadInProgress.vue";
 import { ref } from "vue";
 import Swal from "sweetalert2";
 import InputCurrency from "../../general/InputCurrency.vue";
+import { format } from "@formkit/tempo";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -22,6 +23,42 @@ const payment = ref<{ clientId: string | null; totalAmount: number }>({
   totalAmount: 10,
   clientId: null,
 });
+
+const status = ref<{ value: number; name: string; props: any }[]>([
+  {
+    value: 2,
+    name: "Activo",
+    props: { disabled: false },
+  },
+  {
+    value: 3,
+    name: "Inactivo",
+    props: { disabled: false },
+  },
+]);
+
+const payments = ref<
+  {
+    id: string;
+    totalAmount: number;
+    createdAt: Date;
+    updatedAt: Date;
+    status: number;
+  }[]
+>([]);
+
+const client = ref<{
+  names: string;
+  surnames: string;
+  documentNumber: string;
+}>();
+
+const headers = ref<{ title: string; key: string; sortable: boolean }[]>([
+  { title: "Pago total", key: "totalAmount", sortable: false },
+  { title: "Fecha de creación", key: "createdAt", sortable: false },
+  { title: "Fecha de actualización", key: "updatedAt", sortable: false },
+  { title: "Estado", key: "status", sortable: false },
+]);
 
 const emit = defineEmits(["item-created"]);
 
@@ -94,15 +131,35 @@ const findClients = async () => {
   );
 };
 
+const findSalesByClientId = async () => {
+  const paymentsFound = await crudStore.customRequest({
+    method: "GET",
+    path: `payments/client/${props.id}`,
+  });
+
+  client.value = await crudStore.customRequest({
+    method: "GET",
+    path: `clients/${props.id}`,
+  });
+
+  payments.value = paymentsFound.map(({ totalAmount, ...restData }: any) => ({
+    totalAmount: +totalAmount,
+    ...restData,
+  }));
+};
+
 const loadData = async () => {
   await findClients();
+  if (props.mode !== 2) {
+    await findSalesByClientId();
+  }
 };
 </script>
 
 <template>
   <v-row justify="center">
     <LoadInProgress v-if="loading" />
-    <v-dialog v-model="dialog" :persistent="true" max-width="600">
+    <v-dialog v-model="dialog" :persistent="true" max-width="1200">
       <template v-slot:activator="{ props }">
         <v-btn
           v-if="mode === 1"
@@ -125,11 +182,15 @@ const loadData = async () => {
           v-bind="props"
         />
       </template>
-      <v-card title="Factura de pago" :disabled="loading" :loading="loading">
+      <v-card
+        :title="mode === 2 ? 'Factura de pago' : 'Pagos'"
+        :disabled="loading"
+        :loading="loading"
+      >
         <v-container>
           <v-form @submit.prevent="submit">
             <v-row>
-              <v-col cols="12">
+              <v-col cols="12" v-if="mode === 2">
                 <v-autocomplete
                   density="compact"
                   variant="outlined"
@@ -152,7 +213,7 @@ const loadData = async () => {
                   </template>
                 </v-autocomplete>
               </v-col>
-              <v-col cols="12">
+              <v-col cols="12" v-if="mode === 2">
                 <InputCurrency
                   v-model="payment.totalAmount"
                   label="Cantidad a abonar"
@@ -162,6 +223,65 @@ const loadData = async () => {
                   persistent-hint
                   icon="mdi-cash"
                 />
+              </v-col>
+              <v-col cols="12" v-if="mode === 1">
+                <v-chip>
+                  {{
+                    client &&
+                    client.documentNumber +
+                      " - " +
+                      client.names +
+                      " " +
+                      client.surnames
+                  }}
+                </v-chip>
+              </v-col>
+              <v-col cols="12" v-if="mode === 1">
+                <v-data-table-virtual :headers="headers" :items="payments">
+                  <template v-slot:item.totalAmount="{ item }">
+                    <InputCurrency
+                      v-model="item.totalAmount"
+                      :readonly="true"
+                    />
+                  </template>
+                  <template v-slot:item.createdAt="{ item }">
+                    <v-chip color="success" variant="outlined">
+                      {{
+                        format({
+                          date: `${item.createdAt}`,
+                          format: "YYYY-MM-D h:mm a",
+                        })
+                      }}
+                    </v-chip>
+                  </template>
+                  <template v-slot:item.updatedAt="{ item }">
+                    <v-chip color="primary" variant="outlined">
+                      {{
+                        format({
+                          date: `${item.updatedAt}`,
+                          format: "YYYY-MM-D h:mm a",
+                        })
+                      }}
+                    </v-chip>
+                  </template>
+                  <template v-slot:item.status="{ item }">
+                    <v-select
+                      v-model="item.status"
+                      :items="status"
+                      variant="outlined"
+                      density="compact"
+                      item-title="name"
+                      item-disabled="disable"
+                      :bg-color="
+                        item.status === 2
+                          ? 'success'
+                          : item.status === 1
+                            ? 'amber'
+                            : 'red'
+                      "
+                    />
+                  </template>
+                </v-data-table-virtual>
               </v-col>
             </v-row>
           </v-form>
