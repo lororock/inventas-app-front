@@ -290,7 +290,11 @@ const changeStatus = async () => {
 
 const loadData = async () => {
   loading.value = true;
-  await configStore.validateInventoryChecked();
+  const inventories = await crudStore.customRequest({
+    method: "GET",
+    path: `inventories/find/all`,
+  });
+  await configStore.validateInventoryChecked(inventories);
   await findClients();
   await findProducts();
   if (props.mode !== 2) {
@@ -517,9 +521,21 @@ const loadData = async () => {
               </v-col>
               <v-col cols="12">
                 <v-text-field
+                  :readonly="true"
                   density="compact"
                   :model-value="`Factura creada ${format({
                     date: sale.createdAt,
+                    format: 'MMMM D, YYYY h:mm a',
+                  })}`"
+                  bg-color="primary"
+                  v-if="mode !== 2"
+                  :showButtons="false"
+                />
+                <v-text-field
+                  :readonly="true"
+                  density="compact"
+                  :model-value="`Factura actualizada ${format({
+                    date: sale.updatedAt,
                     format: 'MMMM D, YYYY h:mm a',
                   })}`"
                   bg-color="primary"
