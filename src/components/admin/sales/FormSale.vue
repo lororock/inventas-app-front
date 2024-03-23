@@ -10,6 +10,7 @@ import useConfigStore from "../../../store/use.config.store.ts";
 import { format } from "@formkit/tempo";
 import useSoundStore from "../../../store/sound.store.ts";
 import router from "../../../router";
+import useFunctionsStore from "../../../store/functions.store.ts";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -19,6 +20,7 @@ const props = defineProps({
 });
 
 const configStore = useConfigStore();
+const functionsStore = useFunctionsStore();
 
 const crudStore = useCrudStore(props.config)();
 const resourceStore = useResourceStore();
@@ -102,9 +104,10 @@ const submit = async () => {
         }),
       ),
     };
-    await crudStore.create(data);
+    const dataResponse = await crudStore.create(data);
     emit("item-created");
     handleClose();
+    functionsStore.printSale(dataResponse);
   } catch (error: any) {
     dialog.value = false;
     await Swal.fire({
