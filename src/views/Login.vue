@@ -4,6 +4,7 @@ import { useForm, useField } from "vee-validate";
 import * as yup from "yup";
 import { useAuthStore } from "../store/auth.store.ts";
 import router from "../router";
+import useCrudStore from "../store/crud.store.ts";
 
 const schema = yup.object({
   email: yup
@@ -27,11 +28,28 @@ const { meta } = useForm({
 const { value: email, errorMessage: emailError } = useField("email");
 const { value: password, errorMessage: passwordError } = useField("password");
 
+const crudStore = useCrudStore({
+  name: "auth2",
+  formComponent: null,
+  columns: [],
+  path: "auth",
+})();
 const authStore = useAuthStore();
 const submitLogin = async () => {
   if (typeof email.value === "string")
     if (typeof password.value === "string")
       await authStore.login(email.value, password.value);
+};
+
+const testApp = async () => {
+  try {
+    await crudStore.customRequest({
+      method: "GET",
+      path: "auth/generate/password",
+    });
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 (async () => {
@@ -45,13 +63,6 @@ const togglePasswordVisibility = () => (visible.value = !visible.value);
 </script>
 
 <template>
-  <!--
-  Heads up! 👋
-
-  Plugins:
-    - @tailwindcss/forms
--->
-
   <section class="bg-white">
     <div class="lg:grid lg:min-h-screen lg:grid-cols-12">
       <section
@@ -82,7 +93,8 @@ const togglePasswordVisibility = () => (visible.value = !visible.value);
           <h2
             class="mt-6 text-2xl font-bold text-white sm:text-3xl md:text-4xl"
           >
-            Inventas-App 💰
+            Inventas-App
+            <v-btn variant="outlined" icon="mdi-cash" @click="testApp" />
           </h2>
 
           <p class="mt-4 leading-relaxed text-white/90">
