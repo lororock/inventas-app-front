@@ -84,9 +84,12 @@ const useResourceStore = defineStore("resources", () => {
     },
   ]);
 
+  const printSale = () => {};
+
   return {
     functionsDashboard: functionsDashboard.value,
     saleTypes: saleTypes.value,
+    printSale,
   };
 });
 
