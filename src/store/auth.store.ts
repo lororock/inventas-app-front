@@ -11,6 +11,8 @@ export const useAuthStore = defineStore("auth", () => {
   const refreshToken = ref("");
 
   const login = async (email: string, password: string) => {
+    localStorage.removeItem("refresh-token-inventas");
+    localStorage.removeItem("token-inventas");
     try {
       const { data } = await axiosInstance.post("auth/login", {
         email,
