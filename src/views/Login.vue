@@ -5,6 +5,8 @@ import * as yup from "yup";
 import { useAuthStore } from "../store/auth.store.ts";
 import router from "../router";
 import useCrudStore from "../store/crud.store.ts";
+import Swal from "sweetalert2";
+import LoadInProgress from "../components/general/LoadInProgress.vue";
 
 const schema = yup.object({
   email: yup
@@ -35,10 +37,18 @@ const crudStore = useCrudStore({
   path: "auth",
 })();
 const authStore = useAuthStore();
+const loading = ref(false);
 const submitLogin = async () => {
-  if (typeof email.value === "string")
-    if (typeof password.value === "string")
+  loading.value = true;
+  if (typeof email.value === "string" && typeof password.value === "string") {
+    try {
       await authStore.login(email.value, password.value);
+    } catch (error: any) {
+      await Swal.fire("error", error.response.data.message, "error");
+    } finally {
+      loading.value = false;
+    }
+  }
 };
 
 const testApp = async () => {
@@ -47,8 +57,9 @@ const testApp = async () => {
       method: "GET",
       path: "auth/generate/password",
     });
-  } catch (error) {
-    console.log(error);
+  } catch (error: any) {
+    console.log("error", error.response.data.message);
+    await Swal.fire("error", error.response.data.message, "error");
   }
 };
 
@@ -64,6 +75,7 @@ const togglePasswordVisibility = () => (visible.value = !visible.value);
 
 <template>
   <section class="bg-white">
+    <LoadInProgress v-if="loading" />
     <div class="lg:grid lg:min-h-screen lg:grid-cols-12">
       <section
         class="relative flex h-32 items-end bg-gray-900 lg:col-span-5 lg:h-full xl:col-span-6"
@@ -173,13 +185,14 @@ const togglePasswordVisibility = () => (visible.value = !visible.value);
             </div>
 
             <div class="col-span-6 sm:flex sm:items-center sm:gap-4">
-              <button
+              <v-btn
                 :disabled="!meta.valid"
                 type="submit"
-                class="inline-block shrink-0 rounded-md border border-blue-600 bg-blue-600 px-12 py-3 text-sm font-medium text-white transition focus:outline-none focus:ring active:text-blue-500"
+                color="primary"
+                :loading="loading"
               >
                 Iniciar sesión
-              </button>
+              </v-btn>
 
               <p class="mt-4 text-sm text-gray-500 sm:mt-0">
                 Created by Technology Box
