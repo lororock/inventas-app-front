@@ -26,13 +26,13 @@ const useFunctionsStore = defineStore("functions", () => {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Factura de Venta</title>
+    <title>${enterprise.name}-factura-${id}</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 20px;
-            max-width: 500px;
+            max-width: 300px;
         }
         .header, .section {
             margin-bottom: 20px;
@@ -54,9 +54,6 @@ const useFunctionsStore = defineStore("functions", () => {
             width: 100%;
             border-collapse: collapse;
         }
-        table, th, td {
-            border: 1px solid black;
-        }
         th, td {
             padding: 8px;
             text-align: left;
@@ -69,15 +66,16 @@ const useFunctionsStore = defineStore("functions", () => {
 </head>
 <body>
     <div class="header">
-        <h1>Factura de Venta - ${type === 0 ? "Contado" : "Crédito"}</h1>
-        <p>id: ${id.split("-").join("")}</p>
-        <div>Fecha de creación: ${format({
+        <h2>Factura de Venta - ${type === 0 ? "Contado" : "Crédito"}</h2>
+        <p>${id.split("-").join("")}</p>
+        <hr />
+        <div>Facturado: ${format({
           date: `${createdAt}`,
           format: "YYYY-MM-D hh:mm a",
         })}
         </div>
         <div>${enterprise.name}</div>
-            <div>${enterprise.address}</div>
+        <div>${enterprise.address}</div>
     </div>
 
     ${
@@ -125,6 +123,17 @@ const useFunctionsStore = defineStore("functions", () => {
 </body>
 </html>
       `;
+
+      frame.onload = function () {
+        frame.print();
+      };
+
+      frame.addEventListener("keydown", function (event) {
+        if ((event.ctrlKey || event.metaKey) && event.key === "p") {
+          event.preventDefault();
+          frame.print();
+        }
+      });
     }
   };
 
