@@ -66,7 +66,7 @@ const useFunctionsStore = defineStore("functions", () => {
 </head>
 <body>
     <div class="header">
-        <h2>Factura de Venta - ${type === 0 ? "Contado" : "Crédito"}</h2>
+        <h3>Factura de Venta - ${type === 0 ? "Contado" : "Crédito"}</h3>
         <p>${id.split("-").join("")}</p>
         <hr />
         <div>Facturado: ${format({
@@ -82,7 +82,7 @@ const useFunctionsStore = defineStore("functions", () => {
       client
         ? `
     <div class="section">
-        <h2>Cliente</h2>
+        <h3>Cliente</h3>
         <div class="details">
             <div>${client.names} ${client.surnames}</div>
             <div>${client.documentNumber}</div>
@@ -95,7 +95,7 @@ const useFunctionsStore = defineStore("functions", () => {
     }
 
     <div class="section">
-        <h2>Venta</h2>
+        <h3>Venta</h3>
         <table>
             <tr>
                 <th>Producto</th>
