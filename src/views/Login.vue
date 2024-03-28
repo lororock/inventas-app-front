@@ -182,13 +182,7 @@ const togglePasswordVisibility = () => (visible.value = !visible.value);
               </button>
 
               <p class="mt-4 text-sm text-gray-500 sm:mt-0">
-                Created by
-                <a
-                  href="https://github.com/carlosdizx"
-                  class="text-gray-700 underline"
-                  target="_blank"
-                  >Carlos Ernesto Díaz Basante</a
-                >
+                Created by Technology Box
               </p>
             </div>
           </v-form>
