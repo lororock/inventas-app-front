@@ -67,8 +67,9 @@ const useCrudStore = (entityConfig: entityConfig) =>
         });
       }
 
-      const { data } = await axiosInstance(config);
-      return data;
+      const response = await axiosInstance(config);
+      if (response) return response.data;
+      return null;
     };
 
     return {

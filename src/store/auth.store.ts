@@ -31,7 +31,6 @@ export const useAuthStore = defineStore("auth", () => {
         timer: 2000,
         icon: "error",
       });
-      throw error;
     }
   };
 
