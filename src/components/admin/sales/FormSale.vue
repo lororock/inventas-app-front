@@ -288,7 +288,7 @@ const changeStatus = async () => {
   }
   loading.value = false;
   dialog.value = false;
-  router.go(0);
+  emit("item-created")
 };
 
 const loadData = async () => {
