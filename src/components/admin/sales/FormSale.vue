@@ -312,6 +312,9 @@ const loadData = async () => {
     <LoadInProgress v-if="loading" />
     <v-dialog v-model="dialog" :persistent="true" max-width="1200">
       <LoadInProgress v-if="loading" />
+      <v-btn color="red" @click="dialog = !dialog">
+        Cerrar <v-icon>mdi-close</v-icon>
+      </v-btn>
       <template v-slot:activator="{ props }">
         <v-btn
           type="icon"
@@ -348,7 +351,7 @@ const loadData = async () => {
         <v-container>
           <v-form>
             <v-row>
-              <v-col cols="8">
+              <v-col cols="6">
                 <v-autocomplete
                   density="compact"
                   variant="outlined"
@@ -362,17 +365,6 @@ const loadData = async () => {
                   :return-object="true"
                   :clearable="true"
                 >
-                  <template #append>
-                    <v-tooltip text="Crear cliente">
-                      <template v-slot:activator="{ props }">
-                        <v-btn
-                          icon="mdi-account-plus"
-                          color="success"
-                          v-bind="props"
-                        />
-                      </template>
-                    </v-tooltip>
-                  </template>
                   <template v-slot:item="{ props, item }">
                     <v-list-item
                       v-bind="props"
@@ -381,7 +373,7 @@ const loadData = async () => {
                   </template>
                 </v-autocomplete>
               </v-col>
-              <v-col cols="4">
+              <v-col cols="6">
                 <v-select
                   v-model="sale.type"
                   label="Tipo de factura"

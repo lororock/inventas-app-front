@@ -100,16 +100,14 @@ const useFunctionsStore = defineStore("functions", () => {
             <tr>
                 <th>Producto</th>
                 <th>Precio Unitario</th>
-                <th>Cantidad</th>
                 <th>Subtotal</th>
             </tr>
             ${products
               .map(
                 (product) => `
             <tr>
-                <td>${product.name}</td>
+                <td>${product.quantity} X ${product.name}</td>
                 <td>$${formatNumber(product.salePrice)}</td>
-                <td>${product.quantity}</td>
                 <td>$${formatNumber(`${product.subtotal}`)}</td>
             </tr>
             `,
