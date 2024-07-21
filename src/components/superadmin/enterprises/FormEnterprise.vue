@@ -17,6 +17,7 @@ const enterprise = ref<any>({
   name: "",
   email: "",
   address: "",
+  planId: null,
 });
 
 const client = ref<any>({
@@ -31,7 +32,15 @@ const client = ref<any>({
 });
 
 const crudStore = useCrudStore(props.config)();
+const planStore = useCrudStore({
+  columns: [],
+  path: "plans",
+  name: "Plan",
+  formComponent: null,
+})();
 const emit = defineEmits(["item-created"]);
+
+const plans = ref<{ id: string; name: string; description: string }[]>([]);
 
 const isReadOnly = computed(() => props.mode === 0);
 
@@ -54,6 +63,16 @@ const findEnterpriseById = async () => {
   loading.value = false;
 };
 
+const listAllPlans = async () => {
+  const list = await planStore.findAll({ page: 1, limit: 100 });
+  plans.value = list.items.map(({ id, name, description }: any) => ({
+    id,
+    name,
+    description,
+  }));
+};
+
+listAllPlans();
 const submit = async () => {
   loading.value = true;
 
@@ -82,7 +101,16 @@ const submit = async () => {
     }
     emit("item-created");
     dialog.value = false;
-  } catch (error) {
+  } catch (error: any) {
+    dialog.value = false;
+    await Swal.fire({
+      title: "Algo ha ido mal",
+      html: `Verifica que todos los campos estén correctamente diligenciados<br /> ${error.response.data.message}`,
+      icon: "error",
+      timer: 5000,
+      toast: true,
+    });
+    dialog.value = true;
   } finally {
     loading.value = false;
   }
@@ -92,7 +120,12 @@ const submit = async () => {
 <template>
   <v-row justify="center">
     <LoadInProgress v-if="loading" />
-    <v-dialog v-model="dialog" :persistent="true" max-width="600">
+    <v-dialog
+      v-model="dialog"
+      :persistent="true"
+      max-width="600"
+      :disabled="loading"
+    >
       <template v-slot:activator="{ props }">
         <v-btn
           type="icon"
@@ -131,6 +164,20 @@ const submit = async () => {
             <br />
             <hr />
             <br />
+            <v-select
+              density="compact"
+              variant="outlined"
+              v-model="enterprise.planId"
+              label="Plan de usuarios"
+              :items="plans"
+              item-title="name"
+              item-value="id"
+              :readonly="isReadOnly"
+            >
+              <template v-slot:item="{ props, item }">
+                <v-list-item v-bind="props" :subtitle="item.raw.description" />
+              </template>
+            </v-select>
             <v-text-field
               variant="outlined"
               density="compact"
