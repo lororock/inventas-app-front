@@ -34,16 +34,16 @@ export const genders = [
 
 export const roles = [
   {
-    value: 1,
-    label: "Administrador",
-  },
-  {
     value: 2,
     label: "Cajero",
   },
   {
     value: 3,
     label: "Contador",
+  },
+  {
+    value: 4,
+    label: "Administrador",
   },
 ];
 
