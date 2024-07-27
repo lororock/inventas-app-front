@@ -159,6 +159,7 @@ onMounted(async () => {
               v-model="product.barcode"
               label="Código de barras"
               :disabled="isReadOnly"
+              :clearable="true"
             />
             <InputCurrency
               label="Precio compra"
@@ -194,10 +195,10 @@ onMounted(async () => {
               density="compact"
             >
               <template #details>
-                <v-chip
-                  >Si esta activo no require registrar producto en un inventario
-                  para poder venderlo</v-chip
-                >"
+                <v-chip>
+                  Si esta activo require registrar el producto en un inventario
+                  para poder venderlo
+                </v-chip>
               </template>
             </v-switch>
             <v-autocomplete
@@ -211,6 +212,7 @@ onMounted(async () => {
               v-model="product.category"
               @update:model-value="findCategoryById()"
               :disabled="isReadOnly"
+              :clearable="true"
             />
             <v-autocomplete
               density="compact"
@@ -222,6 +224,7 @@ onMounted(async () => {
               :chips="true"
               v-model="product.subcategory"
               :disabled="isReadOnly || !product.category"
+              :clearable="true"
             />
           </v-form>
         </v-container>

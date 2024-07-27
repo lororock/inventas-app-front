@@ -150,7 +150,7 @@ const findClients = async () => {
 const findProducts = async () => {
   const { productInventories } = await crudStore.customRequest({
     method: "GET",
-    path: `inventories/${configStore.inventoryId}`,
+    path: `inventories/${configStore.inventoryId}?sale=true`,
   });
   products.value =
     productInventories &&
@@ -165,6 +165,8 @@ const foundProductByBarcode = async () => {
   );
   barcodeTemp.value = "";
   if (!foundProduct) {
+
+    await soundStore().playError();
     await Swal.fire({
       position: "top-end",
       timer: 1500,
@@ -173,7 +175,6 @@ const foundProductByBarcode = async () => {
       title: "Producto no encontrado",
       icon: "error",
     });
-    await soundStore().playError();
   } else {
     const productSelected = productsSelected.value.find(
       (product) => product.id === foundProduct.id,
