@@ -1,5 +1,7 @@
 <script setup lang="ts">
-import { ref, defineEmits } from "vue";
+import { ref } from "vue";
+import axiosInstance from "../../services/axios.service.ts";
+import Swal from "sweetalert2";
 
 const dialog = ref<boolean>(false);
 const otp = ref<string>("");
@@ -19,6 +21,18 @@ const confirm = () => {
   emit('confirm', otp.value);
   close();
 }
+
+const generateOtp = async () => {
+try {
+  const {data} = await axiosInstance.post("auth/generate-otp")
+
+  await Swal.fire({title: data.message, toast: true, showConfirmButton: false, timer: 2100, position: 'top-right', icon: "success"})
+}
+catch (error) {
+  await Swal.fire({title: "Error", html: "No fue posible generar OTP", toast: true, showConfirmButton: false, timer: 2100})
+  throw error
+}
+}
 </script>
 
 <template>
@@ -28,6 +42,7 @@ const confirm = () => {
           v-bind="props"
           variant="tonal"
           color="primary"
+          @click="generateOtp"
       >
         Confirmar acción
       </v-btn>
