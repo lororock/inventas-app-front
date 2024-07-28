@@ -12,11 +12,11 @@ const useUserStore = defineStore("user", () => {
     return data;
   };
 
-  const createUser = async (data: any) =>
-    await axiosInstance.post("users", data);
+  const createUser = async (data: any, code: string) =>
+    await axiosInstance.post("users", data, {headers: {'x-otp-code': code}});
 
-  const updateUserById = async (data: any, id: string) =>
-    await axiosInstance.patch(`users/${id}`, data);
+  const updateUserById = async (data: any, id: string, code: string) =>
+    await axiosInstance.patch(`users/${id}`, data, {headers: {'x-otp-code': code}});
 
   return {
     listEmployees,

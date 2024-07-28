@@ -4,6 +4,7 @@ import useUserStore from "../../../store/useUserStore.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
 import { documentTypes, genders, roles } from "../../../assets/list.items.ts";
 import Swal from "sweetalert2";
+import OtpDialog from "../../general/OtpDialog.vue";
 const userStore = useUserStore();
 
 const dialog = ref<boolean>(false);
@@ -31,6 +32,16 @@ const findUserById = async (id: string) => {
   }
 };
 
+const otp = ref('');
+
+const close = () => {
+  dialog.value =!dialog.value;
+  resetOtp()
+}
+const handleOtpConfirm = (value: string) => {
+  otp.value = value;
+};
+
 const submit = async () => {
   const data = user.value;
   try {
@@ -38,7 +49,7 @@ const submit = async () => {
       await userStore.createUser({
         ...data,
         roles: data.roles.map((rol: any) => rol.value),
-      });
+      }, otp.value);
     else
       await userStore.updateUserById(
         {
@@ -49,16 +60,23 @@ const submit = async () => {
           status: data.status === 2 ? 2 : 3,
         },
         props.id,
+          otp.value
       );
     emit("item-created");
+    resetOtp()
     user.value = {};
     dialog.value = !dialog.value;
   } catch (error: any) {
     dialog.value = !dialog.value;
     await Swal.fire("Oops", error.response.data.message, "error");
     dialog.value = !dialog.value;
+    resetOtp()
   }
 };
+
+const resetOtp = () => {
+  otp.value = '';
+}
 </script>
 
 <template>
@@ -190,8 +208,9 @@ const submit = async () => {
         </v-container>
         <v-card-actions>
           <v-spacer></v-spacer>
+          <otp-dialog v-if="otp.length === 0"  @confirm="handleOtpConfirm"></otp-dialog>
           <v-btn
-            v-if="mode === 1"
+            v-if="mode === 1 && otp.length !== 0"
             color="indigo"
             variant="tonal"
             @click="submit()"
@@ -199,14 +218,14 @@ const submit = async () => {
             Guardar cambios
           </v-btn>
           <v-btn
-            v-if="mode === 2"
+            v-if="mode === 2 && otp.length !== 0"
             color="success"
             variant="tonal"
             @click="submit()"
           >
             Registrar
           </v-btn>
-          <v-btn color="red-darken-1" variant="tonal" @click="dialog = !dialog">
+          <v-btn color="red-darken-1" variant="tonal" @click="close">
             Cancelar
           </v-btn>
         </v-card-actions>
