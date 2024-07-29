@@ -55,6 +55,15 @@ const submit = async () => {
       dialog.value = false;
     }
     emit("item-created");
+    product.value = {
+      name: "",
+      barcode: null,
+      salePrice: 0,
+      costPrice: 0,
+      requiresInventory: true,
+      category: null,
+      subcategory: null,
+    }
   } catch (error) {
     console.error(error);
   } finally {

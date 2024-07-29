@@ -66,6 +66,7 @@ const submit = async () => {
     resetOtp()
     user.value = {};
     dialog.value = !dialog.value;
+    user.value = {}
   } catch (error: any) {
     dialog.value = !dialog.value;
     await Swal.fire("Oops", error.response.data.message, "error");
