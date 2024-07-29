@@ -3,6 +3,7 @@ import useCrudStore from "../../../store/crud.store.ts";
 import EntityConfig from "../../../interface/entity.config.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
 import { ref, computed } from "vue";
+import Swal from "sweetalert2";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -38,7 +39,14 @@ const submit = async () => {
       dialog.value = false;
     }
     emit("item-created");
+    category.value = {
+      name: "",
+      description: "",
+      subcategories: [],
+      status: undefined,
+    }
   } catch (error) {
+    await Swal.fire("Oops", error.response.data.message, "error");
     console.error(error);
   } finally {
     loading.value = !loading.value;

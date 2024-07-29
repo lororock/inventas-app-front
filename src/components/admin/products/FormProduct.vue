@@ -55,7 +55,17 @@ const submit = async () => {
       dialog.value = false;
     }
     emit("item-created");
-  } catch (error) {
+    product.value = {
+      name: "",
+      barcode: null,
+      salePrice: 0,
+      costPrice: 0,
+      requiresInventory: true,
+      category: null,
+      subcategory: null,
+    }
+  } catch (error: any) {
+    await Swal.fire("Oops", error.response.data.message, "error");
     console.error(error);
   } finally {
     loading.value = !loading.value;
