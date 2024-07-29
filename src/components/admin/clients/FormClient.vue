@@ -4,6 +4,7 @@ import EntityConfig from "../../../interface/entity.config.ts";
 import LoadInProgress from "../../general/LoadInProgress.vue";
 import { ref, computed } from "vue";
 import { documentTypes } from "../../../assets/list.items.ts";
+import Swal from "sweetalert2";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -51,7 +52,9 @@ const submit = async () => {
     }
     emit("item-created");
     dialog.value = false;
-  } catch (error) {
+  } catch (error : any) {
+    await Swal.fire("Oops", error.response.data.message, "error");
+    console.error(error)
   } finally {
     loading.value = false;
   }

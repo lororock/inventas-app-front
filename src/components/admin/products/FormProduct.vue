@@ -64,7 +64,8 @@ const submit = async () => {
       category: null,
       subcategory: null,
     }
-  } catch (error) {
+  } catch (error: any) {
+    await Swal.fire("Oops", error.response.data.message, "error");
     console.error(error);
   } finally {
     loading.value = !loading.value;
