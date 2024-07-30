@@ -45,7 +45,7 @@ const submit = async () => {
       subcategories: [],
       status: undefined,
     }
-  } catch (error) {
+  } catch (error: any) {
     await Swal.fire("Oops", error.response.data.message, "error");
     console.error(error);
   } finally {
