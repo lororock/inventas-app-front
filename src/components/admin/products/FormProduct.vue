@@ -20,11 +20,9 @@ const product = ref<any>({
   costPrice: 0,
   requiresInventory: true,
   category: null,
-  subcategory: null,
 });
 
 const categories = ref<any[]>([]);
-const subcategories = ref<any[]>([]);
 
 const crudStore = useCrudStore(props.config)();
 const crudStoreCategories = useCrudStore({
@@ -62,7 +60,6 @@ const submit = async () => {
       costPrice: 0,
       requiresInventory: true,
       category: null,
-      subcategory: null,
     }
   } catch (error: any) {
     await Swal.fire("Oops", error.response.data.message, "error");
@@ -77,19 +74,23 @@ const findCategories = async () => {
   categories.value = result.items;
 };
 
-const findCategoryById = async () => {
-  loading.value = true;
-  try {
-    subcategories.value = [];
-    let id = product.value.category;
-    if (typeof id === "object") id = id.id;
-    const result = await crudStoreCategories.findById(id);
-    subcategories.value = result.subcategories;
-  } catch (error) {
-  } finally {
-    loading.value = false;
-  }
-};
+const findCategoryById = async () =>
+    {
+      loading.value = true;
+      try {
+        let id: string
+        if(typeof product.value.category === "object") {
+          id = product.value.category.id
+          product.value.category = product.value.category.id
+        }
+        else id = product.value.category;
+        await crudStoreCategories.findById(id);
+      } catch (error) {
+      } finally {
+        loading.value = false;
+      }
+    }
+;
 
 const findProductById = async (id: string) => {
   loading.value = true;
@@ -154,6 +155,20 @@ onMounted(async () => {
       <v-card title="Datos producto">
         <v-container>
           <v-form>
+            <v-switch
+              v-model="product.requiresInventory"
+              label="Producto requiere inventario"
+              :disabled="isReadOnly"
+              color="success"
+              density="compact"
+            />
+             <v-alert density="compact" variant="text" type="warning">
+              Si activas la opción "requiere inventario", el producto deberá estar registrado en un inventario para ser vendido. Si la desactivas, no será necesario.
+            </v-alert>
+            <v-divider />
+            <v-divider />
+            <br />
+            <hr />
             <v-text-field
               prepend-inner-icon="mdi-tag-edit-outline"
               variant="outlined"
@@ -197,20 +212,6 @@ onMounted(async () => {
               :color="product.status === 2 ? 'success' : 'red'"
               hide-details
             />
-            <v-switch
-              v-model="product.requiresInventory"
-              label="Producto requiere inventario"
-              :disabled="isReadOnly"
-              color="success"
-              density="compact"
-            >
-              <template #details>
-                <v-chip>
-                  Si esta activo require registrar el producto en un inventario
-                  para poder venderlo
-                </v-chip>
-              </template>
-            </v-switch>
             <v-autocomplete
               density="compact"
               label="Categoría"
@@ -220,20 +221,7 @@ onMounted(async () => {
               item-value="id"
               :chips="true"
               v-model="product.category"
-              @update:model-value="findCategoryById()"
               :disabled="isReadOnly"
-              :clearable="true"
-            />
-            <v-autocomplete
-              density="compact"
-              label="Subcategorías"
-              variant="outlined"
-              :items="subcategories"
-              item-title="name"
-              item-value="id"
-              :chips="true"
-              v-model="product.subcategory"
-              :disabled="isReadOnly || !product.category"
               :clearable="true"
             />
           </v-form>

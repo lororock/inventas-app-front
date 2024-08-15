@@ -15,7 +15,6 @@ const props = defineProps({
 const category = ref<any>({
   name: "",
   description: "",
-  subcategories: [],
   status: undefined,
 });
 
@@ -42,7 +41,6 @@ const submit = async () => {
     category.value = {
       name: "",
       description: "",
-      subcategories: [],
       status: undefined,
     }
   } catch (error: any) {
@@ -56,13 +54,8 @@ const submit = async () => {
 const findCategoryById = async (id: string) => {
   loading.value = true;
   try {
-    const result = await crudStore.findById(id);
-    category.value = result;
+    category.value = await crudStore.findById(id);
     delete category.value.id;
-    if (result.subcategories && result.subcategories.length > 0)
-      category.value.subcategories = result.subcategories.map(
-        (sub: any) => sub.name,
-      );
   } catch (error) {
   } finally {
     loading.value = false;
@@ -123,15 +116,6 @@ const loading = ref(false);
               density="comfortable"
               v-model="category.description"
               label="Descripción de la categoría"
-              :disabled="isReadOnly"
-            />
-            <v-combobox
-              density="compact"
-              label="Subcategorias"
-              variant="outlined"
-              :chips="true"
-              :multiple="true"
-              v-model="category.subcategories"
               :disabled="isReadOnly"
             />
             <v-switch
