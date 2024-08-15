@@ -38,7 +38,7 @@ const submit = async () => {
     emit("item-created");
     inventory.value = {location: ""}
   } catch (error: any) {
-    await Swal.fire("Oops", error.response.data.message, "error");
+    await Swal.fire({title: "Oops", html: error.response.data.message, icon:"error", toast: true, position: "top-right"});
     console.error(error);
   } finally {
     loading.value = !loading.value;

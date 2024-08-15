@@ -9,7 +9,6 @@ import InputCurrency from "../../general/InputCurrency.vue";
 import useConfigStore from "../../../store/use.config.store.ts";
 import { format } from "@formkit/tempo";
 import useSoundStore from "../../../store/sound.store.ts";
-import router from "../../../router";
 import useFunctionsStore from "../../../store/functions.store.ts";
 
 const props = defineProps({
@@ -222,7 +221,8 @@ const handleClose = () => {
 };
 
 const findSaleById = async () => {
-  const saleFound = await crudStore.findById(props.id);
+ try {
+    const saleFound = await crudStore.findById(props.id);
   sale.value = {
     ...sale.value,
     createdAt: saleFound.createdAt,
@@ -237,6 +237,13 @@ const findSaleById = async () => {
       salePrice: +unitPrice,
     }),
   );
+ }
+ catch (error: any) {
+   loading.value = false;
+   dialog.value = false;
+   await Swal.fire("Oppss", `No se pudo cargar la venta <br> ${error.response.data.message}`, "error")
+   throw error
+ }
 };
 
 const changeStatus = async () => {
