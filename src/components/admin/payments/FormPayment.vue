@@ -153,7 +153,7 @@ const changeStatus = async (item: any) => {
     } catch (error: any) {
       await Swal.fire({
         title: "Oops",
-        text: error.message,
+        text: error.response.data.message,
         icon: "error",
       });
     }
