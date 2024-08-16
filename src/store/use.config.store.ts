@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import router from "../router";
 
 const useConfigStore = defineStore("config", () => {
-  const inventoryId = ref<string>(
+  const inventoryId = ref<string | any>(
     localStorage.getItem("inventoryId") as string,
   );
 
