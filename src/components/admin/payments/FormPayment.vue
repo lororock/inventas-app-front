@@ -7,6 +7,7 @@ import Swal from "sweetalert2";
 import InputCurrency from "../../general/InputCurrency.vue";
 import { format } from "@formkit/tempo";
 import router from "../../../router";
+import useConfigStore from "../../../store/use.config.store.ts";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -15,6 +16,7 @@ const props = defineProps({
   mode: { type: Number, required: true },
 });
 const crudStore = useCrudStore(props.config)();
+const configStore = useConfigStore();
 
 const dialog = ref<boolean>(false);
 const loading = ref(false);
@@ -180,6 +182,12 @@ const findSalesByClientId = async () => {
 };
 
 const loadData = async () => {
+  const inventories = await crudStore.customRequest({
+    method: "GET",
+    path: `inventories/find/all`,
+  });
+
+  await configStore.validateInventoryChecked(inventories);
   await findClients();
   if (props.mode !== 2) {
     await findSalesByClientId();
