@@ -52,9 +52,17 @@ const submit = async () => {
     }
     emit("item-created");
     dialog.value = false;
-  } catch (error : any) {
-    await Swal.fire("Oops", error.response.data.message, "error");
-    console.error(error)
+  } catch (error: any) {
+    dialog.value = false;
+    await Swal.fire({
+      title: "Oops",
+      html: error.response.data.message,
+      icon: "error",
+      toast: true,
+      position: "top-end",
+    });
+    dialog.value = true;
+    console.error(error);
   } finally {
     loading.value = false;
   }
