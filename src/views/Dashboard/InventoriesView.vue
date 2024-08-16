@@ -7,7 +7,7 @@ const configTable: EntityConfig = {
   path: "inventories",
   columns: [
     { title: "Detalles", key: "id", sortable: false },
-    { title: "Localización", key: "location", sortable: false },
+    { title: "Nombre", key: "name", sortable: false },
     { title: "Numero de items", key: "total", sortable: false },
     {
       title: "Acciones",

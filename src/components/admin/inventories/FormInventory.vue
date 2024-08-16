@@ -12,8 +12,15 @@ const props = defineProps({
   mode: { type: Number, required: true },
 });
 
-const inventory = ref<any>({
-  location: "",
+const inventory = ref({
+  id: undefined,
+  name: "",
+  city: null,
+  state: null,
+  zipCode: null,
+  country: null,
+  address: null,
+  status: undefined,
 });
 
 const crudStore = useCrudStore(props.config)();
@@ -26,6 +33,8 @@ const submit = async () => {
   const data = inventory.value;
   try {
     if (props.mode === 2) {
+      data.id = undefined;
+      data.status = undefined;
       await crudStore.create(data);
       dialog.value = false;
     } else {
@@ -36,9 +45,24 @@ const submit = async () => {
       dialog.value = false;
     }
     emit("item-created");
-    inventory.value = {location: ""}
+    inventory.value = {
+      id: undefined,
+      name: "",
+      city: null,
+      state: null,
+      zipCode: null,
+      country: null,
+      address: null,
+      status: null,
+    };
   } catch (error: any) {
-    await Swal.fire({title: "Oops", html: error.response.data.message, icon:"error", toast: true, position: "top-right"});
+    await Swal.fire({
+      title: "Oops",
+      html: error.response.data.message,
+      icon: "error",
+      toast: true,
+      position: "top-right",
+    });
     console.error(error);
   } finally {
     loading.value = !loading.value;
@@ -49,7 +73,7 @@ const findInventoryById = async (id: string) => {
   loading.value = true;
   try {
     inventory.value = await crudStore.findById(id);
-    delete inventory.value.id;
+    inventory.value.id = undefined;
   } catch (error) {
   } finally {
     loading.value = false;
@@ -101,9 +125,58 @@ const loading = ref(false);
             <v-text-field
               variant="outlined"
               density="compact"
-              v-model="inventory.location"
-              label="Localidad"
+              v-model="inventory.name"
+              label="Nombre del inventario"
               :disabled="isReadOnly"
+            />
+            <v-alert
+              type="warning"
+              text="Campos opcionales"
+              variant="tonal"
+              density="compact"
+            />
+            <br />
+            <v-text-field
+              variant="outlined"
+              density="compact"
+              v-model="inventory.country"
+              label="País"
+              :disabled="isReadOnly"
+            />
+            <v-text-field
+              variant="outlined"
+              density="compact"
+              v-model="inventory.state"
+              label="Departamento, estado o provincia"
+              :disabled="isReadOnly"
+            />
+            <v-text-field
+              variant="outlined"
+              density="compact"
+              v-model="inventory.city"
+              label="Ciudad"
+              :disabled="isReadOnly"
+            />
+            <v-text-field
+              variant="outlined"
+              density="compact"
+              v-model="inventory.address"
+              label="Dirección"
+              :disabled="isReadOnly"
+            />
+            <v-text-field
+              variant="outlined"
+              density="compact"
+              v-model="inventory.zipCode"
+              label="Código Postal o Zip"
+              :disabled="isReadOnly"
+            />
+            <v-alert
+              v-if="mode === 2"
+              type="info"
+              text="Una vez guardado no se puede modificar por seguridad"
+              variant="tonal"
+              density="compact"
             />
           </v-form>
         </v-container>
