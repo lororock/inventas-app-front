@@ -191,6 +191,38 @@ const findSalesByClientId = async () => {
   }));
 };
 
+const requestForPayment = async () => {
+  if (client.value && client.value?.id) {
+    dialog.value = false;
+    loading.value = true;
+    try {
+      const { message } = await crudStore.customRequest({
+        method: "POST",
+        path: `clients/send-mail/${client.value?.id}/${configStore.inventoryId}`,
+      });
+      await Swal.fire({
+        html: message,
+        icon: "info",
+        toast: true,
+        position: "top-right",
+        timer: 3000,
+      });
+    } catch (error: any) {
+      await Swal.fire({
+        title: "Oops",
+        html: error.response.data.message,
+        icon: "error",
+        toast: true,
+        position: "top-right",
+      });
+      console.error(error);
+    } finally {
+      dialog.value = true;
+      loading.value = false;
+    }
+  } else throw new Error("No puedes hacer esto");
+};
+
 const loadData = async () => {
   const inventories = await crudStore.customRequest({
     method: "GET",
@@ -231,11 +263,24 @@ const loadData = async () => {
           v-bind="props"
         />
       </template>
-      <v-card
-        :title="mode === 2 ? 'Factura de pago' : 'Pagos'"
-        :disabled="loading"
-        :loading="loading"
-      >
+      <v-card :disabled="loading" :loading="loading">
+        <template #title>
+          {{ mode === 2 ? "Factura de nuevo de pago" : "Facturas de pago " }}
+          {{
+            client &&
+            client.documentNumber + " - " + client.names + " " + client.surnames
+          }}
+        </template>
+        <template #append>
+          <v-btn
+            @click="requestForPayment"
+            variant="tonal"
+            v-if="mode !== 2"
+            color="primary"
+          >
+            Enviar Solicitud de Pago <v-icon icon="mdi-email" />
+          </v-btn>
+        </template>
         <v-container>
           <v-form @submit.prevent="submit">
             <v-row>
@@ -272,18 +317,6 @@ const loadData = async () => {
                   persistent-hint
                   icon="mdi-cash"
                 />
-              </v-col>
-              <v-col cols="12" v-if="mode === 1">
-                <v-chip>
-                  {{
-                    client &&
-                    client.documentNumber +
-                      " - " +
-                      client.names +
-                      " " +
-                      client.surnames
-                  }}
-                </v-chip>
               </v-col>
               <v-col cols="12" v-if="mode === 1">
                 <v-data-table-virtual :headers="headers" :items="payments">
