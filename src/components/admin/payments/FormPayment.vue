@@ -165,9 +165,19 @@ const changeStatus = async (item: any) => {
 };
 
 const findSalesByClientId = async () => {
+  if (!configStore.inventoryId || configStore.inventoryId === "")
+    await Swal.fire({
+      title: "Inventario configurado",
+      toast: true,
+      position: "top-end",
+      icon: "error",
+      showConfirmButton: false,
+      timer: 3000,
+    });
+
   const paymentsFound = await crudStore.customRequest({
     method: "GET",
-    path: `payments/client/${props.id}`,
+    path: `payments/client/${props.id}/${configStore.inventoryId}`,
   });
 
   client.value = await crudStore.customRequest({
