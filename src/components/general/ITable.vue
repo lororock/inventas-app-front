@@ -99,9 +99,8 @@ const listItems = async ({
 
   const queryParams = { page, limit: itemsPerPage } as any;
 
-  if (route.path === "/sales")
+  if (route.path === "/sales" || route.path === "/payments")
     queryParams["inventoryId"] = configStore.inventoryId;
-  console.log(queryParams);
 
   try {
     const result = await crudStore.findAll(queryParams);
