@@ -85,7 +85,7 @@ const submit = async () => {
     await crudStore.customRequest({
       method: "POST",
       path: "payments",
-      body: { ...payment.value },
+      body: { ...payment.value, inventoryId: configStore.inventoryId },
     });
     emit("item-created");
     handleClose();
