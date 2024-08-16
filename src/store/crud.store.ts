@@ -5,10 +5,15 @@ import PaginationInterface from "../interface/pagination.interface.ts";
 
 const useCrudStore = (entityConfig: entityConfig) =>
   defineStore(entityConfig.name, () => {
-    const findAll = async ({ page, limit }: PaginationInterface) => {
+    const findAll = async ({
+      page,
+      limit,
+      inventoryId,
+    }: PaginationInterface) => {
       const params = new URLSearchParams();
       params.append("page", String(page));
       params.append("limit", String(limit));
+      if (inventoryId) params.append("inventoryId", String(inventoryId));
       const { data } = await axiosInstance.get(entityConfig.path, { params });
       return data;
     };

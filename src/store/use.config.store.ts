@@ -4,12 +4,14 @@ import Swal from "sweetalert2";
 import router from "../router";
 
 const useConfigStore = defineStore("config", () => {
-  const inventoryId: any = ref(localStorage.getItem("inventoryId"));
+  const inventoryId = ref<string>(
+    localStorage.getItem("inventoryId") as string,
+  );
 
-  const saveInventoryId = (id: string) => {
+  const saveInventoryId = async (id: string) => {
     localStorage.setItem("inventoryId", id);
     inventoryId.value = id;
-    Swal.fire({
+    await Swal.fire({
       title: id === null ? "Inventario eliminado" : "Inventario configurado",
       toast: true,
       position: "top-end",
@@ -28,7 +30,7 @@ const useConfigStore = defineStore("config", () => {
     }
     await router.push("settings");
     localStorage.removeItem("inventoryId");
-    inventoryId.value = undefined;
+    inventoryId.value = undefined as any;
     await Swal.fire({
       title: "No ha configurado el inventario",
       toast: true,

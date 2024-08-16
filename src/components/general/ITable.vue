@@ -6,7 +6,8 @@ import ListProductForInventory from "../admin/inventories/ListProductForInventor
 import Swal from "sweetalert2";
 import { format } from "@formkit/tempo";
 import InputCurrency from "./InputCurrency.vue";
-import router from "../../router";
+import { useRoute, useRouter } from "vue-router";
+import useConfigStore from "../../store/use.config.store.ts";
 
 const props = defineProps({
   config: { type: Object as () => EntityConfig, required: true },
@@ -14,6 +15,9 @@ const props = defineProps({
 });
 
 const crudStore = useCrudStore(props.config)();
+const route = useRoute();
+const router = useRouter();
+const configStore = useConfigStore();
 
 const status = ref<{ value: number; name: string; props: any }[]>([
   {
@@ -92,8 +96,15 @@ const listItems = async ({
   itemsPerPage: number;
 }) => {
   loading.value = true;
+
+  const queryParams = { page, limit: itemsPerPage } as any;
+
+  if (route.path === "/sales")
+    queryParams["inventoryId"] = configStore.inventoryId;
+  console.log(queryParams);
+
   try {
-    const result = await crudStore.findAll({ page, limit: itemsPerPage });
+    const result = await crudStore.findAll(queryParams);
     serverItems.value = result.items.map((i: any) => ({
       ...i,
       totalAmount: +i.totalAmount,
