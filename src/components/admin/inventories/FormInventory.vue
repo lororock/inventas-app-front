@@ -53,7 +53,7 @@ const submit = async () => {
       zipCode: null,
       country: null,
       address: null,
-      status: null,
+      status: undefined,
     };
   } catch (error: any) {
     await Swal.fire({
