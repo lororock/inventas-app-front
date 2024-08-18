@@ -55,7 +55,7 @@ const testApp = async () => {
   try {
     await crudStore.customRequest({
       method: "GET",
-      path: "auth/generate/password",
+      path: "auth/generate-password",
     });
   } catch (error: any) {
     console.log("error", error.response.data.message);
